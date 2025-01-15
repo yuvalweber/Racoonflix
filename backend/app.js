@@ -6,6 +6,7 @@ const category = require('./routes/category');
 const user = require('./routes/user');
 const movie = require('./routes/movie');
 const token = require('./routes/token');
+const schema = require('./routes/schema');
 const Counter = require('./models/counter');
 
 require('custom-env').env(process.env.NODE_ENV, './config');
@@ -21,6 +22,7 @@ app.use('/api/categories', category);
 app.use('/api/users', user);
 app.use('/api/tokens', token);
 app.use('/api/movies', movie);
+app.use('/api/schemas', schema);
 
 const initializeCounters = async () => {
     // creating the counters for userId and movieId
