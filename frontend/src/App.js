@@ -1,19 +1,21 @@
 import './App.css';
+import GenericHomePage from './pages/genericHomePage';
+import SignUpPage from './pages/registerPage';
+import LoginPage from './pages/loginPage';
+import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-function App() {
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-        </a>
-      </header>
-    </div>
+	<BrowserRouter>
+		<Routes>
+			<Route path="/" element={<GenericHomePage />} />
+			<Route path="/signup" element={<SignUpPage />} />
+			<Route path="/login" element={<LoginPage />} />
+		</Routes>
+	</BrowserRouter>
   );
-}
+};
 
 export default App;
