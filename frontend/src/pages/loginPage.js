@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../components/homePageBackground.css'; 
 import '../components/card.css'; 
+import Icon from '../components/icon';
 import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
@@ -25,6 +26,7 @@ const LoginPage = () => {
 
   return (
     <div id="mainContainer" className="d-flex flex-column justify-content-center align-items-center vh-100">
+	  <Icon/>
       <div className="card p-4 rounded" style={{ maxWidth: '600px', width: '100%' }}>
         <h3 className="card-title text-center mb-4">Log In</h3>
         <form onSubmit={handleSubmit}>
