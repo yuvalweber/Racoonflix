@@ -1,14 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+import Icon from '../components/icon';
+import FormField from '../components/formField';
 import '../components/homePageBackground.css'; 
 import '../components/card.css'; 
+import '../components/scrollbar.css';
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    firstName: '',
+	lastName: '',
+	userName: '',
+	email: '',
+	password: '',
+	confirmPassword: '',
+	profilePicture: ''
   });
+
+  const scrollContainerRef = useRef(null); // Ref for the scroll container
+
+  useEffect(() => {
+    // Scroll to the top when the component loads
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  }, []);
+
+  const fields = [
+    { id: 'firstName', label: 'First Name', type: 'text', required: true },
+    { id: 'lastName', label: 'Last Name', type: 'text', required: true },
+    { id: 'userName', label: 'User Name', type: 'text', required: true },
+    { id: 'email', label: 'Email Address', type: 'email', required: true },
+    { id: 'password', label: 'Password', type: 'password', required: true },
+    { id: 'confirmPassword', label: 'Confirm Password', type: 'password', required: true },
+    { id: 'profilePicture', label: 'Profile Picture', type: 'text', required: false }
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,68 +44,58 @@ const SignUpPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match!');
-    } else {
-      alert('Sign-up successful!');
-    }
+  const handleSubmit = async (e) => {
+	e.preventDefault();
+  
+	if (formData.password !== formData.confirmPassword) {
+	  alert('Passwords do not match!');
+	  return;
+	}
+  
+	try {
+	  // remove the confirmPassword key before sending the data
+	  const { confirmPassword, ...data } = formData;
+	  const response = await axios.post('http://localhost:8080/api/users', data);
+  
+	  if (response.status === 201) {
+		alert('Sign-up successful!');
+		console.log('Server response:', response.data);
+	  } else {
+		alert(`Error: ${response.data || 'Something went wrong'}`);
+	  }
+	} catch (err) {
+	  console.error('Error:', err);
+	  if (err.response) {
+		// Response error from server
+		alert(`Error: ${err.response.data.errors || 'Server error occurred'}`);
+	  } else {
+		// Network or other error
+		alert('An error occurred while signing up.');
+	  }
+	}
   };
 
   return (
     <div id="mainContainer" className="d-flex flex-column justify-content-center align-items-center vh-100">
-      <div className="card p-4 rounded" style={{ maxWidth: '600px', width: '100%' }}>
+      <Icon />
+      <div
+        className="card p-4 rounded scroll-menu"
+        style={{ maxWidth: '600px', width: '100%', maxHeight: '70vh', overflowY: 'auto' }}
+        ref={scrollContainerRef}
+      >
         <h3 className="card-title text-center mb-4">Sign Up</h3>
         <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="name" className="form-label">Full Name</label>
-            <input
-              type="text"
-              className="form-control cardField"
-              id="name"
-              name="name"
-              value={formData.name}
+          {fields.map((field) => (
+            <FormField
+              key={field.id}
+              id={field.id}
+              label={field.label}
+              type={field.type}
+              value={formData[field.id]}
               onChange={handleChange}
-              required
+              required={field.required}
             />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">Email Address</label>
-            <input
-              type="email"
-              className="form-control cardField"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-control cardField"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-            <input
-              type="password"
-              className="form-control cardField"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          ))}
           <button type="submit" className="btn btn-primary w-100">Sign Up</button>
         </form>
       </div>
