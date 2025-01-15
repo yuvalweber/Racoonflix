@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../components/homePageBackground.css'; 
 import '../components/card.css'; 
-import { Link } from 'react-router-dom'; // לשימוש בקישור להרשמה
+import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -57,7 +57,7 @@ const LoginPage = () => {
 
         <div className="mt-3 text-center">
           <p>Don't have an account?</p>
-          <Link to="/signup" className="btn btn-danger">Sign Up</Link> {/* כפתור שמפנה למסך הרשמה */}
+          <Link to="/signup" className="btn btn-danger">Sign Up</Link>
         </div>
       </div>
     </div>
