@@ -1,0 +1,17 @@
+.card {
+	background-color: rgba(0, 0, 0, 0.75); 
+	color: white; 
+}
+
+.cardField {
+	background-Color: rgba(0, 0, 0, 0.5);
+	color: white;
+	border: 1px solid #ccc;
+}
+
+.cardField:focus {
+	background-color: rgba(0, 0, 0, 0.5);
+	color: white; 
+	border-color: white; 
+	outline: none; 
+}
