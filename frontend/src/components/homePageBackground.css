@@ -5,6 +5,7 @@
 	background-repeat: 'no-repeat';
 }
 
+<<<<<<< HEAD
 .top-right-icon {
 	position: fixed;
 	top: 10px;
@@ -17,3 +18,13 @@
 	width: 100px;
 	height: 100px;
 }
+=======
+/* Custom styling for the 'Home' link */
+.home-link {
+	font-size: 1.25rem; /* Adjust the size as you see fit */
+	font-weight: bold;  /* Optional: Make it bold */
+	display: flex; /* Align with the navbar items */
+	align-items: center; /* Vertically center the text */
+}
+   
+>>>>>>> 8ba8643 (NET-209 - First version of the tool bar)
