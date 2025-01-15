@@ -11,7 +11,7 @@ const VideoPlayer = () => {  // Changed function name to start with uppercase 'V
     const fetchVideos = async () => {
       try {
         // Replace with your actual API endpoint
-        const response = await axios.get('http://localhost:8080/api/movies');
+        const response = await axios({url: 'http://localhost:8080/api/movies', method: 'get', headers: {'x-user': '<censored>'}});
         setVideos(response.data);
       } catch (error) {
         console.error('Error fetching videos:', error);
@@ -25,7 +25,7 @@ const VideoPlayer = () => {  // Changed function name to start with uppercase 'V
   useEffect(() => {
     if (videos.length > 0) {
       const randomIndex = Math.floor(Math.random() * videos.length);
-      setRandomVideo(videos[randomIndex].url); // Assuming each video object has a 'url' property
+      setRandomVideo(videos[randomIndex].trailer); // Assuming each video object has a 'url' property
     }
   }, [videos]);
 
