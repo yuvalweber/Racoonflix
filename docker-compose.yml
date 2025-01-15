@@ -1,0 +1,46 @@
+version: '3'
+services: 
+  server:
+    image: "netflix:1.0.1"
+    build:
+      context: ./RecommendSystem
+      dockerfile: Dockerfile
+    container_name: "server"     
+    restart: always
+    networks:
+      - netflix
+    volumes:
+      - "./RecommendSystem/data/:/usr/src/app/data/"
+    
+  mongo:
+    image: mongo:latest
+    container_name: Mongo
+    restart: always
+    networks:
+      - netflix
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+  web-service:
+    image: "netflix-web-service:1.0.1"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - server
+      - mongo
+    networks:
+      - netflix
+    restart: always
+    ports:
+      - "8080:12345"
+    environment:
+      - NODE_ENV=local
+    container_name: "web-service"
+
+networks:
+  netflix:
+volumes:
+  mongo_data:

@@ -1,0 +1,14 @@
+FROM gcc:latest AS builder
+
+RUN apt-get update && apt-get install -y cmake && apt clean
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+WORKDIR /usr/src/app/src/Tests/build
+
+RUN --mount=type=cache,target=/usr/src/app/src/Tests/build cmake .. && \
+                                                           make && \
+                                                           mv ./runTests /usr/src/app/runTests
+CMD ["/usr/src/app/runTests"]

@@ -1,0 +1,31 @@
+version: '3'
+services: 
+  server:
+    image: "netflix:1.0.1"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "server"     
+    restart: always
+    networks:
+      - netflix
+    volumes:
+      - "./data/:/usr/src/app/data/"
+    ports:
+      - "8080:8080"
+  
+  client:
+    image: "netflix-client:1.0.1"
+    build:
+      context: .
+      dockerfile: DockerfileClient
+    depends_on:
+      - server
+    networks:
+      - netflix
+    restart: always
+    stdin_open: true
+    tty: true
+
+networks:
+  netflix:
