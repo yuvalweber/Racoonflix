@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';  // Import axios for API calls
-import ReactPlayer from 'react-player';  // Install react-player for more features
+import axios from 'axios';
+import ReactPlayer from 'react-player';
+import './videoPlayer.css'; // Import CSS for styling
 
-const VideoPlayer = () => {  // Changed function name to start with uppercase 'V'
+const VideoPlayer = () => {
   const [videos, setVideos] = useState([]);
   const [randomVideo, setRandomVideo] = useState('');
 
@@ -10,8 +11,11 @@ const VideoPlayer = () => {  // Changed function name to start with uppercase 'V
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        // Replace with your actual API endpoint
-        const response = await axios({url: 'http://localhost:8080/api/movies', method: 'get', headers: {'x-user': '<censored>'}});
+        const response = await axios({
+          url: 'http://localhost:8080/api/movies',
+          method: 'get',
+          headers: { 'x-user': '6787f4165ed90d8fd7fd54d4' },
+        });
         setVideos(response.data);
       } catch (error) {
         console.error('Error fetching videos:', error);
@@ -25,22 +29,25 @@ const VideoPlayer = () => {  // Changed function name to start with uppercase 'V
   useEffect(() => {
     if (videos.length > 0) {
       const randomIndex = Math.floor(Math.random() * videos.length);
-      setRandomVideo(videos[randomIndex].trailer); // Assuming each video object has a 'url' property
+      setRandomVideo(videos[randomIndex].trailer); // Assuming 'trailer' contains the video URL
     }
   }, [videos]);
 
   return (
-    <div className="video-container">
-      <h2 className="text-center">Admins recommendation</h2>
+    <div className="video-player-wrapper">
+      {/* Title */}
+      <h2 className="video-title">Admins Recommendation</h2>
 
       {/* Video Player */}
       {randomVideo && (
         <ReactPlayer
-          url={randomVideo}  // URL of the random video
-          playing={true}      // Auto play the video
-          controls={true}     // Show controls
-          width="100%"        // Full width
-          height="500px"      // Set height as needed
+          url={randomVideo}
+          playing={true} // Auto play enabled
+          controls={true} // Show controls
+          muted={true} // Unmute by default
+          loop={true} // Disable looping
+          width="300px"
+          height="200px"
         />
       )}
     </div>

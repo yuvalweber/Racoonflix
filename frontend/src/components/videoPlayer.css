@@ -1,0 +1,36 @@
+/* VideoPlayer.css */
+
+/* Wrapper for the video player and title */
+.video-player-wrapper {
+    position: absolute;
+    top: 40px; /* Adjust to place below the navbar */
+    right: 20px; /* Adjust spacing from the left */
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Space around the video and title */
+  }
+  
+  /* Title styling */
+  .video-title {
+    font-size: 20px; /* Adjust font size */
+    font-weight: bold; /* Make it bold */
+    color: rgba(246, 242, 245, 0.936); /* Text color */
+    text-align: center; /* Center the title */
+    margin-bottom: 10px; /* Space between title and video */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* Optional: Add shadow for readability */
+    /* background-color: rgba(0, 0, 0, 0.6); Optional: Semi-transparent background */
+    padding: 5px 10px; /* Padding around the text */
+    border-radius: 5px; /* Rounded corners */
+  }
+  
+  /* Video player */
+  .video-container {
+    width: 300px; /* Adjust the width of the video */
+    height: 200px; /* Adjust the height of the video */
+    border-radius: 8px; /* Rounded corners for the video */
+    overflow: hidden; /* Clip content to the border radius */
+  }
+  
