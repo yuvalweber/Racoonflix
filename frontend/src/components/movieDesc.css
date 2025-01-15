@@ -1,0 +1,50 @@
+  /* Movie description card with dark background */
+  .movie-desc-card {
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    max-width: 1200px;
+    width: 100%;
+  }
+  
+  /* Container for the poster image */
+  .movie-poster-container {
+    max-width: 350px;
+    width: 100%;
+  }
+  
+  .movie-poster {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+  
+  /* Movie title and information */
+  .movie-info {
+    flex-grow: 1;
+  }
+  
+  .movie-title {
+    font-size: 2.2rem;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #f39c12;
+  }
+  
+  .movie-info p {
+    font-size: 1.2rem;
+    color: #f0f0f0;
+    margin: 10px 0;
+  }
+  
+  .director strong, .movie-info strong {
+    color: #f39c12;
+  }
+  .trailer-btn {
+    font-family: 'Roboto', sans-serif;
+  }
+  
