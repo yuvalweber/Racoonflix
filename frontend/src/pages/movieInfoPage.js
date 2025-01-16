@@ -1,25 +1,82 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import '../components/homePageBackground.css';
 import MovieDesc from '../components/movieDesc';
+import ErrObj from '../components/errorObj';
 import Icon from '../components/icon';
 
-// FixMe: need to add ability to fetch data from the server
+axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.headers.common['x-user'] = '<censored>';
+
+
+
+const translateCategories = async (categories) => {
+  try {
+    const response = await axios.get(`/api/categories`);
+    const categoriesFetched = response.data;
+    const translatedCategories = categories.map((category) => {
+      const categoryFound = categoriesFetched.find((element) => element._id === category);
+      return categoryFound ? categoryFound.name : null;
+    }).filter((name) => name); // Filter out null values
+    return { type: "success", message: translatedCategories };
+  } catch (error) {
+    return { type: "error", message: error.message };
+  }
+};
+
+
 
 const MovieInfoPage = () => {
   const { id } = useParams(); // Get movie ID from the URL
+  const [movie, setMovie] = useState(null);
+  const [error, setError] = useState(null);
+  const [isFetchedWorked,setIsFetchedWorked] = useState(false);
+  useEffect(() => {
+    const fetchMovieData = async () => {
+      try {
+        const response = await axios.get(`/api/movies/${id}`);
+        const result = await translateCategories(response.data.category);
+        if (result.type === "success") {
+          setMovie({
+            title: response.data.title,
+            year: response.data.year,
+            category: result.message,
+            director: response.data.director,
+            duration: response.data.duration,
+            image: response.data.image,
+            trailer: response.data.trailer,
+          });
+          setIsFetchedWorked(true);
+        } else {
+          setError(result.message);
+          setIsFetchedWorked(false);
+        }
+      } catch (err) {
+        setError(err);
+        setIsFetchedWorked(false);
+      }
+    };
+  
+    fetchMovieData();
+  }, [id]);
+  
   return (
     <div id="mainContainer" className="d-flex flex-column justify-content-center align-items-center vh-100">
       <Icon />
-      {/* <MovieDesc 
-        title={sampleMovie.title}
-        year={sampleMovie.year}
-        category={sampleMovie.category}
-        director={sampleMovie.director}
-        duration={sampleMovie.duration}
-        image={sampleMovie.image}
-        trailer={sampleMovie.trailer}
-      /> */}
+      {isFetchedWorked ? ( 
+        <MovieDesc
+          title={movie.title}
+          year={movie.year}
+          category={movie.category}
+          director={movie.director}
+          duration={movie.duration}
+          image={movie.image}
+          trailer={movie.trailer}
+        />
+      ) : (
+        <ErrObj error={error} />
+      )}
     </div>
   );
 };
