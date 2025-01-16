@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Icon from '../components/icon';
 import FormField from '../components/formField';
@@ -16,6 +17,8 @@ const SignUpPage = () => {
 	confirmPassword: '',
 	profilePicture: ''
   });
+
+  const navigate = useNavigate();
 
   const scrollContainerRef = useRef(null); // Ref for the scroll container
 
@@ -59,6 +62,7 @@ const SignUpPage = () => {
   
 	  if (response.status === 201) {
 		alert('Sign-up successful!');
+		navigate('/login');
 		console.log('Server response:', response.data);
 	  } else {
 		alert(`Error: ${response.data || 'Something went wrong'}`);

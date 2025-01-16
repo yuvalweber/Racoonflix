@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Logout from './logout';
 import './navbar.css';
 import './scrollbar.css';
 
@@ -40,7 +41,7 @@ const Navbar = ({ isAdmin }) => {
               <button className="btn btn-outline-light me-2">Dark/Light Mode</button>
             </li>
             <li className="nav-item">
-              <Link className="btn btn-danger" to="/logout">Disconnect</Link>
+              <Logout />
             </li>
             {isAdmin && (
               <li className="nav-item">

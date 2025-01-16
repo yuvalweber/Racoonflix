@@ -7,13 +7,24 @@ const isSignedIn = async (req, res) => {
 			errors: 'Missing required fields'
 		});
 	}
-	const userId = await tokenService.isSignedIn(req.body.userName, req.body.password);
-	if (!userId) {
+	const userToken = await tokenService.isSignedIn(req.body.userName, req.body.password);
+	if (!userToken) {
 		return res.status(404).json({
 			errors: 'User not found'
 		});
 	}
-	res.json({"x-user":userId});
+	res.json({"token":userToken});
 };
 
-module.exports = { isSignedIn };
+const getTokenInfo = async (req, res) => {
+	const token = req.headers.authorization.split(' ')[1];
+	const tokenInfo = await tokenService.getTokenInfo(token);
+	if (!tokenInfo) {
+		return res.status(404).json({
+			errors: 'Token not found'
+		});
+	}
+	res.json(tokenInfo);
+};
+
+module.exports = { isSignedIn, getTokenInfo };

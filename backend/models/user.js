@@ -45,6 +45,10 @@ const User = new Schema({
 	updateAt: {
 		type: Date,
 		default: Date.now
+	},
+	isAdmin: {
+		type: Boolean,
+		default: false
 	}
 });
 

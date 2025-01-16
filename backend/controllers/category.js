@@ -19,7 +19,7 @@ const createCategory = async (req, res) => {
 		return res.status(400).json({ errors: 'Data provided contains invalid keys' });
 	}
 	// check if user provide x-user header and if the user exists
-    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['x-user']);
+    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }
@@ -35,7 +35,7 @@ const createCategory = async (req, res) => {
 // get all categories
 const getCategories = async (req, res) => {
 	// check if user provide x-user header and if the user exists
-	const headerValidation = await servicesFunctions.checkUserHeader(req.headers['x-user']);
+	const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
 	if (headerValidation.status !== 200) {
 		return res.status(headerValidation.status).json({ errors: headerValidation.message });
 	}
@@ -50,7 +50,7 @@ const getCategories = async (req, res) => {
 // get category by id
 const getCategory = async (req, res) => {
 	// check if user provide x-user header and if the user exists
-	const headerValidation = await servicesFunctions.checkUserHeader(req.headers['x-user']);
+	const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
 	if (headerValidation.status !== 200) {
 		return res.status(headerValidation.status).json({ errors: headerValidation.message });
 	}
@@ -65,7 +65,7 @@ const getCategory = async (req, res) => {
 // update category info
 const updateCategory = async (req, res) => {
 	// check if user provide x-user header and if the user exists
-    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['x-user']);
+    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }
@@ -90,7 +90,7 @@ const updateCategory = async (req, res) => {
 // delete category
 const deleteCategory = async (req,res) => {
 	// check if user provide x-user header and if the user exists
-    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['x-user']);
+    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }

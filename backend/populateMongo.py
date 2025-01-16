@@ -15,7 +15,7 @@ def create_user_and_login():
         json_data = {'userName': 'nick-11', 'password': 'password'}
         r = requests.post(url, json=json_data)
         global user11IHeader
-        user11IHeader = {'x-user': r.json()['x-user']}
+        user11IHeader = {'Authorization': f"bearer {r.json()['token']}"}
         
 def create_categories():
     url = 'http://localhost:8080/api/categories'
