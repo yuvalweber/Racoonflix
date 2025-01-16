@@ -9,9 +9,16 @@
 #mainContainer {
 	background-image: url('../../public/images/genericHomePageBackground.webp');
 	background-size: cover;
-	background-position: 'center';
-	background-repeat: 'no-repeat';
-}
+	background-position: center;
+	background-repeat: no-repeat;
+	background-attachment: fixed; /* This will lock the background in place */
+	height: 100vh; /* Full viewport height */
+	width: 100vw; /* Full viewport width */
+	position: fixed; /* Ensure it stays in place */
+	top: 0;
+	left: 0;
+	z-index: -1; /* Ensure it is behind other content */
+  }
 
 .top-right-icon {
 	position: fixed;

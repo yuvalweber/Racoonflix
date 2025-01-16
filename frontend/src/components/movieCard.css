@@ -1,0 +1,34 @@
+.movie-card {
+    margin: 10px;
+    text-align: center;
+    width: 150px;
+  }
+  
+  .movie-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .movie-card h5 {
+    color: white;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .movie-card {
+      width: 120px;
+    }
+  
+    .movie-card img {
+      height: 180px;
+    }
+  }
+  

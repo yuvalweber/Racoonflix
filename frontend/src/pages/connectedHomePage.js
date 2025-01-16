@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../components/navbar'; // Assuming you have a Navbar component
-import VideoPlayer from '../components/videoPlayer'; // Import the VideoPage component
-import '../components/homePageBackground.css';  // Import background styles for the page
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import Navbar from '../components/navbar';  // Navbar component to display top navigation
+import VideoPlayer from '../components/videoPlayer';  // The VideoPlayer component we discussed earlier
+import Category from '../components/category';  // Category component to display movies grouped by categories
+import axios from 'axios';  // Used to fetch data from an API
 
 axios.defaults.baseURL = 'http://localhost:8080';
 
-// Displays the home page for a connected user, according to their role (Admin or User).
 const ConnectedHomePage = () => {
-	  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [moviesByCategory, setMoviesByCategory] = useState({});  // State to store movies by category
 
-	  useEffect(() => {
+  useEffect(() => {
 		const token = localStorage.getItem('token');
 		if (token) {
 		  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -32,18 +32,70 @@ const ConnectedHomePage = () => {
 	  fetchUserData();
 	}, []);
 
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await axios('/api/movies');  // Fetch movies from the API
+
+        const translateCategories = async (categories) => {
+          try {
+            const response = await axios.get(`/api/categories`);
+            const categoriesFetched = response.data;
+
+            const translatedCategories = categories.map((category) => {
+              const categoryFound = categoriesFetched.find((element) => element._id === category);
+              return categoryFound ? categoryFound.name : null;
+            }).filter((name) => name);  // Filter out null values
+            return { type: "success", message: translatedCategories };  // Return object with type and message
+          } catch (error) {
+            return { type: "error", message: error.message };  // Return error message if request fails
+          }
+        };
+
+        // Categorizing the movies by their category
+        let categorizedMovies = {};
+        const moviePromises = response.data.map(async (movie) => {
+          const movieCategories = await translateCategories(movie.category);
+
+          // Ensure movieCategories is an object with 'message' (an array of categories)
+          if (movieCategories.type === "success") {
+            movieCategories.message.forEach((category) => {
+              const categoryName = category;
+              if (!categorizedMovies[categoryName]) categorizedMovies[categoryName] = [];
+              categorizedMovies[categoryName].push(movie);
+            });
+          }
+        });
+
+        // Wait for all category translations and movie additions to finish
+        await Promise.all(moviePromises);
+        setMoviesByCategory(categorizedMovies);  // Set the movies grouped by category
+      } catch (error) {
+        console.error('Error fetching movies:', error);  // Handle errors
+      }
+    };
+
+    fetchMovies();  // Fetch movies on component mount
+  }, []);  // Empty dependency array, runs only once on mount
+
   return (
-    // Background Container
-    <div 
-      id="mainContainer"
-      className="d-flex flex-column justify-content-center align-items-center text-center vh-100 bg-dark text-white"
-    >
-      {/* Navbar */}
+    <div id="mainContainer" className="bg-dark text-white vh-100">
+      {/* Navbar component for navigation */}
       <Navbar isAdmin={isAdmin} />
-      
+
       {/* Video Player Section */}
-      <div className="video-box mt-5" style={{ maxWidth: '500px', width: '100%' }}>
-        <VideoPlayer /> 
+      <div className="d-flex flex-column align-items-center mt-5">
+        <div className="video-box" style={{ maxWidth: '500px', width: '100%' }}>
+          <VideoPlayer />
+        </div>
+
+        {/* Categories Section */}
+        <div className="categories mt-5">
+          {/* Display each category with movies */}
+          {Object.entries(moviesByCategory).map(([categoryName, movies]) => (
+            <Category key={categoryName} name={categoryName} movies={movies} />
+          ))}
+        </div>
       </div>
     </div>
   );

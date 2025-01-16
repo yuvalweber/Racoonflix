@@ -34,7 +34,7 @@ def create_movies():
     for movie in movies:
         random_category = random.choice(categoriesIds)
         json_data = {'title': movie, 'year': 1999, 'category': [random_category], 'director': 'Director',
-                     'duration': 120, 'image': 'https://www.google.com', 'trailer': 'https://www.youtube.com/watch?v=yrmdDbn0wAY'}
+                     'duration': 120, 'image': 'http://localhost:3000/images/icon.png', 'trailer': 'https://www.youtube.com/watch?v=yrmdDbn0wAY'}
         r =  requests.post(url, json=json_data,headers=user11IHeader)
         global movieIds
         movieIds.append(r.headers['Location'].split('/')[-1])

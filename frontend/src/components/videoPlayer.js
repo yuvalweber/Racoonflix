@@ -14,7 +14,7 @@ const VideoPlayer = () => {
         const response = await axios({
           url: 'http://localhost:8080/api/movies',
           method: 'get',
-          headers: { 'x-user': '6787f4165ed90d8fd7fd54d4' },
+          headers: { 'x-user': '6789240b8c99f7b8594c9bc8' },
         });
         setVideos(response.data);
       } catch (error) {
