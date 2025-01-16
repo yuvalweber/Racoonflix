@@ -3,7 +3,7 @@ import '../components/homePageBackground.css';
 import '../components/card.css'; 
 import Icon from '../components/icon';
 import FormField from '../components/formField'; 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Import axios for making HTTP requests
 
 const LoginPage = () => {
@@ -11,6 +11,8 @@ const LoginPage = () => {
     userName: '',
     password: ''
   });
+
+  const navigate = useNavigate();
 
   // Fields configuration for the form
   const fields = [
@@ -37,9 +39,8 @@ const LoginPage = () => {
 
       if (response.status === 200) {
         // Assuming the response contains a token
-        alert('Login successful!');
-        console.log('Token:', response.data); // Save or use the token as needed
-        // You can store the token in localStorage, state, or use it for further requests
+		localStorage.setItem('token', response.data.token); // Save the token in local storage
+		navigate('/connected'); // Redirect to the home page
       }
     } catch (err) {
       console.error('Error logging in:', err);

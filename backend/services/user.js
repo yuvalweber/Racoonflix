@@ -37,8 +37,8 @@ const getUserById = async (id) => {
 	try {
 		const user = await User.findById(id);
 		// change passsword to be masked
-		user.password = '********';
-		return user;
+		const userCopy = { ...user.toObject(), password: '********' };
+		return userCopy;
 	}
 	catch {
 		return null;

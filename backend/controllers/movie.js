@@ -18,7 +18,7 @@ const createMovie = async (req, res) => {
         return res.status(400).json({ errors: 'Data provided contains invalid keys' });
     }
     // check if user provide x-user header and if the user exists
-    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['x-user']);
+    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
 	// print status and it's type
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
@@ -40,12 +40,12 @@ const createMovie = async (req, res) => {
 // get all movies
 const getMovies = async (req, res) => {
     // check if user provide x-user header and if the user exists
-    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['x-user']);
+    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }
     // get all movies
-    const movies = await movieService.getMovies(req.headers['x-user']);
+    const movies = await movieService.getMovies(headerValidation.message);
     if (!movies) {
         return res.status(404).json({
             errors: 'Movies not found'
@@ -58,7 +58,7 @@ const getMovies = async (req, res) => {
 // get movie by id
 const getMovie = async (req, res) => {
     // check if user provide x-user header and if the user exists
-    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['x-user']);
+    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }
@@ -75,7 +75,7 @@ const getMovie = async (req, res) => {
 // replace movie
 const replaceMovie = async (req, res) => {
     // check if user provide x-user header and if the user exists
-    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['x-user']);
+    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }
@@ -106,7 +106,7 @@ const replaceMovie = async (req, res) => {
 // delete movie
 const deleteMovie = async (req,res) => {
     // check if user provide x-user header and if the user exists
-    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['x-user']);
+    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }
@@ -123,7 +123,7 @@ const deleteMovie = async (req,res) => {
 //search movie by query
 const searchQuery = async (req,res) => {
     // check if user provide x-user header and if the user exists
-    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['x-user']);
+    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }
@@ -139,7 +139,7 @@ const searchQuery = async (req,res) => {
 // get recommendations
 const getRecommendations = async (req, res) => {
     // check if user provide x-user header and if the user exists
-    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['x-user']);
+    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }
@@ -157,7 +157,7 @@ const getRecommendations = async (req, res) => {
         });
     }
     // get recommendations
-    const recommendations = await movieService.getRecommendations(req.headers['x-user'], req.params.id);
+    const recommendations = await movieService.getRecommendations(headerValidation.message, req.params.id);
     if (!recommendations) {
         return res.status(404).json({
             errors: 'Recommendations not found'
@@ -169,7 +169,7 @@ const getRecommendations = async (req, res) => {
 // add movie to recommendations system
 const addMovieToRecommendations = async (req, res) => {
     // check if user provide x-user header and if the user exists
-    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['x-user']);
+    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }
@@ -187,7 +187,7 @@ const addMovieToRecommendations = async (req, res) => {
         });
     }
     // add movie to recommendations
-    const message = await movieService.addMovieToRecommendations(req.params.id, req.headers['x-user']);
+    const message = await movieService.addMovieToRecommendations(req.params.id, headerValidation.message);
     if (!message) {
         return res.status(404).json({
             errors: 'Movie cant be added to recommendations'
