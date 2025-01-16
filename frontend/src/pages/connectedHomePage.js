@@ -35,7 +35,7 @@ const ConnectedHomePage = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await axios('/api/movies');  // Fetch movies from the API
+        const response = await axios.get('/api/movies');  // Fetch movies from the API
 
         const translateCategories = async (categories) => {
           try {
