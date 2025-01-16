@@ -1,0 +1,29 @@
+.category-section {
+    margin-bottom: 20px;  /* Add space between categories */
+    text-align: left;  /* Align category title to the left */
+  }
+  
+  .category-title {
+    text-align: left;  /* Center the category title */
+    margin-bottom: 10px;  /* Add space below the title */
+    font-size: 1.5rem;
+    color: white;
+  }
+  
+  .movies-list {
+    display: flex;
+    overflow-x: auto;  /* Enable horizontal scrolling if movies exceed container width */
+    gap: 10px;  /* Space between movie items */
+    
+  }
+  
+  .movie-item {
+    text-align: center;
+  }
+  
+  .movie-item img {
+    width: 150px;  /* Image size */
+    height: 225px;  /* Image size */
+    object-fit: cover;  /* Crop images to fit */
+  }
+  
