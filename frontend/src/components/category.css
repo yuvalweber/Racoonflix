@@ -1,4 +1,10 @@
-.category-section {
+  .category-container {
+      position: left;  /* Align category container to the left */
+      text-align: left;  /* Align category title to the left */
+      margin-bottom: 20px;  /* Add space below the category container */
+  }
+
+  .category-section {
     margin-bottom: 20px;  /* Add space between categories */
     text-align: left;  /* Align category title to the left */
   }

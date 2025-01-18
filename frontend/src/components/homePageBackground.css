@@ -18,6 +18,9 @@
 	top: 0;
 	left: 0;
 	z-index: -1; /* Ensure it is behind other content */
+	overflow-x: hidden; /* Prevent horizontal scrolling */
+  	overflow-y: auto; /* Allow vertical scrolling */
+	scrollbar-width: none; /* Hide the scrollbar */
   }
 
 .top-right-icon {

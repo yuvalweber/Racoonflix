@@ -51,8 +51,8 @@ const VideoPlayer = () => {
           controls={true} // Show controls
           muted={true} // Unmute by default
           loop={true} // Disable looping
-          width="300px"
-          height="200px"
+          width="1000px"
+          height="400px"
         />
       )}
     </div>
