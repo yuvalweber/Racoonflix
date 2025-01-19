@@ -9,6 +9,6 @@
   border-radius: 8px; /* Rounded corners */
   overflow: hidden; /* Ensure no overflow if content spills out */
   width: 100%; /* Full width */
-  max-width: 1300px; /* Optional: limit the maximum width */
+  max-width: 1300px; /* limit the maximum width */
   margin: 0 auto; /* Center horizontally within parent container */
 }
