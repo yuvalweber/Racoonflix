@@ -34,25 +34,22 @@ const VideoPlayer = () => {
   useEffect(() => {
     if (videos.length > 0) {
       const randomIndex = Math.floor(Math.random() * videos.length);
-      setRandomVideo(videos[randomIndex].trailer); // Assuming 'trailer' contains the video URL
+      setRandomVideo(videos[randomIndex].trailer); 
     }
   }, [videos]);
 
   return (
     <div className="video-player-wrapper">
-      {/* Title */}
-      <h2 className="video-title">Admins Recommendation</h2>
-
       {/* Video Player */}
       {randomVideo && (
         <ReactPlayer
           url={randomVideo}
-          playing={true} // Auto play enabled
+          playing={true} // Autoplay video
           controls={true} // Show controls
-          muted={true} // Unmute by default
-          loop={true} // Disable looping
-          width="1000px"
-          height="400px"
+          muted={true} // Mute video
+          loop={true} // Loop video
+          width="1300px"
+          height="530px"
         />
       )}
     </div>
