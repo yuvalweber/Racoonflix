@@ -9,7 +9,6 @@ const WatchPlayer = ({ videoUrl }) => {
         muted
       >
         <source src={videoUrl} type="video/mp4" />
-        הדפדפן שלך לא תומך בניגון סרטונים.
       </video>
     </div>
   );
