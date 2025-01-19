@@ -85,17 +85,16 @@ const ConnectedHomePage = () => {
 
       {/* Video Player Section */}
       <div className="d-flex flex-column align-items-center mt-5">
-        <div className="video-box" style={{ maxWidth: '500px', width: '100%' }}>
+        <div className="video-box">
           <VideoPlayer />
         </div>
-
+      </div>
         {/* Categories Section */}
-        <div className="categories mt-5">
-          {/* Display each category with movies */}
-          {Object.entries(moviesByCategory).map(([categoryName, movies]) => (
-            <Category key={categoryName} name={categoryName} movies={movies} />
-          ))}
-        </div>
+      <div className="categories mt-5">
+        {/* Display each category with movies */}
+        {Object.entries(moviesByCategory).map(([categoryName, movies]) => (
+          <Category key={categoryName} name={categoryName} movies={movies} />
+        ))}
       </div>
     </div>
   );
