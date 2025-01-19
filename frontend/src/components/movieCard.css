@@ -24,7 +24,7 @@
   /* Responsive design */
   @media (max-width: 768px) {
     .movie-card {
-      width: 120px;
+      width: 75px;
     }
   
     .movie-card img {

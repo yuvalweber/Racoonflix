@@ -1,38 +1,14 @@
-/* VideoPlayer.css */
-
 /* Wrapper for the video player and title */
 .video-player-wrapper {
-    position: center; /* Position the video player */
-    top: 40px; /* Adjust to place below the navbar */
-    right: 20px; /* Adjust spacing from the right */
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-radius: 8px; /* Rounded corners */
-    padding: 20px; /* Space around the video and title */
-  }
-  
-/* Title styling */
-.video-title {
-  font-size: 20px; /* Adjust font size */
-  font-weight: bold; /* Make it bold */
-  color: rgba(247, 9, 9, 0.936); /* Text color */
-  text-align: center; /* Center the title */
-  margin-bottom: 10px; /* Space between title and video */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* Optional: Add shadow for readability */
-  padding: 10px 15px; /* Space around the text */
-  display: inline-block; /* Ensure it doesn't stretch unnecessarily */
-
-  -webkit-text-stroke: 1px black; /* Black outline around each letter */
-  -webkit-text-fill-color: rgba(247, 9, 9, 0.936); /* Fill the inside of the text */
+  position: relative; /* Use relative positioning for stacking context */
+  z-index: 10; /* Ensure it is above other elements with lower z-index */
+  display: flex; /* Flexbox to center content */
+  flex-direction: column; /* Stack content vertically */
+  align-items: center; /* Center content horizontally */
+  justify-content: center; /* Center content vertically if needed */
+  border-radius: 8px; /* Rounded corners */
+  overflow: hidden; /* Ensure no overflow if content spills out */
+  width: 100%; /* Full width */
+  max-width: 1300px; /* Optional: limit the maximum width */
+  margin: 0 auto; /* Center horizontally within parent container */
 }
-
-  
-  .video-container {
-    width: 100%; /* Ensure it scales properly */
-    max-width: 800px; /* Optional: Limit maximum size */
-    overflow: hidden;
-  }
-
-  
