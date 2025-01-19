@@ -9,7 +9,7 @@ const Category = ({ name, movies }) => {
         {name}
     </h3>
 
-      <div className="movies-row" style={{ marginLeft: 20, display: 'flex', overflowX: 'auto'}}>
+      <div className="movies-row" style={{ marginLeft: 20, display: 'flex', overflowX: 'auto', scrollbarWidth: 'none' }}>
         {movies.map((movie) => (
           <MovieCard key={movie._id} movie={movie} />  // Render MovieCard for each movie
         ))}

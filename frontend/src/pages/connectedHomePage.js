@@ -80,7 +80,7 @@ const ConnectedHomePage = () => {
         // Wait for all category translations and movie additions to finish
         await Promise.all(moviePromises);
         // add the latest movies to the array and add the key 'latest'
-        categorizedMovies['latest'] = latestMovies || [];
+        categorizedMovies['seen movies'] = latestMovies || [];
         setMoviesByCategory(categorizedMovies);  // Set the movies grouped by category
       } catch (error) {
         console.error('Error fetching movies:', error);  // Handle errors
