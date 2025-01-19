@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './movieDesc.css';
 
 const MovieDesc = ({
@@ -11,6 +11,11 @@ const MovieDesc = ({
   image,
   trailer
 }) => {
+	const navigate = useNavigate();
+	const handleWatchTrailer = (trailer) => {
+		// Navigate to the watch page with the trailer link
+		navigate('/watch', { state: { trailer } });
+	}
   return (
     <div className="movie-desc-card bg-dark bg-opacity-75 p-5 rounded d-flex align-items-center">
         {/* Movie Poster */}
@@ -32,7 +37,7 @@ const MovieDesc = ({
           {/* Trailer Link */}
           {trailer && (
             <div>
-              <Link to={trailer} className="btn btn-secondary trailer-btn">Watch Trailer</Link>
+              <button className="btn btn-secondary trailer-btn" onClick={() => handleWatchTrailer(trailer)}>Watch Trailer</button>
             </div>
           )}
         </div>
