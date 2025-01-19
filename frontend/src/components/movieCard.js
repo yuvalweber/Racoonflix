@@ -14,7 +14,7 @@ const MovieCard = ({ movie }) => {
         alt={movie.title}   // Alt text for accessibility
         style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
       />
-      <h5 style={{ color: 'white', textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black' }}>{movie.title}</h5>
+      <h5 className='movie-card h5'>{movie.title}</h5>
     </div>
   );
 };

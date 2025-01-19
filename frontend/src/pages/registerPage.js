@@ -5,7 +5,6 @@ import Icon from '../components/icon';
 import FormField from '../components/formField';
 import '../components/homePageBackground.css'; 
 import '../components/card.css'; 
-import '../components/scrollbar.css';
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
