@@ -7,8 +7,6 @@ import ErrObj from '../components/errorObj';
 import Icon from '../components/icon';
 
 axios.defaults.baseURL = 'http://localhost:8080';
-axios.defaults.headers.common['x-user'] = '<censored>';
-
 
 
 const translateCategories = async (categories) => {
@@ -32,6 +30,14 @@ const MovieInfoPage = () => {
   const [movie, setMovie] = useState(null);
   const [error, setError] = useState(null);
   const [isFetchedWorked,setIsFetchedWorked] = useState(false);
+
+  useEffect(() => {
+	const token = localStorage.getItem('token');
+	if (token) {
+	  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	}
+  }, []); // Set the Authorization header once on mount
+
   useEffect(() => {
     const fetchMovieData = async () => {
       try {
