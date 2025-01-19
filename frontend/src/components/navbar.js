@@ -6,7 +6,7 @@ import './scrollbar.css';
 
 const Navbar = ({ isAdmin }) => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark position-fixed top-0 start-0 w-100 z-index-0">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark position-fixed top-0 start-0 w-100">
       <div className="container-fluid">
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">

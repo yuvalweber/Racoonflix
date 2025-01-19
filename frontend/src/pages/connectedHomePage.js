@@ -9,6 +9,7 @@ axios.defaults.baseURL = 'http://localhost:8080';
 const ConnectedHomePage = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [moviesByCategory, setMoviesByCategory] = useState({});  // State to store movies by category
+  const [userId, setUserId] = useState('');
 
   useEffect(() => {
 		const token = localStorage.getItem('token');
@@ -22,6 +23,7 @@ const ConnectedHomePage = () => {
 		const fetchUserData = async () => {
 		  try {
 			const response = await axios.get('/api/tokens');
+      setUserId(response.data.id);
 			if (response.data.isAdmin === true) {
 			  setIsAdmin(true);
 			}
@@ -36,7 +38,15 @@ const ConnectedHomePage = () => {
     const fetchMovies = async () => {
       try {
         const response = await axios.get('/api/movies');  // Fetch movies from the API
-
+        if (userId) {
+          const userResponse = await axios.get(`/api/users/${userId}`);
+          const seenMovies = userResponse.data?.seenMovies || [];
+          const seenMovieIds = new Set(seenMovies.map((userMovie) => userMovie.movieId));
+          const tempLatestMovies = response.data
+            .slice(-20) // Get the last 20 movies from the data
+            .filter((movieObject) => seenMovieIds.has(movieObject._id)); // Only include seen movies
+          var latestMovies = tempLatestMovies;
+        }
         const translateCategories = async (categories) => {
           try {
             const response = await axios.get(`/api/categories`);
@@ -69,6 +79,8 @@ const ConnectedHomePage = () => {
 
         // Wait for all category translations and movie additions to finish
         await Promise.all(moviePromises);
+        // add the latest movies to the array and add the key 'latest'
+        categorizedMovies['latest'] = latestMovies || [];
         setMoviesByCategory(categorizedMovies);  // Set the movies grouped by category
       } catch (error) {
         console.error('Error fetching movies:', error);  // Handle errors
@@ -76,7 +88,7 @@ const ConnectedHomePage = () => {
     };
 
     fetchMovies();  // Fetch movies on component mount
-  }, []);  // Empty dependency array, runs only once on mount
+  }, [userId]);  // Empty dependency array, runs only once on mount
 
   return (
     <div id="mainContainer" className="bg-dark text-white vh-100">
@@ -96,6 +108,9 @@ const ConnectedHomePage = () => {
           <Category key={categoryName} name={categoryName} movies={movies} />
         ))}
       </div>
+      {/* <div className="categories mt-5"> */}
+        {/* <Category key={'latest2132173821'} name={'Latest Movies'} movies={[latestMovies]} /> */}
+      {/* </div>  */}
     </div>
   );
 };
