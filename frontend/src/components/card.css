@@ -7,6 +7,7 @@
 	background-Color: rgba(0, 0, 0, 0.5);
 	color: white;
 	border: 1px solid #ccc;
+	margin-bottom: 3px;
 }
 
 .cardField:focus {
@@ -15,3 +16,9 @@
 	border-color: white; 
 	outline: none; 
 }
+
+/* Change placeholder text color to white */
+.cardField::placeholder {
+	color: gray;  /* White placeholder text */
+}
+  
