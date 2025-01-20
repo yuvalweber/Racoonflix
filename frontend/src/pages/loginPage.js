@@ -5,8 +5,10 @@ import Icon from '../components/icon';
 import FormField from '../components/formField'; 
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Import axios for making HTTP requests
+import { useAuth } from '../Authentication/AuthContext';
 
 const LoginPage = () => {
+  const { setUserData, setToken } = useAuth();
   const [formData, setFormData] = useState({
     userName: '',
     password: ''
@@ -40,6 +42,10 @@ const LoginPage = () => {
       if (response.status === 200) {
         // Assuming the response contains a token
 		localStorage.setItem('token', response.data.token); // Save the token in local storage
+		setToken(response.data.token); // Set the user data in the context
+		axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`; // Set the Authorization header
+		const userInfo = await axios.get('/api/tokens'); // get user information
+		setUserData(userInfo.data);
 		navigate('/connected'); // Redirect to the home page
       }
     } catch (err) {

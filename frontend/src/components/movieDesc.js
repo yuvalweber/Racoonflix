@@ -14,7 +14,7 @@ const MovieDesc = ({
 	const navigate = useNavigate();
 	const handleWatchTrailer = (trailer) => {
 		// Navigate to the watch page with the trailer link
-		navigate('/watch', { state: { trailer } });
+		navigate('/play', { state: { trailer } });
 	}
   return (
     <div className="movie-desc-card bg-dark bg-opacity-75 p-5 rounded d-flex align-items-center">
