@@ -3,36 +3,24 @@ import Navbar from '../components/navbar';  // Navbar component to display top n
 import VideoPlayer from '../components/videoPlayer';  // The VideoPlayer component we discussed earlier
 import Category from '../components/category';  // Category component to display movies grouped by categories
 import axios from 'axios';  // Used to fetch data from an API
+import { useAuth } from '../Authentication/AuthContext';
 
 axios.defaults.baseURL = 'http://localhost:8080';
 
 const ConnectedHomePage = () => {
+  const { token , userData } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
   const [moviesByCategory, setMoviesByCategory] = useState({});  // State to store movies by category
   const [userId, setUserId] = useState('');
 
   useEffect(() => {
-		const token = localStorage.getItem('token');
 		if (token) {
 		  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 		}
-	  }, []); // Set the Authorization header once on mount
-
-	  // Check if the user is an admin
-	  useEffect(() => {
-		const fetchUserData = async () => {
-		  try {
-			const response = await axios.get('/api/tokens');
-      setUserId(response.data.id);
-			if (response.data.isAdmin === true) {
-			  setIsAdmin(true);
-			}
-		  } catch (err) {
-			console.error('Error fetching user data:', err);
-		  }
-	  }; 
-	  fetchUserData();
-	}, []);
+		if (userData) {
+			setIsAdmin(userData.isAdmin);
+		}
+	  }, [token, userData]); // Set the Authorization header once on mount
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -91,9 +79,10 @@ const ConnectedHomePage = () => {
   }, [userId]);  // Empty dependency array, runs only once on mount
 
   return (
+	<div>
+		 <Navbar isAdmin={isAdmin} />
     <div id="mainContainer" className="bg-dark text-white vh-100">
       {/* Navbar component for navigation */}
-      <Navbar isAdmin={isAdmin} />
 
       {/* Video Player Section */}
       <div className="d-flex flex-column align-items-center mt-5">
@@ -108,10 +97,8 @@ const ConnectedHomePage = () => {
           <Category key={categoryName} name={categoryName} movies={movies} />
         ))}
       </div>
-      {/* <div className="categories mt-5"> */}
-        {/* <Category key={'latest2132173821'} name={'Latest Movies'} movies={[latestMovies]} /> */}
-      {/* </div>  */}
     </div>
+	</div>
   );
 };
 
