@@ -1,39 +1,42 @@
-/* components/watchPage.css */
+/* מניעת גלילה רק ב-watch-page */
 .watch-page {
-	background-color: #000; /* רקע שחור */
+	margin: 0;
+	padding: 0;
+	height: 100vh; /* גובה מלא של חלון הדפדפן */
 	display: flex;
 	flex-direction: column;
-	height: 100vh; /* גובה מלא */
-	margin: 0;
+	overflow: hidden; /* מניעת גלילה */
+	background-color: #000; /* רקע שחור */
   }
   
+  /* Navbar */
   .navbar {
-	position: fixed; /* מוודא שה-Navbar תמיד למעלה */
+	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
-	z-index: 1000; /* תמיד למעלה */
-	background-color: #111; /* לדוגמה - צבע רקע */
+	height: 60px; /* גובה ה-navbar */
+	z-index: 1000;
+	background-color: #111;
+	display: flex;
+	align-items: center;
+	padding: 0 20px;
   }
   
+  /* אזור הווידאו */
   .video-section {
-	margin-top: 60px; /* גובה ה-Navbar */
-	flex: 1; /* תופס את כל המקום הזמין */
+	flex: 1;
+	margin-top: 60px; /* התאמה לגובה ה-navbar */
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: black; /* רקע שחור */
-  }
-  
-  .video-container {
-	width: 100%;
-	height: 100%;
+	overflow: hidden; /* מניעת גלילה פנימית */
   }
   
   video {
 	width: 100%;
-	height: 100%;
-	object-fit: contain; /* שמירה על פרופורציות */
-	background-color: black;
+	height: calc(100vh - 60px); /* גובה מלא פחות ה-navbar */
+	object-fit: contain; /* שמירה על פרופורציות של הווידאו */
+	background-color: black; /* רקע שחור */
   }
   
