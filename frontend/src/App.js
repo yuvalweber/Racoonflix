@@ -24,9 +24,6 @@ const App = () => {
 			<Route path="/movieInfo/:id" element={<ProtectedRoute Component={<MovieInfoPage />} />} />
 			<Route path="/play" element={<ProtectedRoute Component={<WatchPage />} />} />
 			<Route path="/connected" element={<ProtectedRoute Component={<ConnectedHomePage />} />} />
-			<Route path="/movieInfo/:id" element={<MovieInfoPage />} />
-			<Route path="/watch" element={<WatchPage />} />
-			<Route path="/connected" element={<ConnectedHomePage/>} />
 			<Route path="/management" element={<ProtectedRoute Component={<ManagementPage />} />} />
 		</Routes>
 	</BrowserRouter>
