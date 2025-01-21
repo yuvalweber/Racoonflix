@@ -6,7 +6,7 @@ const MovieManagement = ({ action }) => {
   const [movieData, setMovieData] = useState({
     id: "", 
     title: "",
-    category: "",
+    category: [],
     image: "",
     trailer: "",
     year: "",
@@ -22,7 +22,7 @@ const MovieManagement = ({ action }) => {
   const initialMovieData = {
     id: "",
     title: "",
-    category: "",
+    category: [],
     image: "",
     trailer: "",
     year: "",

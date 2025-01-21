@@ -35,7 +35,7 @@
   /* Specific styling for the first category to make it overlap the video */
   .category-container:first-of-type {
     position: relative; /* Ensure it can be positioned relative to its normal flow */
-    margin-top: -200px; /* Move the category upwards to overlap the video player */
+    margin-top: -150px; /* Move the category upwards to overlap the video player */
     z-index: 20; /* Ensure it appears above the video player */
   }
 

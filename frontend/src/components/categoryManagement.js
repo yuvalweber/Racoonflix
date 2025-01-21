@@ -5,14 +5,14 @@ const CategoryManagement = ({ action }) => {
   const [categoryData, setCategoryData] = useState({
     id: "",
     name: "",
-    promoted: "",
+    promoted: false,
     movies: [],
   });
 
   const initialCategoryData = {
     id: "",
     name: "",
-    promoted: "",
+    promoted: false,
     movies: [],
   };
 
@@ -24,6 +24,11 @@ const CategoryManagement = ({ action }) => {
       [name]: name === "promoted" ? value : value,
     });
   };
+
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setCategoryData({ ...categoryData, [name]: checked });
+    };
   
 
   const handleSubmit = async (e) => {
@@ -35,6 +40,8 @@ const CategoryManagement = ({ action }) => {
           alert("Category name is required.");
           return;
         }
+
+        delete categoryData.id;
 
         const response = await axios.post("/api/categories", categoryData);
         if (response.status === 201) {
@@ -107,14 +114,6 @@ const CategoryManagement = ({ action }) => {
             />
             <input
               type="text"
-              placeholder="Promoted (true/false)"
-              className="form-control cardField"
-              name="promoted"
-              value={categoryData.promoted}
-              onChange={handleInputChange}
-            />
-            <input
-              type="text"
               placeholder="Movies"
               className="form-control cardField"
               name="movies"
@@ -123,6 +122,18 @@ const CategoryManagement = ({ action }) => {
                 setCategoryData({ ...categoryData, movies: e.target.value.split(",") })
               }
             />
+            <div class="form-check form-switch">
+                <input
+                id="flexSwitchCheckDefault"
+                type="checkbox"
+                //   className="form-control cardField"
+                name="promoted"
+                className="form-check-input"
+                checked={categoryData.promoted}
+                onChange={handleCheckboxChange}
+                />
+                <label class="form-check-label" for="flexSwitchCheckDefault">promoted</label>
+            </div>
             <button type="submit" className="btn btn-primary">
               Create Category
             </button>
