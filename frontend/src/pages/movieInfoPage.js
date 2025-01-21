@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import '../components/homePageBackground.css';
 import MovieDesc from '../components/movieDesc';
 import ErrObj from '../components/errorObj';
-import Icon from '../components/icon';
 
 axios.defaults.baseURL = 'http://localhost:8080';
 
@@ -25,11 +23,19 @@ const translateCategories = async (categories) => {
 
 
 
-const MovieInfoPage = () => {
+const MovieInfoPage = ({movieId}) => {
   const { id } = useParams(); // Get movie ID from the URL
   const [movie, setMovie] = useState(null);
   const [error, setError] = useState(null);
   const [isFetchedWorked,setIsFetchedWorked] = useState(false);
+
+  var correctMovieId;
+
+  if (movieId) {
+    correctMovieId = movieId;
+  } else {
+    correctMovieId = id;
+  }
 
   useEffect(() => {
 	const token = localStorage.getItem('token');
@@ -41,7 +47,7 @@ const MovieInfoPage = () => {
   useEffect(() => {
     const fetchMovieData = async () => {
       try {
-        const response = await axios.get(`/api/movies/${id}`);
+        const response = await axios.get(`/api/movies/${correctMovieId}`);
         const result = await translateCategories(response.data.category);
         if (result.type === "success") {
           setMovie({
@@ -65,11 +71,10 @@ const MovieInfoPage = () => {
     };
   
     fetchMovieData();
-  }, [id]);
+  }, [correctMovieId]);
   
   return (
-    <div id="mainContainer" className="d-flex flex-column justify-content-center align-items-center vh-100">
-      <Icon />
+    <div onClick={(e) => e.stopPropagation()}>
       {isFetchedWorked ? ( 
         <MovieDesc
           title={movie.title}

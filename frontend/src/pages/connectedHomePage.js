@@ -4,6 +4,8 @@ import VideoPlayer from '../components/videoPlayer';  // The VideoPlayer compone
 import Category from '../components/category';  // Category component to display movies grouped by categories
 import axios from 'axios';  // Used to fetch data from an API
 import { useAuth } from '../Authentication/AuthContext';
+import MovieInfoPage from './movieInfoPage';
+import './connectedHomePage.css';  // Styles for the home page
 
 axios.defaults.baseURL = 'http://localhost:8080';
 
@@ -12,6 +14,15 @@ const ConnectedHomePage = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [moviesByCategory, setMoviesByCategory] = useState({});  // State to store movies by category
   const [userId, setUserId] = useState('');
+  const [selectedMovie, setSelectedMovie] = useState(null);  // State to store the selected movie
+
+  const handleClickMovie = (movieId) => {
+    setSelectedMovie(movieId);
+  };
+
+  const handleClosePopup = () => {
+    setSelectedMovie(null);
+  };
 
   useEffect(() => {
 		if (token) {
@@ -19,6 +30,7 @@ const ConnectedHomePage = () => {
 		}
 		if (userData) {
 			setIsAdmin(userData.isAdmin);
+      setUserId(userData.id);
 		}
 	  }, [token, userData]); // Set the Authorization header once on mount
 
@@ -94,9 +106,17 @@ const ConnectedHomePage = () => {
       <div className="categories mt-5">
         {/* Display each category with movies */}
         {Object.entries(moviesByCategory).map(([categoryName, movies]) => (
-          <Category key={categoryName} name={categoryName} movies={movies} />
+          <Category key={categoryName} name={categoryName} movies={movies} onClickFunc={handleClickMovie}/>
         ))}
       </div>
+      {selectedMovie && (
+        <div
+          className={`popup-overlay ${selectedMovie ? 'show' : ''}`}
+          onClick={handleClosePopup}
+        >
+            <MovieInfoPage movieId={selectedMovie} />
+        </div>
+      )}
     </div>
 	</div>
   );

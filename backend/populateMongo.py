@@ -32,10 +32,17 @@ def create_movies():
     url = 'http://localhost:8080/api/movies'
     movies = set(['The Matrix', 'The Godfather', 'The Shawshank Redemption', 'The Dark Knight', 'Pulp Fiction', 'Fight Club', 'Forrest Gump', 'Inception', 'The Lord of the Rings', 'The Matrix Reloaded', 'The Matrix Revolutions', 'The Godfather Part II', 'The Godfather Part III', 'The Shawshank Redemption', 'The Dark Knight Rises', 'The Dark Knight Returns', 'Pulp Fiction', 'Fight Club', 'Forrest Gump', 'Inception', 'The Lord of the Rings: The Fellowship of the Ring', 'The Lord of the Rings: The Two Towers', 'The Lord of the Rings: The Return of the King',
     'The King', 'Iron Man', 'The Incredible Hulk', 'Iron Man 2', 'Thor', 'Captain America: The First Avenger', 'The Avengers', 'Iron Man 3', 'Thor: The Dark World', 'Captain America: The Winter Soldier', 'Guardians of the Galaxy', 'Avengers: Age of Ultron', 'Ant-Man', 'Captain America: Civil War', 'Doctor Strange', 'Guardians of the Galaxy Vol. 2', 'Spider-Man: Homecoming', 'Thor: Ragnarok', 'Black Panther', 'Avengers: Infinity War', 'Ant-Man and the Wasp', 'Captain Marvel', 'Avengers: Endgame', 'Spider-Man: Far From Home', 'Black Widow', 'Shang-Chi and the Legend of the Ten Rings', 'Eternals', 'Spider-Man: No Way Home', 'Doctor Strange in the Multiverse of Madness', 'Thor: Love and Thunder', 'Black Panther: Wakanda Forever'])
+    i = 0
+    j = 0
     for movie in movies:
         random_category = random.choice(categoriesIds)
         json_data = {'title': movie, 'year': 1999, 'category': [random_category], 'director': 'Director',
-                     'duration': 120, 'image': 'http://localhost:3000/images/Gladiator-poster.jpg', 'trailer': 'http://localhost:3000/movies/video_360.mp4'}
+                     'duration': 120, 'image': f"https://picsum.photos/400/3{i}{j}", 'trailer': 'http://localhost:3000/movies/video_360.mp4'}
+        if j == 9:
+            j = 0
+            i += 1
+        else:
+            j += 1
         r =  requests.post(url, json=json_data,headers=user11IHeader)
         global movieIds
         movieIds.append(r.headers['Location'].split('/')[-1])
