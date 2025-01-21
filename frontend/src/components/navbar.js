@@ -11,7 +11,7 @@ const Navbar = ({ isAdmin }) => {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
              <Link className="nav-link active home-link" aria-current="page" to="/connected">
-             Home
+             <img src="/images/newHome.png" alt="home" style={{ width: 120, marginLeft: -20 }}/>
              </Link>
             </li>
 

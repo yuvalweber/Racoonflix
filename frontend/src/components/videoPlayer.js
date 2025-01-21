@@ -45,7 +45,7 @@ const VideoPlayer = () => {
         <ReactPlayer
           url={randomVideo}
           playing={true} // Autoplay video
-          controls={true} // Show controls
+          controls={false} // Dont Show controls
           muted={true} // Mute video
           loop={true} // Loop video
           width="1300px"
