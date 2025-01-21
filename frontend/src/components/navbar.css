@@ -19,6 +19,7 @@ body {
 	display: flex; /* Align with the navbar items */
 	align-items: center; /* Vertically center the text */
 	margin-top: -4px; /* Move it slightly higher */
+  z-index: 1000;
   }
   
   

@@ -27,7 +27,7 @@ const App = () => {
 			<Route path="/movieInfo/:id" element={<MovieInfoPage />} />
 			<Route path="/watch" element={<WatchPage />} />
 			<Route path="/connected" element={<ConnectedHomePage/>} />
-			<Route path="/managment" element={<ManagementPage />} />
+			<Route path="/management" element={<ManagementPage />} />
 		</Routes>
 	</BrowserRouter>
 	</AuthProvider>
