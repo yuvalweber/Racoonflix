@@ -1,0 +1,15 @@
+<!-- card_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Semi-transparent black background -->
+    <solid android:color="#BF000000" />
+
+    <!-- Rounded corners -->
+    <corners android:radius="16dp" />
+
+    <!-- Add padding for the inner content -->
+    <padding
+        android:left="16dp"
+        android:top="16dp"
+        android:right="16dp"
+        android:bottom="16dp" />
+</shape>

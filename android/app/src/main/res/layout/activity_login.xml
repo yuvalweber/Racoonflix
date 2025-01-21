@@ -1,44 +1,95 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- Updated activity_login.xml with visible placeholders -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity"
-    >
+    tools:context=".LoginActivity">
 
+    <!-- Fullscreen Background Image -->
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/generic_home_page_background"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Centered Card Layout -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/cardLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/card_background"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="32dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.9">
 
+        <!-- Title -->
+        <TextView
+            android:id="@+id/loginTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log In"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Username Field -->
         <EditText
             android:id="@+id/editTextUserName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="User Name" />
+            android:layout_height="56dp"
+            android:hint="Username"
+            android:background="@drawable/card_field_background"
+            android:padding="16dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#D3D3D3"
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
 
+        <!-- Password Field -->
         <EditText
             android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:hint="Password"
+            android:background="@drawable/card_field_background"
+            android:padding="16dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#D3D3D3"
+            android:textSize="18sp"
+            android:layout_marginBottom="24dp"
             android:inputType="textPassword" />
 
+        <!-- Buttons -->
         <Button
             android:id="@+id/buttonLogin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Login" />
+            android:layout_height="56dp"
+            android:text="Log In"
+            android:backgroundTint="@color/blue"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
 
         <Button
             android:id="@+id/buttonRegister"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Register" />
+            android:layout_height="56dp"
+            android:text="Register"
+            android:backgroundTint="@color/red"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
