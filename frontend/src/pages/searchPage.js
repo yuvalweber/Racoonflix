@@ -60,6 +60,7 @@ const SearchPage = () => {
             <div className="transparent-box"></div>
             <div className="header">
                 <h1 className="title">Find Your Next Movie</h1>
+                <p className="subtitle">Search by title, director, image and more</p>
             </div>
             {/* Search box */}
             <div className="searchBarContainer">
