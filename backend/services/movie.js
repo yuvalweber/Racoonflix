@@ -94,6 +94,19 @@ const getMovies = async (userId) => {
 		return null;
 	}
 };
+
+// get all movies from all categories
+const getAllMovies = async () => {
+	try {
+		return await Movie.find();
+	}
+	catch {
+		return null;
+	}
+};
+		
+
+
 // search for movies that contain the search query in their document
 const searchQuery = async (query) => {
 	try {
@@ -271,5 +284,6 @@ module.exports = {
 	searchQuery,
     addMovieToRecommendations,
     getRecommendations,
-	getMovieByMovieId
+	getMovieByMovieId,
+	getAllMovies
 };
