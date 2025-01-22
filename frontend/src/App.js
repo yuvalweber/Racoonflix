@@ -7,6 +7,7 @@ import ConnectedHomePage from './pages/connectedHomePage';
 import WatchPage from './pages/watchPage';
 import ManagementPage from './pages/managmentPage';
 import SearchPage from './pages/searchPage';
+import AllMoviesPage from './pages/allMoviesPage';
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './Authentication/AuthContext';
@@ -27,6 +28,7 @@ const App = () => {
 			<Route path="/connected" element={<ProtectedRoute Component={<ConnectedHomePage />} />} />
 			<Route path="/management" element={<ProtectedRoute Component={<ManagementPage />} />} />
 			<Route path="/search" element={<ProtectedRoute Component={<SearchPage />} />} />
+			<Route path="/allMovies" element={<ProtectedRoute Component={<AllMoviesPage />} />} />
 		</Routes>
 	</BrowserRouter>
 	</AuthProvider>

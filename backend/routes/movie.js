@@ -2,6 +2,8 @@ const express = require('express');
 
 var router = express.Router();
 const movieController = require('../controllers/movie');
+router.route('/all')
+    .get(movieController.getAllMovies);
 router.route('/')
     .get(movieController.getMovies)
     .post(movieController.createMovie);
@@ -14,7 +16,6 @@ router.route('/search/:query')
 router.route('/:id/recommend')
     .get(movieController.getRecommendations)
     .post(movieController.addMovieToRecommendations);
-router.route('/all')
-    .get(movieController.getAllMovies);
+
     
 module.exports = router;
