@@ -31,5 +31,9 @@
         <!-- Register Activity -->
         <activity
             android:name=".RegisterActivity" />
+
+        <!-- Home Activity -->
+        <activity
+            android:name=".ConnectedHomePageActivity" />
     </application>
 </manifest>

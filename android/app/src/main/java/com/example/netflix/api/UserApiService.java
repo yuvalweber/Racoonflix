@@ -6,6 +6,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import com.example.netflix.models.User;
 
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public interface UserApiService {
 
     // GET user details by ID
     @GET("/api/users/{id}")
-    Call<com.example.netflix.models.User> getUserById(@Path("id") int userId);
+    Call<User> getUser(@Header("Authorization") String token, @Path("id") String userId);
 
     // POST to log in and retrieve a token
     @POST("/api/tokens")
