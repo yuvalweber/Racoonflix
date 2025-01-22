@@ -78,4 +78,10 @@
     font-size: 1.2rem;
     margin-top: 20px;
   }
+
+  .subtitle {
+    color: gray;
+    margin-bottom: 10px;
+    text-shadow: black 0 0 10px;
+  }
   

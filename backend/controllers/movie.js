@@ -37,7 +37,7 @@ const createMovie = async (req, res) => {
 };
 
 
-// get all movies
+// get all movies (according to hemi demands)
 const getMovies = async (req, res) => {
     // check if user provide x-user header and if the user exists
     const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
@@ -53,6 +53,23 @@ const getMovies = async (req, res) => {
     }
     res.json(movies);
 };
+
+// get all movies (all existing movies)
+const getAllMovies = async (req, res) => {
+    // check if user provide x-user header and if the user exists
+    const headerValidation = await servicesFunctions.checkUserHeader(req.headers['authorization']);
+    if (headerValidation.status !== 200) {
+        return res.status(headerValidation.status).json({ errors: headerValidation.message });
+    }
+    // get all movies
+    const movies = await movieService.getAllMovies();
+    if (!movies) {
+        return res.status(404).json({
+            errors: 'There are no movies in the system'
+        });
+    }
+    res.json(movies);
+}
 
 
 // get movie by id
@@ -206,5 +223,6 @@ module.exports = {
 	searchQuery,
     deleteMovie,
     getRecommendations,
-    addMovieToRecommendations
+    addMovieToRecommendations,
+    getAllMovies
 };
