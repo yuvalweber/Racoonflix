@@ -13,13 +13,17 @@ body {
 
 
   /* Custom styling for the 'Home' link */
-.home-link {
+ .home-link {
 	font-size: 1.25rem; /* Adjust the size as you see fit */
 	font-weight: bold;  /* Optional: Make it bold */
 	display: flex; /* Align with the navbar items */
 	align-items: center; /* Vertically center the text */
-	margin-top: -4px; /* Move it slightly higher */
+	margin-top: 0px; /* Move it slightly higher */
   z-index: 1000;
   }
   
-  
+  .nav-link {
+    margin-left: 5px; /* Adds space between the links */
+    color: white; /* Sets the text color to white */
+    margin-top: 0 20px; /* Adds space between the links */
+  }
