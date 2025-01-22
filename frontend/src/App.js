@@ -26,7 +26,7 @@ const App = () => {
 			<Route path="/play" element={<ProtectedRoute Component={<WatchPage />} />} />
 			<Route path="/connected" element={<ProtectedRoute Component={<ConnectedHomePage />} />} />
 			<Route path="/management" element={<ProtectedRoute Component={<ManagementPage />} />} />
-			<Route path="/search" element={<SearchPage />} />
+			<Route path="/search" element={<ProtectedRoute Component={<SearchPage />} />} />
 		</Routes>
 	</BrowserRouter>
 	</AuthProvider>
