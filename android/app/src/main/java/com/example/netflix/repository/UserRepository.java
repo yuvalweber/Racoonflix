@@ -1,5 +1,7 @@
 package com.example.netflix.repository;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -62,26 +64,14 @@ public class UserRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     String token = response.body().get("token");
                     if (token != null) {
-                        // Save the token with default userId and isAdmin in Room
-                        new Thread(() -> tokenDao.insertToken(new TokenEntity(token, "", false))).start();
+                        // Save the token in Room
+                        new Thread(() -> {
+                            tokenDao.clearTokens();
+                            tokenDao.insertToken(new TokenEntity(token, "", false));
+                        }).start();
 
                         // Fetch token info after login
-                        fetchTokenInfo(new UserCallback() {
-                            @Override
-                            public void onSuccess(Object data) {
-                                callback.onSuccess(token); // Notify success to UI
-                            }
-
-                            @Override
-                            public void onError(int statusCode, String errorMessage) {
-                                callback.onError(statusCode, "Login succeeded, but fetching token info failed: " + errorMessage);
-                            }
-
-                            @Override
-                            public void onFailure(Throwable t) {
-                                callback.onFailure(t);
-                            }
-                        });
+                        fetchTokenInfo(callback);
                     } else {
                         callback.onError(response.code(), "Token missing in response");
                     }
@@ -101,11 +91,9 @@ public class UserRepository {
 
     // Fetch userId and isAdmin using the token
     public void fetchTokenInfo(UserCallback callback) {
-        // Run Room operation on a background thread
         new Thread(() -> {
             TokenEntity storedToken = tokenDao.getTokenData();
             if (storedToken == null) {
-                // Notify callback on the main thread
                 runOnMainThread(() -> callback.onError(401, "No token available"));
                 return;
             }
@@ -119,7 +107,6 @@ public class UserRepository {
                         String userId = (String) tokenInfo.get("id");
                         boolean isAdmin = (boolean) tokenInfo.get("isAdmin");
 
-                        // Update token info in Room
                         new Thread(() -> {
                             storedToken.setUserId(userId);
                             storedToken.setAdmin(isAdmin);
@@ -127,7 +114,6 @@ public class UserRepository {
                             tokenDao.insertToken(storedToken);
                         }).start();
 
-                        // Notify callback on the main thread
                         runOnMainThread(() -> callback.onSuccess(tokenInfo));
                     } else {
                         String errorMessage = response.message();
@@ -144,14 +130,10 @@ public class UserRepository {
         }).start();
     }
 
-    // Helper to execute callbacks on the main thread
-    private void runOnMainThread(Runnable runnable) {
-        new android.os.Handler(android.os.Looper.getMainLooper()).post(runnable);
-    }
-
     // Get user by ID
-    public void getUserById(int userId, UserCallback callback) {
-        userApiService.getUserById(userId).enqueue(new Callback<User>() {
+    public void getUserById(String userId, String token, UserCallback callback) {
+        String authHeader = "Bearer " + token;
+        userApiService.getUser(authHeader, userId).enqueue(new Callback<User>() {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -185,6 +167,11 @@ public class UserRepository {
             Log.e(TAG, "Error parsing error body: " + e.getMessage(), e);
         }
         return "An unknown error occurred.";
+    }
+
+    // Helper to execute callbacks on the main thread
+    private void runOnMainThread(Runnable runnable) {
+        new Handler(Looper.getMainLooper()).post(runnable);
     }
 
     public interface UserCallback {
