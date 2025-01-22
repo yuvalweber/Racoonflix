@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModel;
 import com.example.netflix.repository.UserRepository;
 
 public class LoginViewModel extends ViewModel {
-    private final UserRepository repository;
+//    private final UserRepository repository;
     private final MutableLiveData<String> tokenLiveData = new MutableLiveData<>();
 
     public LoginViewModel() {
-        repository = new UserRepository();
+//        repository = new UserRepository();
     }
 
     public LiveData<String> getTokenLiveData() {
@@ -19,6 +19,6 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void login(String userName, String password) {
-        repository.login(userName, password).observeForever(token -> tokenLiveData.setValue(token));
+//        repository.login(userName, password).observeForever(token -> tokenLiveData.setValue(token));
     }
 }
