@@ -92,9 +92,10 @@ const ConnectedHomePage = () => {
 
   return (
 	<div>
+    {/* Navbar component for navigation */}
 		 <Navbar isAdmin={isAdmin} />
+    {/* Background */}
     <div id="mainContainer" className="bg-dark text-white vh-100">
-      {/* Navbar component for navigation */}
 
       {/* Video Player Section */}
       <div className="d-flex flex-column align-items-center mt-5">
