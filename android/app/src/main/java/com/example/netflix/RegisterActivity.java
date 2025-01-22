@@ -11,6 +11,7 @@ import com.example.netflix.models.User;
 import com.example.netflix.network.RetrofitInstance;
 import com.example.netflix.api.UserApiService;
 import com.example.netflix.repository.UserRepository;
+import com.example.netflix.database.AppDatabase;
 import com.example.netflix.viewmodels.UserViewModel;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -34,7 +35,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Initialize API, Repository, and ViewModel
         UserApiService apiService = RetrofitInstance.getInstance().create(UserApiService.class);
-        UserRepository userRepository = new UserRepository(apiService);
+        AppDatabase database = AppDatabase.getInstance(this);
+        UserRepository userRepository = new UserRepository(apiService, database.tokenDao());
         userViewModel = new UserViewModel(userRepository);
 
         // Handle register button click
