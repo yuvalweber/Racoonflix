@@ -59,11 +59,17 @@ const updateCategory = async (id, updateData) => {
 		if (!category) return null;
 		Object.keys(updateData).forEach(key => {
 			if (key != 'movies') {
-				category[key] = updateData[key];
+				if (key == 'promoted') {
+					category[key] = updateData[key];
+				}
+				else
+				if (updateData[key] != "" && updateData[key] != undefined) {
+					category[key] = updateData[key];
+				}
 			}
 		});
 		// check if the movies exist
-		if (updateData.movies) {
+		if (updateData.movies.length > 0) {
 			const moviesExist = await Movie.find({_id: {$in: updateData.movies}});
 			if (moviesExist.length != updateData.movies.length) {
 				return null;
