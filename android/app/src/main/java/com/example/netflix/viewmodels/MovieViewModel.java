@@ -23,4 +23,12 @@ public class MovieViewModel extends AndroidViewModel {
     public LiveData<Map<String, List<Movie>>> getMoviesByCategory() {
         return repository.fetchMoviesByCategory();
     }
+
+    public LiveData<Map<String, List<Movie>>> searchMovies(String query) {
+        return repository.searchMovies(query);
+    }
+
+    public LiveData<Map<String, List<Movie>>> getAllMovies() {
+        return repository.fetchAllMovies();
+    }
 }
