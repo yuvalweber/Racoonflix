@@ -149,7 +149,7 @@ const searchQuery = async (query) => {
 const replaceMovie = async (id, newMovie) => {
     try {
 		// check if the category exists
-		if (newMovie.category) {
+		if (newMovie.category.length > 0) {
 			const categories = await Category.find({_id: {$in: newMovie.category}});
 			if (categories.length != newMovie.category.length) {
 				return null;
@@ -161,11 +161,9 @@ const replaceMovie = async (id, newMovie) => {
 		await Category.updateMany({movies : id}, {$pull: {movies : id} });
 		// loop over the keys of the new movie and update the movie
 		Object.keys(MovieModel.schema.obj).forEach(key => {
-			if (newMovie[key] != undefined) {
+			if (newMovie[key] != "" && newMovie[key] != undefined) {
 				movie[key] = newMovie[key];
-			} else {
-				movie[key] = undefined;
-			}
+			} 
 		});
 		movie.movieId = movieId;
         const newMovieObject = await movie.save();

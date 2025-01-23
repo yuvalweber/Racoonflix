@@ -4,9 +4,9 @@ import "./card.css";
 
 const MovieManagement = ({ action }) => {
   const [movieData, setMovieData] = useState({
-    id: "", 
+    id: "",
     title: "",
-    category: [],
+    category: [], // Array for multiple categories
     image: "",
     trailer: "",
     year: "",
@@ -17,6 +17,21 @@ const MovieManagement = ({ action }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setMovieData({ ...movieData, [name]: value });
+  };
+
+  const handleCategoryChange = (index, value) => {
+    const updatedCategories = [...movieData.category];
+    updatedCategories[index] = value;
+    setMovieData({ ...movieData, category: updatedCategories });
+  };
+
+  const addCategoryField = () => {
+    setMovieData({ ...movieData, category: [...movieData.category, ""] });
+  };
+
+  const removeCategoryField = (index) => {
+    const updatedCategories = movieData.category.filter((_, i) => i !== index);
+    setMovieData({ ...movieData, category: updatedCategories });
   };
 
   const initialMovieData = {
@@ -33,87 +48,75 @@ const MovieManagement = ({ action }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-      if (action === "Create") {
-        try {
-            //remove id from movieData
-            delete movieData.id;
-            // Validation for required fields
-            if (
-            !movieData.title ||
-            !movieData.image ||
-            !movieData.trailer ||
-            !movieData.duration ||
-            !movieData.director
-            ) {
-            alert("Please fill in all required fields.");
-            return;
-            }
-            const response = await axios.post("/api/movies", movieData);
-            if (response.status === 201) {
-            alert("Movie created successfully!");
-            setMovieData({ ...initialMovieData });
-            } else {
-            alert("Failed to create movie.");
-            // Add the id back to movieData
-            setMovieData({ ...initialMovieData });        
-            }
-        } catch (error) {
-            console.error("Error processing request:", error.response || error.message);
-            alert(error.response.data.errors);
-            setMovieData({ ...initialMovieData });
+    if (action === "Create") {
+      try {
+        const movieDataCopy = { ...movieData };
+        delete movieDataCopy.id;
+
+        if (
+          !movieDataCopy.title ||
+          !movieDataCopy.image ||
+          !movieDataCopy.trailer ||
+          !movieDataCopy.duration ||
+          !movieDataCopy.director
+        ) {
+          alert("Please fill in all required fields.");
+          return;
         }
-      }
 
-      if (action === "Delete") {
-        try {
-            if (!movieData.id) {
-            alert("Please provide the ID of the movie to delete.");
-            return;
-            }
-
-            const response = await axios.delete(`/api/movies/${movieData.id}`);
-            if (response.status === 204) {
-              alert("Movie deleted successfully!");
-              setMovieData({...initialMovieData});      
-            } else {
-              alert("Failed to delete movie.");
-              setMovieData({...initialMovieData});           
-            }
-        } catch (error) {
-            console.error("Error processing request:", error.response || error.message);
-            alert(error.response.data.errors); 
-            setMovieData({...initialMovieData}); 
-        }  
-      }
-
-      if (action === "Update") {
-       try {
-          if (!movieData.id) {
-            alert("Please provide the ID of the movie to update.");
-            return;
-          }
-          var movieId = movieData.id;
-          delete movieData.id;
-          if (movieData.category === "") {
-            delete movieData.category;
-          }
-          console.log(movieData);
-          console.log(movieId);
-          const response = await axios.put(`/api/movies/${movieId}`, movieData);
-          if (response.status === 200) {
-            alert("Movie updated successfully!");
-            setMovieData({...initialMovieData});
-          } else {
-            alert("Failed to update movie.");
-            // Add the id back to movieData
-            setMovieData({...initialMovieData});           
-          }
-        } catch (error) {
-            console.error("Error processing request:", error.response || error.message);
-            alert(error.response.data.errors); 
-            setMovieData({...initialMovieData});     
+        const response = await axios.post("/api/movies", movieDataCopy);
+        if (response.status === 201) {
+          alert("Movie created successfully!");
+          setMovieData({ ...initialMovieData });
+        } else {
+          alert("Failed to create movie.");
         }
+      } catch (error) {
+        console.error("Error processing request:", error.response || error.message);
+        alert(error.response.data?.errors || "An error occurred.");
       }
+    }
+
+    if (action === "Delete") {
+      try {
+        if (!movieData.id) {
+          alert("Please provide the ID of the movie to delete.");
+          return;
+        }
+
+        const response = await axios.delete(`/api/movies/${movieData.id}`);
+        if (response.status === 204) {
+          alert("Movie deleted successfully!");
+          setMovieData({ ...initialMovieData });
+        } else {
+          alert("Failed to delete movie.");
+        }
+      } catch (error) {
+        console.error("Error processing request:", error.response || error.message);
+        alert(error.response.data?.errors || "An error occurred.");
+      }
+    }
+
+    if (action === "Update") {
+      try {
+        if (!movieData.id) {
+          alert("Please provide the ID of the movie to update.");
+          return;
+        }
+        const movieDataCopy = { ...movieData };
+        delete movieDataCopy.id;
+        const response = await axios.put(`/api/movies/${movieData.id}`, movieDataCopy);
+        if (response.status === 204) {
+          alert("Movie updated successfully!");
+          setMovieData({ ...initialMovieData });
+        } else {
+          alert("Failed to update movie.");
+        }
+      } catch (error) {
+        console.error("Error processing request:", error.response || error.message);
+        alert(error.response.data?.errors || "An error occurred.");
+      }
+    }
   };
 
   const renderForm = () => {
@@ -128,14 +131,6 @@ const MovieManagement = ({ action }) => {
               className="form-control cardField"
               name="title"
               value={movieData.title}
-              onChange={handleInputChange}
-            />
-            <input
-              type="text"
-              placeholder="Category"
-              className="form-control cardField"
-              name="category"
-              value={movieData.category}
               onChange={handleInputChange}
             />
             <input
@@ -178,6 +173,33 @@ const MovieManagement = ({ action }) => {
               value={movieData.director}
               onChange={handleInputChange}
             />
+            <div>
+              <label>Categories:</label>
+              {movieData.category.map((cat, index) => (
+                <div key={index} style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
+                  <input
+                    type="text"
+                    placeholder={`Category ${index + 1}`}
+                    className="form-control cardField"
+                    value={cat}
+                    onChange={(e) => handleCategoryChange(index, e.target.value)}
+                  />
+                  {movieData.category.length > 1 && (
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      style={{ marginLeft: "8px" }}
+                      onClick={() => removeCategoryField(index)}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button type="button" className="btn btn-secondary" onClick={addCategoryField}>
+                Add Category
+              </button>
+            </div>
             <button type="submit" className="btn btn-primary">
               Create Movie
             </button>
@@ -224,14 +246,6 @@ const MovieManagement = ({ action }) => {
             />
             <input
               type="text"
-              placeholder="Category"
-              className="form-control cardField"
-              name="category"
-              value={movieData.category}
-              onChange={handleInputChange}
-            />
-            <input
-              type="text"
               placeholder="Image URL"
               className="form-control cardField"
               name="image"
@@ -270,14 +284,41 @@ const MovieManagement = ({ action }) => {
               value={movieData.director}
               onChange={handleInputChange}
             />
-            <button type="submit" className="btn btn-success">
+            <div>
+              <label>Categories:</label>
+              {movieData.category.map((cat, index) => (
+                <div key={index} style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
+                  <input
+                    type="text"
+                    placeholder={`Category ${index + 1}`}
+                    className="form-control cardField"
+                    value={cat}
+                    onChange={(e) => handleCategoryChange(index, e.target.value)}
+                  />
+                  {movieData.category.length > 0 && (
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      style={{ marginLeft: "8px" }}
+                      onClick={() => removeCategoryField(index)}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button type="button" className="btn btn-secondary" onClick={addCategoryField}>
+                Add Category
+              </button>
+            </div>
+            <button type="submit" className="btn btn-primary">
               Update Movie
             </button>
           </form>
         );
 
       default:
-        return null;
+        return <p>Invalid action.</p>;
     }
   };
 

@@ -25,8 +25,24 @@ const CategoryManagement = ({ action }) => {
     });
   };
 
+  const handleMovieChange = (index, value) => {
+    const updatedMovies = [...categoryData.movies];
+    updatedMovies[index] = value;
+    setCategoryData({ ...categoryData, movies: updatedMovies });
+  };
+
+  const addMovieField = () => {
+    setCategoryData({ ...categoryData, movies: [...categoryData.movies, ""] });
+  };
+
+  const removeMovieField = (index) => {
+    const updatedMovies = categoryData.movies.filter((_, i) => i !== index);
+    setCategoryData({ ...categoryData, movies: updatedMovies });
+  };
+
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
+    console.log(name, checked);
     setCategoryData({ ...categoryData, [name]: checked });
     };
   
@@ -42,7 +58,6 @@ const CategoryManagement = ({ action }) => {
         }
 
         delete categoryData.id;
-
         const response = await axios.post("/api/categories", categoryData);
         if (response.status === 201) {
           alert("Category created successfully!");
@@ -78,14 +93,12 @@ const CategoryManagement = ({ action }) => {
           alert("Both Category ID and new name are required for updating.");
           return;
         }
+        const categoryDataCopy = { ...categoryData };
+        delete categoryDataCopy.id;
+        console.log(categoryDataCopy);
+        const response = await axios.patch(`/api/categories/${categoryData.id}`, categoryDataCopy);
 
-        const response = await axios.put(`/api/categories/${categoryData.id}`, {
-          name: categoryData.name,
-          promoted: categoryData.promoted,
-          movies: categoryData.movies,
-        });
-
-        if (response.status === 200) {
+        if (response.status === 204) {
           alert("Category updated successfully!");
           setCategoryData({ ...initialCategoryData });
         } else {
@@ -112,21 +125,37 @@ const CategoryManagement = ({ action }) => {
               value={categoryData.name}
               onChange={handleInputChange}
             />
-            <input
-              type="text"
-              placeholder="Movies"
-              className="form-control cardField"
-              name="movies"
-              value={categoryData.movies}
-              onChange={(e) =>
-                setCategoryData({ ...categoryData, movies: e.target.value.split(",") })
-              }
-            />
+            <div>
+              <label>Movies:</label>
+              {categoryData.movies.map((cat, index) => (
+                <div key={index} style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
+                  <input
+                    type="text"
+                    placeholder={`Movie ${index + 1}`}
+                    className="form-control cardField"
+                    value={cat}
+                    onChange={(e) => handleMovieChange(index, e.target.value)}
+                  />
+                  {categoryData.movies.length > 1 && (
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      style={{ marginLeft: "8px" }}
+                      onClick={() => removeMovieField(index)}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button type="button" className="btn btn-secondary" onClick={addMovieField}>
+                Add Movie
+              </button>
+            </div>
             <div class="form-check form-switch">
                 <input
                 id="flexSwitchCheckDefault"
                 type="checkbox"
-                //   className="form-control cardField"
                 name="promoted"
                 className="form-check-input"
                 checked={categoryData.promoted}
@@ -176,24 +205,44 @@ const CategoryManagement = ({ action }) => {
               value={categoryData.name}
               onChange={handleInputChange}
             />
-            <input
-              type="text"
-              placeholder="Promoted (true/false)"
-              className="form-control cardField"
-              name="promoted"
-              value={categoryData.promoted}
-              onChange={handleInputChange}
-            />
-            <input
-              type="text"
-              placeholder="Movies"
-              className="form-control cardField"
-              name="movies"
-              value={categoryData.movies}
-              onChange={(e) =>
-                setCategoryData({ ...categoryData, movies: e.target.value.split(",") })
-              }
-            />
+            <div>
+              <label>Movies:</label>
+              {categoryData.movies.map((cat, index) => (
+                <div key={index} style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
+                  <input
+                    type="text"
+                    placeholder={`Movies ${index + 1}`}
+                    className="form-control cardField"
+                    value={cat}
+                    onChange={(e) => handleMovieChange(index, e.target.value)}
+                  />
+                  {categoryData.movies.length > 0 && (
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      style={{ marginLeft: "8px" }}
+                      onClick={() => removeMovieField(index)}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button type="button" className="btn btn-secondary" onClick={addMovieField}>
+                Add Movie
+              </button>
+            </div>
+            <div class="form-check form-switch">
+                <input
+                id="flexSwitchCheckDefault"
+                type="checkbox"
+                name="promoted"
+                className="form-check-input"
+                checked={categoryData.promoted}
+                onChange={handleCheckboxChange}
+                />
+                <label class="form-check-label" for="flexSwitchCheckDefault">promoted</label>
+            </div>
             <button type="submit" className="btn btn-success">
               Update Category
             </button>
