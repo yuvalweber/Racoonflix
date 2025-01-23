@@ -65,13 +65,19 @@ public class UserRepository {
                     String token = response.body().get("token");
                     if (token != null) {
                         // Save the token in Room
-                        new Thread(() -> {
+                        Thread thread = new Thread(() -> {
                             tokenDao.clearTokens();
                             tokenDao.insertToken(new TokenEntity(token, "", false));
-                        }).start();
-
-                        // Fetch token info after login
-                        fetchTokenInfo(callback);
+                            // Fetch token info after login
+                            fetchTokenInfo(callback);
+                        });
+                        thread.start();
+                        // wait for the thread to finish
+                        try {
+                            thread.join();
+                        } catch (InterruptedException e) {
+                            Log.e(TAG, "Thread interrupted: " + e.getMessage(), e);
+                        }
                     } else {
                         callback.onError(response.code(), "Token missing in response");
                     }

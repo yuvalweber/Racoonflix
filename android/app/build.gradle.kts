@@ -41,6 +41,8 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp.logging)
     implementation(libs.room.runtime)
+    implementation(libs.glide);
+    annotationProcessor(libs.glide.compiler)
     annotationProcessor(libs.room.compiler) // For annotation processing
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

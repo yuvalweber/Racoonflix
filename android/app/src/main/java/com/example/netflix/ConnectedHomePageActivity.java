@@ -1,5 +1,6 @@
 package com.example.netflix;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.netflix.adapters.CategoryAdapter;
+import com.example.netflix.dao.TokenDao;
+import com.example.netflix.database.AppDatabase;
 import com.example.netflix.models.Movie;
 import com.example.netflix.viewmodels.MovieViewModel;
 import com.google.android.material.navigation.NavigationView;
@@ -45,6 +48,10 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
         // Setup NavigationView
         NavigationView navigationView = findViewById(R.id.navigation_view);
 
+        // get app database instance
+        AppDatabase database = AppDatabase.getInstance(this);
+        TokenDao tokenDao = database.tokenDao();
+
         // Setup RecyclerView
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -54,6 +61,18 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
 
         // Observe LiveData from ViewModel
         observeMoviesByCategory();
+
+        // delete token from room and go back to main page if user logs out
+        navigationView.setNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_logout) {
+                tokenDao.clearTokens();
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+            return true;
+        });
     }
 
     private void observeMoviesByCategory() {
