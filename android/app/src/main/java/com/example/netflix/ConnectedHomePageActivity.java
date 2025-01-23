@@ -105,6 +105,12 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
             } else if(item.getItemId() == R.id.nav_categories) {
                 Log.d(TAG, "Fetching all movies and categories.");
                 getAllMoviesAndCategories();
+            } else if(item.getItemId() == R.id.nav_home) {
+                Log.d(TAG, "Fetching default movies by category.");
+                observeMoviesByCategory();
+            } else if(item.getItemId() == R.id.nav_management) {
+                Intent intent = new Intent(this, ManagementActivity.class);
+                startActivity(intent);
             }
             return true;
         });
@@ -121,6 +127,11 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
                 recyclerView.setAdapter(categoryAdapter);
             } else {
                 Log.d(TAG, "No movies available to display.");
+            }
+
+            // Close the navigation drawer if open
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
     }
