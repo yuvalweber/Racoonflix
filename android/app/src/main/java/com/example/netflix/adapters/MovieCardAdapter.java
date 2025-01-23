@@ -1,7 +1,9 @@
 package com.example.netflix.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
+import com.example.netflix.MovieDetailsActivity;
 import com.example.netflix.R;
 import com.example.netflix.models.Movie;
 
@@ -46,6 +49,13 @@ public class MovieCardAdapter extends RecyclerView.Adapter<MovieCardAdapter.Movi
                 .placeholder(R.drawable.sample_movie_thumbnail) // Set placeholder image
                 .error(R.drawable.sample_movie_thumbnail) // Set error image
                 .into(holder.movieThumbnail);
+
+        // Set click listener for opening MovieDetailsActivity
+        holder.movieThumbnail.setOnClickListener(v -> {
+            Intent intent = new Intent(context, MovieDetailsActivity.class);
+            intent.putExtra("MOVIE_DETAILS", movie);
+            context.startActivity(intent);
+        });
     }
 
     @Override

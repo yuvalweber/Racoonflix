@@ -31,7 +31,9 @@ public class MoviePlayerActivity extends AppCompatActivity {
         ImageButton returnButton = findViewById(R.id.returnButton);
         viewModel = new ViewModelProvider(this).get(MoviePlayerViewModel.class);
 
-        viewModel.fetchVideoUrl();
+        String trailerUrl = getIntent().getStringExtra("TRAILER_URL");
+
+        viewModel.fetchVideoUrl(trailerUrl);
 
         MediaController mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);

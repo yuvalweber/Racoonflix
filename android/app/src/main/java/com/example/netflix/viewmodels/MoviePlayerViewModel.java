@@ -21,9 +21,8 @@ public class MoviePlayerViewModel extends ViewModel {
         currentPosition.setValue(position);
     }
 
-    public void fetchVideoUrl() {
+    public void fetchVideoUrl(String url) {
         // Assume repository fetches video URL
-        String url = "http://localhost:3000/movies/video_360.mp4";
         videoUrl.setValue(url);
     }
 }

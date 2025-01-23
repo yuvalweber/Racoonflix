@@ -1,8 +1,9 @@
 package com.example.netflix.models;
 
 import java.util.List;
+import java.io.Serializable;
 
-public class Movie {
+public class Movie implements Serializable {
     private String id;    // Primary field for app logic
     private String _id;   // Maps directly to the API response
     private String title;
