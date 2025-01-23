@@ -70,6 +70,9 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
+            } else if (item.getItemId() == R.id.nav_settings) {
+                Intent intent = new Intent(this, MoviePlayerActivity.class);
+                startActivity(intent);
             }
             return true;
         });
