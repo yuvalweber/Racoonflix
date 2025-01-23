@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 
 import com.example.netflix.R;
 import com.example.netflix.models.Movie;
@@ -39,24 +40,12 @@ public class MovieCardAdapter extends RecyclerView.Adapter<MovieCardAdapter.Movi
         Movie movie = movies.get(position);
         holder.movieTitle.setText(movie.getTitle());
 
-        // Set a placeholder or default image
-        Drawable placeholder = ContextCompat.getDrawable(context, R.drawable.sample_movie_thumbnail);
-        holder.movieThumbnail.setImageDrawable(placeholder);
-
-        // Load the image if a valid URL is provided
-        if (movie.getImage() != null && !movie.getImage().isEmpty()) {
-            // Assuming movie.getImage() is a URL, fetch the image asynchronously
-            new Thread(() -> {
-                try {
-                    java.net.URL url = new java.net.URL(movie.getImage());
-                    android.graphics.Bitmap bitmap = android.graphics.BitmapFactory.decodeStream(url.openStream());
-                    holder.movieThumbnail.post(() -> holder.movieThumbnail.setImageBitmap(bitmap));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    // Keep the placeholder image if loading fails
-                }
-            }).start();
-        }
+        // Load image using Glide
+        Glide.with(context)
+                .load(movie.getImage())  // movie.getImage() should return the image URL
+                .placeholder(R.drawable.sample_movie_thumbnail) // Set placeholder image
+                .error(R.drawable.sample_movie_thumbnail) // Set error image
+                .into(holder.movieThumbnail);
     }
 
     @Override

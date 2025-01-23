@@ -1,6 +1,11 @@
 version: '3'
 services: 
   server:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 250M
     image: "netflix:1.0.1"
     build:
       context: ./RecommendSystem
@@ -13,6 +18,11 @@ services:
       - "./RecommendSystem/data/:/usr/src/app/data/"
     
   mongo:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 250M
     image: mongo:latest
     container_name: Mongo
     restart: always
@@ -24,6 +34,11 @@ services:
       - "27017:27017"
 
   web-service:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 250M
     image: "netflix-web-service:1.0.1"
     build:
       context: .

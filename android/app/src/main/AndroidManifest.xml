@@ -35,5 +35,10 @@
         <!-- Home Activity -->
         <activity
             android:name=".ConnectedHomePageActivity" />
+
+        <!-- Movie Player Activity -->
+        <activity android:name=".MoviePlayerActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 </manifest>
