@@ -20,9 +20,12 @@ def create_user_and_login():
 def create_categories():
     url = 'http://localhost:8080/api/categories'
     categories = ['Science', 'Technology', 'Arts', 'Sports', 'Health', 'Business', 'Entertainment']
+    not_promoted_category = "Kupershtock"
     for category in categories:
         json_data = {'name': category, 'promoted': True}
         r = requests.post(url, json=json_data, headers=user11IHeader)
+    json_data = {'name': not_promoted_category, 'promoted': False}
+    r = requests.post(url, json=json_data, headers=user11IHeader)
     res = requests.get(url, headers=user11IHeader)
     global categoriesIds
     for category in res.json():

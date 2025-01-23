@@ -1,13 +1,16 @@
 package com.example.netflix;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -17,6 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.netflix.adapters.CategoryAdapter;
 import com.example.netflix.viewmodels.MovieViewModel;
+import com.google.android.material.navigation.NavigationView;
+
+import com.example.netflix.dao.TokenDao;
+import com.example.netflix.database.AppDatabase;
 
 public class ConnectedHomePageActivity extends AppCompatActivity {
 
@@ -33,6 +40,10 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
 
         // Setup DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout);
+
+        // get app database instance
+        AppDatabase database = AppDatabase.getInstance(this);
+        TokenDao tokenDao = database.tokenDao();
 
         // Setup Hamburger Icon
         ImageView hamburgerIcon = findViewById(R.id.hamburger_icon);
@@ -76,8 +87,27 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view_categories);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+
+        // Setup NavigationView
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+
         // Initialize ViewModel
         movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
+
+        // Setup Navigation Item Selection
+        navigationView.setNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_logout) {
+                tokenDao.clearTokens();
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else if(item.getItemId() == R.id.nav_categories) {
+                Log.d(TAG, "Fetching all movies and categories.");
+                getAllMoviesAndCategories();
+            }
+            return true;
+        });
 
         // Observe Default Movies
         observeMoviesByCategory();
@@ -103,6 +133,23 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
                 recyclerView.setAdapter(categoryAdapter);
             } else {
                 Log.d(TAG, "No search results found.");
+            }
+        });
+    }
+
+    private void getAllMoviesAndCategories() {
+        movieViewModel.getAllMovies().observe(this, categorizedMovies -> {
+            if (categorizedMovies != null && !categorizedMovies.isEmpty()) {
+                Log.d(TAG, "Movies fetched successfully: " + categorizedMovies);
+                CategoryAdapter categoryAdapter = new CategoryAdapter(this, categorizedMovies);
+                recyclerView.setAdapter(categoryAdapter);
+            } else {
+                Log.d(TAG, "No movies available to display.");
+            }
+
+            // Close the navigation drawer if open
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
     }
