@@ -19,11 +19,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.netflix.adapters.CategoryAdapter;
+import com.example.netflix.api.UserApiService;
+import com.example.netflix.network.RetrofitInstance;
+import com.example.netflix.repository.UserRepository;
 import com.example.netflix.viewmodels.MovieViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import com.example.netflix.dao.TokenDao;
 import com.example.netflix.database.AppDatabase;
+
+import java.util.Map;
 
 public class ConnectedHomePageActivity extends AppCompatActivity {
 
@@ -31,6 +36,8 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EditText searchBar;
     private DrawerLayout drawerLayout;
+
+    private UserRepository userRepository;
     private MovieViewModel movieViewModel;
 
     @Override
@@ -43,7 +50,9 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
 
         // get app database instance
         AppDatabase database = AppDatabase.getInstance(this);
+        UserApiService apiService = RetrofitInstance.getInstance().create(UserApiService.class);
         TokenDao tokenDao = database.tokenDao();
+        userRepository = new UserRepository(apiService, tokenDao);
 
         // Setup Hamburger Icon
         ImageView hamburgerIcon = findViewById(R.id.hamburger_icon);
@@ -90,6 +99,28 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
 
         // Setup NavigationView
         NavigationView navigationView = findViewById(R.id.navigation_view);
+
+        // Fetch Admin Status and Update Menu
+        userRepository.fetchTokenInfo(new UserRepository.UserCallback() {
+            @Override
+            public void onSuccess(Object data) {
+                runOnUiThread(() -> {
+                    boolean isAdmin = (boolean) ((Map<String, Object>) data).get("isAdmin");
+                    MenuItem managementItem = navigationView.getMenu().findItem(R.id.nav_management);
+                    managementItem.setVisible(isAdmin); // Show/Hide "Management" menu item
+                });
+            }
+
+            @Override
+            public void onError(int statusCode, String errorMessage) {
+                Log.e(TAG, "Error fetching token info: " + errorMessage);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.e(TAG, "Failed to fetch token info", t);
+            }
+        });
 
         // Initialize ViewModel
         movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
