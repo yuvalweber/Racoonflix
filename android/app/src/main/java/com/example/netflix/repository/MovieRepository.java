@@ -16,6 +16,7 @@ import com.example.netflix.api.MovieServiceApi;
 import com.example.netflix.network.RetrofitInstance;
 import com.example.netflix.models.User;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -287,5 +288,140 @@ public class MovieRepository {
         }
 
         return categorizedMovies;
+    }
+
+    public void createMovie(Movie movie, Callback<Void> callback) {
+        executeMovieApiCall(api -> api.createMovie(getToken(), movie), callback);
+    }
+
+    public void updateMovie(String id, Movie movie, Callback<Void> callback) {
+        executeMovieApiCall(api -> api.updateMovie(getToken(), id, movie), callback);
+    }
+
+    public void deleteMovie(String id, Callback<Void> callback) {
+        executeMovieApiCall(api -> api.deleteMovie(getToken(), id), callback);
+    }
+
+    private String getToken() {
+        // get the value of token from the thread
+        StringBuilder token = new StringBuilder();
+        Thread thread = new Thread(() -> {
+            TokenEntity tokenEntity = appDatabase.tokenDao().getTokenData();
+            if (tokenEntity != null) {
+                token.append("Bearer ").append(tokenEntity.getToken());
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Error getting token", e);
+        }
+        if (token.length() == 0) {
+            Log.e(TAG, "Token is null. Cannot proceed with API call.");
+            return null;
+        } else {
+            return token.toString();
+        }
+    }
+
+    private void executeMovieApiCall(CallExecutor executor, Callback<Void> callback) {
+        String token = getToken();
+        if (token != null) {
+            executor.execute(movieApi).enqueue(callback);
+        } else {
+            Log.e(TAG, "Token is null. Cannot proceed with API call.");
+        }
+    }
+
+    public void fetchMovieIdByName(String movieName, Callback<List<Movie>> callback) {
+        new Thread(() -> {
+            String token = getToken();
+            if (token != null) {
+                movieApi.getAllMovies(token).enqueue(new Callback<List<Movie>>() {
+                    @Override
+                    public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            List<Movie> movies = response.body();
+                            for (Movie movie : movies) {
+                                if (movie.getTitle().equalsIgnoreCase(movieName)) {
+                                    Log.d(TAG, "Movie found: " + movieName + " matching " + movie.getTitle());
+                                    List<Movie> result = new ArrayList<>();
+                                    result.add(movie);
+                                    callback.onResponse(call, Response.success(result));
+                                    return;
+                                }
+                            }
+                            Log.e(TAG, "Movie not found: " + movieName);
+                            callback.onFailure(call, new Throwable("Movie not found"));
+                        } else {
+                            Log.e(TAG, "Failed to fetch movies: " + response.message());
+                            callback.onFailure(call, new Throwable(response.message()));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Movie>> call, Throwable t) {
+                        Log.e(TAG, "Error fetching movies", t);
+                        callback.onFailure(call, t);
+                    }
+                });
+            } else {
+                Log.e(TAG, "Token is null. Cannot proceed with API call.");
+                callback.onFailure(null, new Throwable("Token is null"));
+            }
+        }).start();
+    }
+
+    public List<Movie> fetchMoviesIdByNameSync(String[] movieNames) {
+        Log.d(TAG, "movieName: " + movieNames);
+        List<Movie> result = new ArrayList<>();
+        String token = getToken();
+        if (token != null) {
+            try {
+                // Perform a synchronous call
+                Log.d(TAG, "Fetching movies synchronously");
+
+                // enter the following line to thread
+                Thread thread = new Thread(() -> {
+                    Response<List<Movie>> response = null;
+                    try {
+                        response = movieApi.getAllMovies(token).execute();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<Movie> movies = response.body();
+                        for (String movieName : movieNames) {
+                            for (Movie movie : movies) {
+                                if (movie.getTitle().equalsIgnoreCase(movieName.trim())) {
+                                    Log.d(TAG, "Movie found: " + movieName + " matching " + movie.getTitle());
+                                    result.add(movie);
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        Log.e(TAG, "Failed to fetch movies: " + response.message());
+                    }
+                });
+                thread.start();
+
+                thread.join();
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error performing synchronous movie fetch", e);
+            }
+        } else {
+            Log.e(TAG, "Token is null. Cannot proceed with API call.");
+        }
+        return result;
+    }
+
+
+    @FunctionalInterface
+    private interface CallExecutor {
+        Call<Void> execute(MovieServiceApi api);
     }
 }

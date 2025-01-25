@@ -43,5 +43,8 @@
 
         <!-- Movie Details Activity -->
         <activity android:name=".MovieDetailsActivity" />
+
+        <!-- Management Activity -->
+        <activity android:name=".ManagementActivity" />
     </application>
 </manifest>

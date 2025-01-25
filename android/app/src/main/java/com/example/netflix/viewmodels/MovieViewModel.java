@@ -5,11 +5,14 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.netflix.models.Category;
 import com.example.netflix.models.Movie;
 import com.example.netflix.repository.MovieRepository;
 
 import java.util.List;
 import java.util.Map;
+
+import retrofit2.Callback;
 
 public class MovieViewModel extends AndroidViewModel {
 
@@ -30,5 +33,25 @@ public class MovieViewModel extends AndroidViewModel {
 
     public LiveData<Map<String, List<Movie>>> getAllMovies() {
         return repository.fetchAllMovies();
+    }
+
+    public void createMovie(Movie movie, Callback<Void> callback) {
+        repository.createMovie(movie, callback);
+    }
+
+    public void updateMovie(String id, Movie movie, Callback<Void> callback) {
+        repository.updateMovie(id, movie, callback);
+    }
+
+    public void deleteMovie(String id, Callback<Void> callback) {
+        repository.deleteMovie(id, callback);
+    }
+
+    public void fetchMovieIdByName(String movieTitle, Callback<List<Movie>> callback) {
+        repository.fetchMovieIdByName(movieTitle, callback);
+    }
+
+    public List<Movie> fetchMoviesIdByName(String [] movieTitles) {
+        return repository.fetchMoviesIdByNameSync(movieTitles);
     }
 }

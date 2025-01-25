@@ -9,6 +9,11 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Header;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.DELETE;
+
 
 public interface MovieServiceApi {
     @GET("/api/movies")
@@ -19,4 +24,13 @@ public interface MovieServiceApi {
 
     @GET("/api/movies/search/{query}")
     Call<List<Movie>> searchMovies(@Header("Authorization") String token, @Path("query") String query);
+
+    @POST("/api/movies")
+    Call<Void> createMovie(@Header("Authorization") String token, @Body Movie movie);
+
+    @PUT("/api/movies/{id}")
+    Call<Void> updateMovie(@Header("Authorization") String token, @Path("id") String id, @Body Movie movie);
+
+    @DELETE("/api/movies/{id}")
+    Call<Void> deleteMovie(@Header("Authorization") String token, @Path("id") String id);
 }
