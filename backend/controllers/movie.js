@@ -160,6 +160,8 @@ const getRecommendations = async (req, res) => {
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }
+    // get user id
+    const userId = headerValidation.message;
     // check if there is an id in the params
     if (!req.params.id) {
         return res.status(400).json({
@@ -167,14 +169,14 @@ const getRecommendations = async (req, res) => {
         });
     }
     // check if the movie exist
-    const movie = await movieService.getMovieByMovieId(req.params.id);
+    const movie = await movieService.getMovieById(req.params.id);
     if (!movie) {
         return res.status(404).json({
             errors: 'Movie not found'
         });
     }
     // get recommendations
-    const recommendations = await movieService.getRecommendations(headerValidation.message, req.params.id);
+    const recommendations = await movieService.getRecommendations(userId, req.params.id);
     if (!recommendations) {
         return res.status(404).json({
             errors: 'Recommendations not found'
