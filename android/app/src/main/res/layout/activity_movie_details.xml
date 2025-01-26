@@ -1,18 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/generic_home_page_background">
+    android:fillViewport="true"
+    android:background="#000000"
+    android:padding="0dp">
+
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical">
+
+<!-- Movie Image Container -->
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:padding="0dp">
 
     <!-- Movie Image -->
     <ImageView
         android:id="@+id/movieImageView"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_alignParentTop="true"
+        android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
-    <!-- Close Button -->
+    <!-- Play Button Centered on Movie Image -->
+    <ImageButton
+        android:id="@+id/playMovieButton"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/black_circle_background"
+        android:contentDescription="Play Movie"
+        android:padding="16dp"
+        android:src="@drawable/ic_play"
+        android:elevation="8dp" />
+
+    <!-- Close Button at Top Left -->
     <ImageButton
         android:id="@+id/closeButton"
         android:layout_width="48dp"
@@ -25,48 +49,50 @@
         android:contentDescription="Close details"
         android:padding="8dp"
         android:src="@drawable/ic_white_x" />
-
-
-    <TextView
-        android:id="@+id/movieTitleTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/movieImageView"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:fontFamily="@font/roboto_bold"
-        android:background="#80000000"/>
-
-    <!-- Movie Details -->
-    <TextView
-        android:id="@+id/movieDetailsTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/movieTitleTextView"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:fontFamily="@font/roboto_regular"
-        android:background="#80000000"/>
-
-    <!-- Play Movie Button -->
-    <ImageButton
-        android:id="@+id/playMovieButton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_below="@id/movieDetailsTextView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/black_circle_background"
-        android:contentDescription="play movie"
-        android:elevation="8dp"
-        android:padding="12dp"
-        android:src="@drawable/ic_play"/>
-
 </RelativeLayout>
+
+<!-- Movie Title -->
+<TextView
+    android:id="@+id/movieTitleTextView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:textSize="24sp"
+    android:textStyle="bold"
+    android:textColor="#FFFFFF"
+    android:fontFamily="@font/roboto_bold"
+    android:background="#80000000"
+    android:padding="8dp" />
+
+<!-- Movie Details -->
+<TextView
+    android:id="@+id/movieDetailsTextView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:textColor="#FFFFFF"
+    android:textSize="16sp"
+    android:fontFamily="@font/roboto_regular"
+    android:background="#80000000"
+    android:padding="8dp" />
+
+<!-- Recommended Movies Section Title -->
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:text="Recommended Movies"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    android:textColor="@android:color/white"
+    android:paddingBottom="8dp" />
+
+<!-- Recommended Movies RecyclerView -->
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/recommended_movies_recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:overScrollMode="never" />
+</LinearLayout>
+    </androidx.core.widget.NestedScrollView>

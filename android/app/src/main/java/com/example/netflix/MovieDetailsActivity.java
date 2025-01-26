@@ -1,24 +1,31 @@
 package com.example.netflix;
+
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.example.netflix.repository.CategoryRepository;
-import com.example.netflix.models.Category;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.netflix.adapters.MovieCardAdapter;
 import com.example.netflix.models.Movie;
+import com.example.netflix.repository.CategoryRepository;
+import com.example.netflix.models.Category;
+import com.example.netflix.viewmodels.MovieViewModel;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class MovieDetailsActivity extends AppCompatActivity {
+
+    private static final String TAG = "MovieDetailsActivity";
+    private RecyclerView recommendedMoviesRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,5 +78,29 @@ public class MovieDetailsActivity extends AppCompatActivity {
         }
 
         closeButton.setOnClickListener(v -> finish());
+
+        // Initialize the RecyclerView for recommended movies
+        recommendedMoviesRecyclerView = findViewById(R.id.recommended_movies_recycler_view);
+        recommendedMoviesRecyclerView.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        // Fetch recommended movies
+        fetchRecommendedMovies();
+    }
+
+    private void fetchRecommendedMovies() {
+        MovieViewModel movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
+        Movie movie = (Movie) getIntent().getSerializableExtra("MOVIE_DETAILS");
+
+        if (movie != null) {
+            movieViewModel.getRecommendedMovies(movie.getMovieId()).observe(this, recommendedMovies -> {
+                if (recommendedMovies != null && !recommendedMovies.isEmpty()) {
+                    MovieCardAdapter adapter = new MovieCardAdapter(this, recommendedMovies);
+                    recommendedMoviesRecyclerView.setAdapter(adapter);
+                } else {
+                    Log.d(TAG, "No recommended movies available.");
+                }
+            });
+        }
     }
 }

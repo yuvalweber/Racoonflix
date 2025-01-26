@@ -19,6 +19,7 @@ import com.example.netflix.models.User;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -100,7 +101,7 @@ public class MovieRepository {
                                             .map(movie -> movie.getMovieId())
                                             .collect(Collectors.toSet());
 
-                                    Map<String, List<Movie>> categorizedMovies = new HashMap<>();
+                                    Map<String, List<Movie>> categorizedMovies = new LinkedHashMap<>();
 
                                     // Map movies to categories
                                     for (Movie movie : movies) {
@@ -125,17 +126,22 @@ public class MovieRepository {
                                                         categorizedMovies.get(categoryName).add(movie);
                                                         Log.d(TAG, "Added Movie: " + movie.getTitle() + " to Category: " + categoryName);
 
-                                                        // Add to "Seen Movies" if applicable
+                                                        // Add to "Seen Movies" if applicable as last category in the list
                                                         if (isSeen) {
                                                             categorizedMovies.putIfAbsent("Seen Movies", new ArrayList<>());
                                                             categorizedMovies.get("Seen Movies").add(movie);
-                                                            Log.d(TAG, "Added Movie: " + movie.getTitle() + " to Seen Movies");
+                                                            Log.d(TAG, "Added Movie: " + movie.getTitle() + " to Category: Seen Movies");
                                                         }
                                                     });
                                         }
                                     }
 
                                     Log.d(TAG, "Categorized movies: " + categorizedMovies);
+                                    // enter the seen movies to be as the last category
+                                    if (categorizedMovies.containsKey("Seen Movies")) {
+                                        List<Movie> seenMovies = categorizedMovies.remove("Seen Movies");
+                                        categorizedMovies.put("Seen Movies", seenMovies);
+                                    }
                                     liveData.postValue(categorizedMovies);
                                 }
 
@@ -162,6 +168,7 @@ public class MovieRepository {
                 }
             });
         }).start();
+
 
         return liveData;
     }
@@ -418,6 +425,43 @@ public class MovieRepository {
         }
         return result;
     }
+
+    public LiveData<List<Movie>> fetchRecommendedMovies(String movieId) {
+        MutableLiveData<List<Movie>> liveData = new MutableLiveData<>();
+        Log.d(TAG, "fetch, movieId: " + movieId);
+
+        new Thread(() -> {
+            TokenEntity tokenEntity = appDatabase.tokenDao().getTokenData();
+            if (tokenEntity == null) {
+                Log.e(TAG, "Token entity is null. Cannot proceed with API call.");
+                liveData.postValue(new ArrayList<>());
+                return;
+            }
+
+            String token = "Bearer " + tokenEntity.getToken();
+
+            movieApi.getRecommendedMovies(token, movieId).enqueue(new Callback<List<Movie>>() {
+                @Override
+                public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        liveData.postValue(response.body());
+                    } else {
+                        Log.e(TAG, "Failed to fetch recommended movies: " + response.message());
+                        liveData.postValue(new ArrayList<>());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Movie>> call, Throwable t) {
+                    Log.e(TAG, "Error fetching recommended movies: " + t.getMessage(), t);
+                    liveData.postValue(new ArrayList<>());
+                }
+            });
+        }).start();
+
+        return liveData;
+    }
+
 
 
     @FunctionalInterface

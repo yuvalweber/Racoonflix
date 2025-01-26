@@ -15,7 +15,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:paddingBottom="8dp"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/white" />
 
     <!-- Horizontal RecyclerView for Movies -->
     <androidx.recyclerview.widget.RecyclerView
