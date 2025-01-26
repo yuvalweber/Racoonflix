@@ -169,7 +169,7 @@ const getRecommendations = async (req, res) => {
         });
     }
     // check if the movie exist
-    const movie = await movieService.getMovieById(req.params.id);
+    const movie = await movieService.getMovieByMovieId(req.params.id);
     if (!movie) {
         return res.status(404).json({
             errors: 'Movie not found'

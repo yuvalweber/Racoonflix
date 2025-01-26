@@ -51,6 +51,7 @@ const MovieInfoPage = ({movieId}) => {
         const result = await translateCategories(response.data.category);
         if (result.type === "success") {
           setMovie({
+            movieId: response.data.movieId,
             title: response.data.title,
             year: response.data.year,
             category: result.message,
@@ -77,6 +78,7 @@ const MovieInfoPage = ({movieId}) => {
     <div onClick={(e) => e.stopPropagation()}>
       {isFetchedWorked ? ( 
         <MovieDesc
+          id = {movie.movieId}
           title={movie.title}
           year={movie.year}
           category={movie.category}

@@ -39,4 +39,17 @@
     z-index: 20; /* Ensure it appears above the video player */
   }
 
-  
+  .scrollbar-show {
+    scrollbar-width: 10px;
+    overflow-x: scroll;
+    margin-left: 20px;
+    display: flex;
+  }
+
+  .scrollbar-hide {
+    /* important all */
+    scrollbar-width: none; /* Hide scrollbar */
+    overflow-x: scroll;
+    margin-left: 20px ;
+    display: flex;
+  }
