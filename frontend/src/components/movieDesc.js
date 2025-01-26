@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './movieDesc.css';
 import Category from './category';
+import MovieInfoPage from '../pages/movieInfoPage';
 
 const MovieDesc = ({
   id, // Add the current movie ID as a prop
@@ -16,11 +17,16 @@ const MovieDesc = ({
 }) => {
   const navigate = useNavigate();
   const [recommendedMovies, setRecommendedMovies] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState(null);  // State to store the selected movie
+  
 
   const handleClickMovie = (movieId) => {
-    // Navigate to the movie description page of the selected movie
-      console.log(movieId);
-    };
+    setSelectedMovie(movieId);
+  };
+
+  const handleClosePopup = () => {
+    setSelectedMovie(null);
+  };
 
   const handleWatchTrailer = (trailer) => {
     // Navigate to the watch page with the trailer link
@@ -95,6 +101,14 @@ const MovieDesc = ({
             />
           )}
         </div>
+        {selectedMovie && (
+        <div
+          className={`popup-overlay ${selectedMovie ? 'show' : ''}`}
+          onClick={handleClosePopup}
+        >
+            <MovieInfoPage movieId={selectedMovie} />
+        </div>
+      )}
       </div>
     </div>
   );
