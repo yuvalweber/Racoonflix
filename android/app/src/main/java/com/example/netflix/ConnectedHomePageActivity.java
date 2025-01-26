@@ -19,6 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.netflix.adapters.CategoryAdapter;
+import com.example.netflix.api.UserApiService;
+import com.example.netflix.network.RetrofitInstance;
+import com.example.netflix.repository.UserRepository;
 import com.example.netflix.models.Category;
 import com.example.netflix.api.UserApiService;
 import com.example.netflix.network.RetrofitInstance;
