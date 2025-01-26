@@ -63,6 +63,7 @@ public class MovieManagementFragment extends Fragment {
 
         // Initialize fields
         EditText movieTitle = view.findViewById(R.id.edit_movie_title);
+        EditText newMovieTitle = view.findViewById(R.id.edit_new_movie_title);
         EditText movieCategory = view.findViewById(R.id.edit_movie_category);
         EditText movieYear = view.findViewById(R.id.edit_movie_year);
         EditText movieDirector = view.findViewById(R.id.edit_movie_director);
@@ -74,9 +75,14 @@ public class MovieManagementFragment extends Fragment {
         // Configure Submit Button Action
         submitButton.setOnClickListener(v -> {
             String movieNameInput = movieTitle.getText().toString().trim();
+            String newMovieNameInput = newMovieTitle.getText().toString().trim();
 
             Movie movie = new Movie();
-            movie.setTitle(movieTitle.getText().toString().trim());
+            if (newMovieNameInput.isEmpty()) {
+                movie.setTitle(movieNameInput);
+            } else {
+                movie.setTitle(newMovieNameInput);
+            }
             movie.setYear(movieYear.getText().toString().isEmpty() ? 0 : Integer.parseInt(movieYear.getText().toString().trim()));
             movie.setDirector(movieDirector.getText().toString().trim());
             movie.setDuration(movieDuration.getText().toString().isEmpty() ? 0 : Integer.parseInt(movieDuration.getText().toString().trim()));

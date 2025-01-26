@@ -14,11 +14,13 @@
         <!-- Title -->
         <TextView
             android:id="@+id/management_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Manage Categories"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:gravity="center"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp" />
 
@@ -27,8 +29,21 @@
             android:id="@+id/edit_category_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Category Name"
+            android:hint="Category Name (required)"
+            android:textColorHint="@color/gray"
             android:padding="12dp"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="12dp" />
+
+        <!-- new category name-->
+        <EditText
+            android:id="@+id/edit_new_category_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="New Category Name"
+            android:textColorHint="@color/gray"
+            android:padding="12dp"
+            android:textColor="@android:color/white"
             android:layout_marginBottom="12dp" />
 
         <!-- Movies in Category -->
@@ -37,7 +52,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Movies (comma-separated)"
+            android:textColorHint="@color/gray"
             android:padding="12dp"
+            android:textColor="@android:color/white"
             android:layout_marginBottom="12dp" />
 
         <!-- Promoted Switch -->
@@ -52,13 +69,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Promoted:"
+                android:textColor="@android:color/white"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="8dp" />
 
             <Switch
                 android:id="@+id/switch_promoted"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:trackTint="@color/gray"
+                android:thumbTint="@color/white" />
         </LinearLayout>
 
         <!-- Submit Button -->
@@ -68,6 +88,5 @@
             android:layout_height="wrap_content"
             android:text="Submit"
             android:layout_marginTop="16dp" />
-
     </LinearLayout>
 </ScrollView>

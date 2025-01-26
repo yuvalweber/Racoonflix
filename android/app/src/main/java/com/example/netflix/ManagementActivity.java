@@ -1,32 +1,76 @@
 package com.example.netflix;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.netflix.fragments.CategoryManagementFragment;
 import com.example.netflix.fragments.MovieManagementFragment;
+import com.example.netflix.dao.TokenDao;
+import com.example.netflix.database.AppDatabase;
+import com.google.android.material.navigation.NavigationView;
 
 public class ManagementActivity extends AppCompatActivity {
 
     private static final String TAG = "ManagementActivity";
+    private DrawerLayout drawerLayout;
     private String selectedSection = null;
     private String selectedAction = null;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_management);
 
-        TextView title = findViewById(R.id.management_title);
+        // Setup DrawerLayout
+        drawerLayout = findViewById(R.id.drawer_layout);
+
+        // Get AppDatabase instance
+        AppDatabase database = AppDatabase.getInstance(this);
+        TokenDao tokenDao = database.tokenDao();
+
+        // Setup Hamburger Icon
+        ImageView hamburgerIcon = findViewById(R.id.hamburger_icon);
+        hamburgerIcon.setOnClickListener(v -> {
+            if (drawerLayout != null) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        // Setup NavigationView
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_logout) {
+                tokenDao.clearTokens();
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else if (item.getItemId() == R.id.nav_categories) {
+                Log.d(TAG, "Navigating to Categories.");
+                Intent intent = new Intent(this, ConnectedHomePageActivity.class);
+                intent.putExtra("CATEGORY_NAVIGATION", true);
+                startActivity(intent);
+                // Implement category navigation logic here
+            } else if (item.getItemId() == R.id.nav_home) {
+                Log.d(TAG, "Navigating to Home.");
+                Intent intent = new Intent(this, ConnectedHomePageActivity.class);
+                startActivity(intent);
+            } else if (item.getItemId() == R.id.nav_management) {
+                Log.d(TAG, "Already in Management.");
+            }
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
 
         // Section Selector
         RadioGroup sectionSelector = findViewById(R.id.section_selector);

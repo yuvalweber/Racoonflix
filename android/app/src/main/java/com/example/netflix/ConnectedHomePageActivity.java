@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.netflix.adapters.CategoryAdapter;
+import com.example.netflix.models.Category;
 import com.example.netflix.viewmodels.MovieViewModel;
 import com.google.android.material.navigation.NavigationView;
 
@@ -115,8 +116,13 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
             return true;
         });
 
-        // Observe Default Movies
-        observeMoviesByCategory();
+        if (getIntent().getBooleanExtra("CATEGORY_NAVIGATION", false)) {
+            Log.d(TAG, "Navigating to Categories.");
+            getAllMoviesAndCategories();
+        } else {
+            Log.d(TAG, "Navigating to Home.");
+            observeMoviesByCategory();
+        }
     }
 
     private void observeMoviesByCategory() {

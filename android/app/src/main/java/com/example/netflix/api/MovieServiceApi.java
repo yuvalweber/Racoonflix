@@ -16,6 +16,8 @@ import retrofit2.http.DELETE;
 
 
 public interface MovieServiceApi {
+    //create tag for logging
+    static final String TAG = "MovieServiceApi";
     @GET("/api/movies")
     Call<List<Movie>> getMovies(@Header("Authorization") String token);
 
@@ -33,4 +35,8 @@ public interface MovieServiceApi {
 
     @DELETE("/api/movies/{id}")
     Call<Void> deleteMovie(@Header("Authorization") String token, @Path("id") String id);
+
+    @GET("/api/movies/{id}/recommend")
+    Call<List<Movie>> getRecommendedMovies(@Header("Authorization") String token, @Path("id") String movieId);
+
 }

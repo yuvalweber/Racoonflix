@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
     <!-- Main Content -->
     <LinearLayout
@@ -44,16 +45,44 @@
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:maxLines="1" />
-
         </RelativeLayout>
 
-        <!-- RecyclerView for Movies -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_categories"
+        <!-- Scrollable Content -->
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="8dp" />
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Random Movie Player -->
+                <FrameLayout
+                    android:id="@+id/random_movie_player_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@android:color/black">
+
+                    <!-- VideoView for Playing Movie -->
+                    <VideoView
+                        android:id="@+id/video_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center" />
+                </FrameLayout>
+
+                <!-- RecyclerView for Movies -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_categories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:padding="8dp" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 
     <!-- Navigation Drawer -->

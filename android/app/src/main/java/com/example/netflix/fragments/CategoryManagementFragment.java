@@ -67,6 +67,7 @@ public class CategoryManagementFragment extends Fragment {
 
         // Initialize fields
         EditText categoryName = view.findViewById(R.id.edit_category_name);
+        EditText newCategoryName = view.findViewById(R.id.edit_new_category_name);
         EditText categoryMovies = view.findViewById(R.id.edit_category_movies);
         Switch promotedSwitch = view.findViewById(R.id.switch_promoted);
         Button submitButton = view.findViewById(R.id.button_submit);
@@ -74,7 +75,11 @@ public class CategoryManagementFragment extends Fragment {
         // Configure Submit Button Action
         submitButton.setOnClickListener(v -> {
             Category category = new Category();
-            category.setName(categoryName.getText().toString().trim());
+            if (!newCategoryName.getText().toString().isEmpty()) {
+                category.setName(newCategoryName.getText().toString().trim());
+            } else {
+                category.setName(categoryName.getText().toString().trim());
+            }
             if (!categoryMovies.getText().toString().isEmpty()) {
                 String[] movies = categoryMovies.getText().toString().split(",");
                 // remove leading and trailing whitespaces

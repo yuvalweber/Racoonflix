@@ -13,6 +13,7 @@ public class Movie implements Serializable {
     private int duration;
     private String image;
     private String trailer;
+    private int movieId;
 
     // Getter for id
     public String getId() {
@@ -97,6 +98,15 @@ public class Movie implements Serializable {
         this.trailer = trailer;
     }
 
+    // Getter and Setter for movieId
+    public String getMovieId() {
+        return String.valueOf(movieId);
+    }
+
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -108,6 +118,7 @@ public class Movie implements Serializable {
                 ", duration=" + duration +
                 ", image='" + image + '\'' +
                 ", trailer='" + trailer + '\'' +
+                ", movieId=" + movieId +
                 '}';
     }
 }

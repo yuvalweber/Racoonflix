@@ -14,11 +14,13 @@
         <!-- Title -->
         <TextView
             android:id="@+id/management_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Manage Movies"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:gravity="center"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp" />
 
@@ -27,8 +29,21 @@
             android:id="@+id/edit_movie_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Title"
+            android:hint="Title (required)"
+            android:textColorHint="@color/gray"
             android:padding="12dp"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="12dp" />
+
+        <!-- new movie title-->
+        <EditText
+            android:id="@+id/edit_new_movie_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="New Movie Title"
+            android:textColorHint="@color/gray"
+            android:padding="12dp"
+            android:textColor="@android:color/white"
             android:layout_marginBottom="12dp" />
 
         <!-- Movie Categories -->
@@ -37,7 +52,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Categories (comma-separated)"
+            android:textColorHint="@color/gray"
             android:padding="12dp"
+            android:textColor="@android:color/white"
             android:layout_marginBottom="12dp" />
 
         <!-- Movie Year -->
@@ -46,8 +63,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Year"
+            android:textColorHint="@color/gray"
             android:inputType="number"
             android:padding="12dp"
+            android:textColor="@android:color/white"
             android:layout_marginBottom="12dp" />
 
         <!-- Movie Director -->
@@ -56,7 +75,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Director"
+            android:textColorHint="@color/gray"
             android:padding="12dp"
+            android:textColor="@android:color/white"
             android:layout_marginBottom="12dp" />
 
         <!-- Movie Duration -->
@@ -65,8 +86,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Duration (minutes)"
+            android:textColorHint="@color/gray"
             android:inputType="number"
             android:padding="12dp"
+            android:textColor="@android:color/white"
             android:layout_marginBottom="12dp" />
 
         <!-- Movie Image URL -->
@@ -75,8 +98,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Image URL"
+            android:textColorHint="@color/gray"
             android:inputType="textUri"
             android:padding="12dp"
+            android:textColor="@android:color/white"
             android:layout_marginBottom="12dp" />
 
         <!-- Movie Trailer URL -->
@@ -85,8 +110,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Trailer URL"
+            android:textColorHint="@color/gray"
             android:inputType="textUri"
             android:padding="12dp"
+            android:textColor="@android:color/white"
             android:layout_marginBottom="12dp" />
 
         <!-- Submit Button -->
@@ -96,6 +123,5 @@
             android:layout_height="wrap_content"
             android:text="Submit"
             android:layout_marginTop="16dp" />
-
     </LinearLayout>
 </ScrollView>

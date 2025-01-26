@@ -1,84 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:background="@color/black">
 
+    <!-- Main Content -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <!-- Page Title -->
-        <TextView
-            android:id="@+id/management_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Management Page"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Section Selection -->
-        <RadioGroup
-            android:id="@+id/section_selector"
+        <!-- Toolbar Row with Hamburger -->
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:background="@android:color/white"
+            android:padding="8dp">
 
-            <RadioButton
-                android:id="@+id/section_categories"
+            <!-- Hamburger Icon -->
+            <ImageView
+                android:id="@+id/hamburger_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_menu"
+                app:tint="@android:color/black"
+                android:contentDescription="Menu Icon" />
+
+            <!-- Page Title -->
+            <TextView
+                android:id="@+id/management_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Categories"
-                android:layout_marginEnd="16dp" />
+                android:layout_centerInParent="true"
+                android:text="Management"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black" />
+        </RelativeLayout>
 
-            <RadioButton
-                android:id="@+id/section_movies"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Movies" />
-        </RadioGroup>
-
-        <!-- Action Selection -->
-        <RadioGroup
-            android:id="@+id/action_selector"
+        <!-- Scrollable Content -->
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-            <RadioButton
-                android:id="@+id/action_create"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Create"
-                android:layout_marginEnd="16dp" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <RadioButton
-                android:id="@+id/action_update"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Update"
-                android:layout_marginEnd="16dp" />
+                <!-- Section Selector -->
+                <RadioGroup
+                    android:id="@+id/section_selector"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/action_delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Delete" />
-        </RadioGroup>
+                    <RadioButton
+                        android:id="@+id/section_categories"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Categories"
+                        android:textColor="@android:color/white"
+                        android:layout_marginEnd="16dp" />
 
-        <!-- Dynamic Form Container -->
-        <FrameLayout
-            android:id="@+id/form_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
+                    <RadioButton
+                        android:id="@+id/section_movies"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Movies"
+                        android:textColor="@android:color/white" />
+                </RadioGroup>
 
+                <!-- Action Selector -->
+                <RadioGroup
+                    android:id="@+id/action_selector"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/action_create"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Create"
+                        android:textColor="@android:color/white"
+                        android:layout_marginEnd="16dp" />
+
+                    <RadioButton
+                        android:id="@+id/action_update"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Update"
+                        android:textColor="@android:color/white"
+                        android:layout_marginEnd="16dp" />
+
+                    <RadioButton
+                        android:id="@+id/action_delete"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Delete"
+                        android:textColor="@android:color/white" />
+                </RadioGroup>
+
+                <!-- Dynamic Form Container -->
+                <FrameLayout
+                    android:id="@+id/form_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp" />
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
-</ScrollView>
+
+    <!-- Navigation Drawer -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        android:background="@android:color/white"
+        app:menu="@menu/drawer_menu" />
+</androidx.drawerlayout.widget.DrawerLayout>

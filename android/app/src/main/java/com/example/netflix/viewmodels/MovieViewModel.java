@@ -1,6 +1,7 @@
 package com.example.netflix.viewmodels;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -15,6 +16,9 @@ import java.util.Map;
 import retrofit2.Callback;
 
 public class MovieViewModel extends AndroidViewModel {
+
+    //creare a tag for logging
+    private static final String TAG = "MovieViewModel";
 
     private final MovieRepository repository;
 
@@ -54,4 +58,9 @@ public class MovieViewModel extends AndroidViewModel {
     public List<Movie> fetchMoviesIdByName(String [] movieTitles) {
         return repository.fetchMoviesIdByNameSync(movieTitles);
     }
+    public LiveData<List<Movie>> getRecommendedMovies(String movieId) {
+        Log.d(TAG, "getRecommendedMovies: " + movieId);
+        return repository.fetchRecommendedMovies(movieId);
+    }
+
 }
