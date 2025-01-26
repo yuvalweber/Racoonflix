@@ -44,18 +44,31 @@ const ConnectedHomePage = () => {
           const seenMovieIds = new Set(seenMovies.map((userMovie) => userMovie.movieId));
           const tempLatestMovies = response.data
             .slice(-20) // Get the last 20 movies from the data
-            .filter((movieObject) => seenMovieIds.has(movieObject._id)); // Only include seen movies
-          var latestMovies = tempLatestMovies;
+            .filter((movieObject) => seenMovieIds.has(movieObject._id)); // Only include seen movies and if not in array yet
+         // remove duplicates using loop 
+          var latestMovies = [];
+          for (let i = 0; i < tempLatestMovies.length; i++) {
+            let j;
+            for (j = 0; j < latestMovies.length; j++) {
+              if (tempLatestMovies[i]._id === latestMovies[j]._id) {
+                break;
+              }
+            }
+            if (j === latestMovies.length) {
+              latestMovies.push(tempLatestMovies[i]);
+            }
+          }
         }
         const translateCategories = async (categories) => {
           try {
-            const response = await axios.get(`/api/categories`);
-            const categoriesFetched = response.data;
+            const categoryRes = await axios.get(`/api/categories`);
+            const categoriesFetched = categoryRes.data;
 
             const translatedCategories = categories.map((category) => {
               const categoryFound = categoriesFetched.find((element) => element._id === category);
-              return categoryFound ? categoryFound.name : null;
+              return categoryFound && categoryFound.promoted ? categoryFound.name : null;
             }).filter((name) => name);  // Filter out null values
+            // remove all non promoted categories
             return { type: "success", message: translatedCategories };  // Return object with type and message
           } catch (error) {
             return { type: "error", message: error.message };  // Return error message if request fails
@@ -72,7 +85,16 @@ const ConnectedHomePage = () => {
             movieCategories.message.forEach((category) => {
               const categoryName = category;
               if (!categorizedMovies[categoryName]) categorizedMovies[categoryName] = [];
-              categorizedMovies[categoryName].push(movie);
+              // add movie only if it is not in the list
+              let i;
+              for (i = 0; i < categorizedMovies[categoryName].length; i++) {
+                if (movie._id === categorizedMovies[categoryName][i]._id) {
+                  break;
+                }
+              }
+              if (i === categorizedMovies[categoryName].length) {
+                categorizedMovies[categoryName].push(movie);
+              }
             });
           }
         });

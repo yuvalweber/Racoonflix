@@ -69,25 +69,25 @@ const getMovies = async (userId) => {
 	try {
 		const user = await User.findById(userId);
 		const seenMovies = user.seenMovies;
+		const seenMoviesIds = seenMovies.map((movie) => movie.movieId);
 		const categories = await Category.find({promoted: true});
 		let movies = [];
 		for (let i = 0; i < categories.length; i++) {
 			const category = categories[i];
 			const categoryMovies = category.movies;
+			let counter = 0;
 			for (let j = 0; j < categoryMovies.length; j++) {
 				const movie = await Movie.findById(categoryMovies[j]);
-				let counter = 0;
-				if (!seenMovies.includes(movie._id)) {
-					counter++;
-					movies.push(movie);
-					if (counter == 20) {
-						break;
-					}
-				}
+				counter++;
+				movies.push(movie);
+				if (counter == 20) {
+					break;
+				}	
 			}
 		}
 		// add the last 20 seen movies to the list 
-		movies.push(...await Movie.find({_id: {$in: seenMovies}}).sort({createdAt: -1}).limit(20));
+		let lastSeenMovies = await Movie.find({_id: {$in: seenMoviesIds}}).sort({createdAt: -1}).limit(20)
+		movies.push(...lastSeenMovies);
 		return movies;
 	}
 	catch {
