@@ -5,7 +5,7 @@ import './homePageBackground.css'
 const Icon = () => { return(
     <div className="top-right-icon">
         <Link to="/">
-            <img src="/images/icon.png" alt="Icon" className="icon-image-racoon" />
+            <img src="/images/newLogo.webp" alt="Icon" className="icon-image-racoon" />
         </Link>
     </div>
 );};

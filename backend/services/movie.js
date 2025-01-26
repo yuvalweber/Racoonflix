@@ -267,14 +267,14 @@ const getRecommendations = async (userId, movieId) => {
         }
 		// get the movie ids from the message
 		const movieIds = message.split(" ");
-		let movies = [];
+		let recommendedMovies = [];
 		for (let i = 0; i < movieIds.length; i++) {
 			const movie = await getMovieByMovieId(movieIds[i]);
 			if (movie) {
-				movies.push(movie);
+				recommendedMovies.push(movie);
 			}
 		}
-		return movies;
+		return recommendedMovies;
     }
     catch {
         return undefined;
