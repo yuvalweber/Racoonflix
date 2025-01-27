@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/navbar'; // Navbar component to display top navigation
 import Category from '../components/category'; // Category component to display movies grouped by categories
 import axios from 'axios'; // Used to fetch data from an API
+import { ThemeContext } from '../components/themeContext'; // Import ThemeContext
+import { useContext } from 'react'; // Import useContext hook
 import { useAuth } from '../Authentication/AuthContext';
 import MovieInfoPage from './movieInfoPage';
 import '../components/category.css'; // CSS for the category component
@@ -11,6 +13,7 @@ axios.defaults.baseURL = 'http://localhost:8080';
 
 const AllMoviesPage = () => {
   const { token, userData } = useAuth();
+  const { isDarkMode } = useContext(ThemeContext); // Access dark/light mode
   const [isAdmin, setIsAdmin] = useState(false);
   const [moviesByCategory, setMoviesByCategory] = useState({});
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -64,7 +67,7 @@ const AllMoviesPage = () => {
   }, []);
 
   return (
-	<div>
+  <div className={isDarkMode ? 'connected-home-page-dark-mode' : 'connected-home-page-light-mode'}>
     {/* Navbar component for navigation */}
 		 <Navbar isAdmin={isAdmin} />
     {/* Background */}

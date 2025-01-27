@@ -4,13 +4,17 @@ import VideoPlayer from '../components/videoPlayer';  // The VideoPlayer compone
 import Category from '../components/category';  // Category component to display movies grouped by categories
 import axios from 'axios';  // Used to fetch data from an API
 import { useAuth } from '../Authentication/AuthContext';
+import { ThemeContext } from '../components/themeContext'; // Import ThemeContext
+import { useContext } from 'react';  // Import useContext hook
 import MovieInfoPage from './movieInfoPage';
 import './connectedHomePage.css';  // Styles for the home page
+import '../components/category.css';  // Styles for the category component
 
 axios.defaults.baseURL = 'http://localhost:8080';
 
 const ConnectedHomePage = () => {
   const { token , userData } = useAuth();
+  const { isDarkMode } = useContext(ThemeContext); // Access dark/light mode
   const [isAdmin, setIsAdmin] = useState(false);
   const [moviesByCategory, setMoviesByCategory] = useState({});  // State to store movies by category
   const [userId, setUserId] = useState('');
@@ -113,12 +117,11 @@ const ConnectedHomePage = () => {
   }, [userId]);  // Empty dependency array, runs only once on mount
 
   return (
-	<div>
+   <div className={isDarkMode ? 'connected-home-page-dark-mode' : 'connected-home-page-light-mode'}>
     {/* Navbar component for navigation */}
 		 <Navbar isAdmin={isAdmin} />
     {/* Background */}
     <div id="mainContainer" className="bg-dark text-white vh-100">
-
       {/* Video Player Section */}
       <div className="d-flex flex-column align-items-center mt-5">
         <div className="video-box">

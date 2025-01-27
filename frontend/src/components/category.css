@@ -18,8 +18,7 @@
   .movies-list {
     display: flex;
     overflow-x: auto;  /* Enable horizontal scrolling if movies exceed container width */
-    gap: 10px;  /* Space between movie items */
-    
+    gap: 10px;  /* Space between movie items */    
   }
   
   .movie-item {

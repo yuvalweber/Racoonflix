@@ -2,13 +2,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../components/navbar"; // Navbar component to display top navigation
 import "./searchPage.css"; // Import the CSS file
+import { ThemeContext } from '../components/themeContext'; // Import ThemeContext
+import { useContext } from 'react'; // Import useContext hook
 import MovieCard from "../components/movieCard"; // Import the MovieCard component
 import MovieInfoPage from "./movieInfoPage"; // Import the MovieInfoPage component
+import { useAuth } from '../Authentication/AuthContext';
 
 axios.defaults.baseURL = 'http://localhost:8080';
 
 const SearchPage = () => {
     const [query, setQuery] = useState("");
+    const { isDarkMode } = useContext(ThemeContext); // Access dark/light mode
+    const { token, userData } = useAuth();
+    const [isAdmin, setIsAdmin] = useState(false);
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const [hasFetched, setHasFetched] = useState(false); // Track if API has fetched at least once
@@ -22,7 +28,15 @@ const SearchPage = () => {
         setSelectedMovie(null);
       };
     
-  
+    useEffect(() => {
+      if (token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; 
+      }
+      if (userData) {
+        setIsAdmin(userData.isAdmin);
+      }
+    }, [token, userData]);
+
     useEffect(() => {
       const fetchResults = async () => {
         if (!query.trim()) {
@@ -53,8 +67,8 @@ const SearchPage = () => {
     }, [query]);
 
     return (
-      <div>
-        <Navbar />
+      <div className={isDarkMode ? 'search-page-dark-mode' : 'search-page-light-mode'}>
+		    <Navbar isAdmin={isAdmin} />
         <div id="mainContainer" className="bg-dark text-white vh-100">
             {/* Transparent Box */}
             <div className="transparent-box"></div>
