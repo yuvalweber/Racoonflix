@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.netflix.R;
+import com.example.netflix.database.AppDatabase;
 import com.example.netflix.models.Category;
 import com.example.netflix.models.Movie;
 import com.example.netflix.viewmodels.CategoryViewModel;
@@ -206,7 +207,19 @@ public class CategoryManagementFragment extends Fragment {
             promotedSwitch.setVisibility(View.GONE);
             TextView promotedLabel = view.findViewById(R.id.label_promoted);
             promotedLabel.setVisibility(View.GONE);
-        }
+        } else if ("Create".equals(action)) {
+             newCategoryName.setVisibility(View.GONE);
+         }
+
+        // because we changed info about categories lets invalidate the cache
+        AppDatabase appDatabase = AppDatabase.getInstance(getContext());
+        Thread thread = new Thread(() -> {appDatabase.categoryDao().clearCategories();});
+        thread.start();
+        try {
+            thread.join();
+         } catch (InterruptedException e) {
+             e.printStackTrace();
+         }
 
         return view;
     }
