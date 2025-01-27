@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.netflix.api.UserApiService;
 import com.example.netflix.database.AppDatabase;
 import com.example.netflix.entities.CategoryEntity;
+import com.example.netflix.entities.MovieEntity;
 import com.example.netflix.entities.TokenEntity;
 import com.example.netflix.models.Category;
 import com.example.netflix.models.Movie;
@@ -24,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -93,7 +95,13 @@ public class MovieRepository {
                         List<Category> categories = response.body();
 
                         // Update the database
-                        appDatabase.categoryDao().clearCategories();
+                        Thread thread = new Thread( () -> {appDatabase.categoryDao().clearCategories();});
+                        thread.start();
+                        try {
+                            thread.join();
+                        } catch (InterruptedException e) {
+                            Log.e(TAG, "Error clearing categories", e);
+                        }
                         List<CategoryEntity> categoryEntities = categories.stream()
                                 .map(category -> new CategoryEntity(
                                         category.getId(),
@@ -101,7 +109,13 @@ public class MovieRepository {
                                         category.isPromoted(),
                                         System.currentTimeMillis()))
                                 .collect(Collectors.toList());
-                        appDatabase.categoryDao().insertCategories(categoryEntities);
+                        Thread thread2 = new Thread(() -> {appDatabase.categoryDao().insertCategories(categoryEntities);});
+                        thread2.start();
+                        try {
+                            thread2.join();
+                        } catch (InterruptedException e) {
+                            Log.e(TAG, "Error inserting categories", e);
+                        }
 
                         fetchAndCategorizeMoviesByUser(liveData, token, categories, tokenEntity.getUserId());
                     }
@@ -119,6 +133,62 @@ public class MovieRepository {
     }
 
     private void fetchAndCategorizeMoviesByUser(MutableLiveData<Map<String, List<Movie>>> liveData, String token, List<Category> categories, String userId) {
+        // check if movies cached in the database
+        long currentTime = System.currentTimeMillis();
+        long validTime = currentTime - 3600000; // 1 hour in milliseconds
+        AtomicReference<List<MovieEntity>> localMovies = new AtomicReference<>(new ArrayList<>());
+        Thread thread = new Thread(() -> {
+            localMovies.set(appDatabase.movieDao().getValidMovies(validTime));});
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Error getting movies", e);
+        }
+        if (!localMovies.get().isEmpty()) {
+            // Convert MovieEntity to Movie
+            List<Movie> movies = localMovies.get().stream()
+                    .map(entity -> {
+                        Movie movie = new Movie();
+                        movie.setId(entity.getMovieId());
+                        movie.setCategory(entity.getCategory());
+                        movie.setTitle(entity.getTitle());
+                        movie.setYear(entity.getYear());
+                        movie.setDirector(entity.getDirector());
+                        movie.setDuration(entity.getDuration());
+                        movie.setImage(entity.getImage());
+                        movie.setTrailer(entity.getTrailer());
+                        return movie;
+                    })
+                    .collect(Collectors.toList());
+
+            Log.d(TAG, "Movies fetched from local database: " + movies);
+
+            userApi.getUser(token, userId).enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> userResponse) {
+                    if (!userResponse.isSuccessful() || userResponse.body() == null) {
+                        Log.e(TAG, "Failed to fetch user: " + userResponse.message());
+                        liveData.postValue(new HashMap<>());
+                        return;
+                    }
+
+                    User user = userResponse.body();
+                    Set<String> seenMovieIds = user.getSeenMovies().stream()
+                            .map(movie -> movie.getMovieId())
+                            .collect(Collectors.toSet());
+
+                    Map<String, List<Movie>> categorizedMovies = categorizeMoviesByCategories(movies, categories, seenMovieIds);
+                    liveData.postValue(categorizedMovies);
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    Log.e(TAG, "Failed to fetch user: " + t.getMessage(), t);
+                    liveData.postValue(new HashMap<>());
+                }
+            });
+        } else {
         movieApi.getMovies(token).enqueue(new Callback<List<Movie>>() {
             @Override
             public void onResponse(Call<List<Movie>> call, Response<List<Movie>> movieResponse) {
@@ -129,6 +199,36 @@ public class MovieRepository {
                 }
 
                 List<Movie> movies = movieResponse.body();
+
+                // Update the database
+                Thread thread2 = new Thread(() -> {appDatabase.movieDao().clearMovies();});
+                thread2.start();
+                try {
+                    thread2.join();
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Error clearing movies", e);
+                }
+
+                List<MovieEntity> movieEntities = movies.stream()
+                        .map(movie -> new MovieEntity(
+                                movie.getId(),
+                                movie.getTitle(),
+                                movie.getYear(),
+                                movie.getDirector(),
+                                movie.getCategory(),
+                                movie.getDuration(),
+                                movie.getImage(),
+                                movie.getTrailer(),
+                                System.currentTimeMillis()))
+                        .collect(Collectors.toList());
+
+                Thread thread3 = new Thread(() -> {appDatabase.movieDao().insertMovies(movieEntities);});
+                thread3.start();
+                try {
+                    thread3.join();
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Error inserting movies", e);
+                }
 
                 userApi.getUser(token, userId).enqueue(new Callback<User>() {
                     @Override
@@ -162,6 +262,7 @@ public class MovieRepository {
                 liveData.postValue(new HashMap<>());
             }
         });
+        }
     }
 
     private Map<String, List<Movie>> categorizeMoviesByCategories(List<Movie> movies, List<Category> categories, Set<String> seenMovieIds) {
