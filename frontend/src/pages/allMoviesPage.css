@@ -1,0 +1,34 @@
+/* General page styles */
+.all-movies-page {
+    min-height: 100vh;
+    width: 100%;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Category title styling */
+  .categories .category-title {
+    color: red !important; /* Always red */
+    font-size: 1.5rem; /* Adjust size if needed */
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+
+  .all-movies-page-dark-mode #mainContainer {
+    background-image: url(/public/images/genericHomePageBackground.webp); /* Remove the background image */
+    background-color: black !important; /* Ensure the background is black */
+    color: white; /* Ensure text is readable */
+    height: 100vh; /* Full viewport height */
+    width: 100%; /* Full width */
+    overflow-y: auto; /* Allow vertical scrolling */
+  }
+  
+
+  .all-movies-page-light-mode #mainContainer {
+    background-image: url(/frontend/public/images/lightBackground.jpg); /* Remove the background image */
+    background-color: wheat !important; /* Ensure the background is black */
+    color: black; /* Ensure text is readable */
+    height: 100vh; /* Full viewport height */
+    width: 100%; /* Full width */
+    overflow-y: auto; /* Allow vertical scrolling */
+  }
