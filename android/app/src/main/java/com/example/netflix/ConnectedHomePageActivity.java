@@ -8,7 +8,10 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.netflix.adapters.CategoryAdapter;
 import com.example.netflix.api.UserApiService;
+import com.example.netflix.models.Movie;
 import com.example.netflix.network.RetrofitInstance;
 import com.example.netflix.repository.UserRepository;
 import com.example.netflix.models.Category;
@@ -28,11 +32,16 @@ import com.example.netflix.network.RetrofitInstance;
 import com.example.netflix.repository.UserRepository;
 import com.example.netflix.viewmodels.MovieViewModel;
 import com.google.android.material.navigation.NavigationView;
+import android.net.Uri;
+import android.media.MediaPlayer;
 
 import com.example.netflix.dao.TokenDao;
 import com.example.netflix.database.AppDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class ConnectedHomePageActivity extends AppCompatActivity {
 
@@ -40,6 +49,10 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EditText searchBar;
     private DrawerLayout drawerLayout;
+
+    private VideoView videoView;
+
+    private FrameLayout movieFrameLayout;
 
     private UserRepository userRepository;
     private MovieViewModel movieViewModel;
@@ -82,9 +95,13 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
                 String query = s.toString().trim();
                 if (s.length() > 2) {
                     Log.d(TAG, "Real-time search query: " + query);
+                    movieFrameLayout.setVisibility(FrameLayout.GONE);
+                    videoView.pause();
                     fetchSearchedMovies(query);
                 } else if (query.isEmpty()) {
                     Log.d(TAG, "Search bar cleared. Returning to default movies.");
+                    movieFrameLayout.setVisibility(FrameLayout.VISIBLE);
+                    videoView.start();
                     observeMoviesByCategory();
                 }
             }
@@ -127,6 +144,8 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
         });
 
         // Initialize ViewModel
+        videoView = findViewById(R.id.video_view);
+        movieFrameLayout = findViewById(R.id.random_movie_player_container);
         movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
 
         // Setup Navigation Item Selection
@@ -143,6 +162,7 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
             } else if(item.getItemId() == R.id.nav_home) {
                 Log.d(TAG, "Fetching default movies by category.");
                 observeMoviesByCategory();
+                fetchAndPlayRandomMovie();
             } else if(item.getItemId() == R.id.nav_management) {
                 Intent intent = new Intent(this, ManagementActivity.class);
                 startActivity(intent);
@@ -156,6 +176,7 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "Navigating to Home.");
             observeMoviesByCategory();
+            fetchAndPlayRandomMovie();
         }
     }
 
@@ -190,6 +211,8 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
 
     private void getAllMoviesAndCategories() {
         movieViewModel.getAllMovies().observe(this, categorizedMovies -> {
+            movieFrameLayout.setVisibility(FrameLayout.GONE);
+            videoView.pause();
             if (categorizedMovies != null && !categorizedMovies.isEmpty()) {
                 Log.d(TAG, "Movies fetched successfully: " + categorizedMovies);
                 CategoryAdapter categoryAdapter = new CategoryAdapter(this, categorizedMovies);
@@ -204,5 +227,50 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void fetchAndPlayRandomMovie() {
+        movieViewModel.getMoviesByCategory().observe(this, movies -> {
+            movieFrameLayout.setVisibility(FrameLayout.VISIBLE);
+            if (movies != null && !movies.isEmpty()) {
+                // Select a random movie
+                Movie randomMovie = getRandomMovie(movies);
+                Log.d(TAG, "Random movie selected: " + randomMovie);
+                if (randomMovie == null) {
+                    Toast.makeText(this, "No movies available to play.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (randomMovie.getTrailer() != null) {
+                    Log.d(TAG, "Playing random movie: " + randomMovie.getTrailer());
+                    playVideo(randomMovie.getTrailer());
+                }
+            }
+        });
+    }
+
+    private Movie getRandomMovie(Map<String, List<Movie>> categorizedMovies) {
+        Random random = new Random();
+        List<Movie> allMovies = new ArrayList<>();
+        for (List<Movie> movieList : categorizedMovies.values()) {
+            allMovies.addAll(movieList);
+        }
+
+        // Return a random movie from the flattened list
+        if (!allMovies.isEmpty()) {
+            return allMovies.get(random.nextInt(allMovies.size()));
+        }
+        return null;
+    }
+
+    private void playVideo(String videoUrl) {
+        videoView.setVideoURI(Uri.parse(videoUrl));
+        videoView.setOnPreparedListener(MediaPlayer::start);
+        videoView.setOnCompletionListener(mp -> {
+            // Optionally restart or show a placeholder when video ends
+            videoView.seekTo(0);
+            videoView.start();
+        });
+    }
+
+
 
 }
