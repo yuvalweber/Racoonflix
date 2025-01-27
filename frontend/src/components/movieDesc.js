@@ -17,8 +17,7 @@ const MovieDesc = ({
 }) => {
   const navigate = useNavigate();
   const [recommendedMovies, setRecommendedMovies] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);  // State to store the selected movie
-  
+  const [selectedMovie, setSelectedMovie] = useState(null);  // State to store the selected movie  
 
   const handleClickMovie = (movieId) => {
     setSelectedMovie(movieId);
@@ -28,7 +27,13 @@ const MovieDesc = ({
     setSelectedMovie(null);
   };
 
-  const handleWatchTrailer = (trailer) => {
+  const handleWatchTrailer = async (trailer) => {
+    // add the movie to the watched list of the user in the recommend system
+    try {
+      await axios.post(`/api/movies/${id}/recommend`);
+    } catch (error) {
+      console.error('Error adding movie to watched list in recommend system:', error);
+    }
     // Navigate to the watch page with the trailer link
     navigate('/play', { state: { trailer } });
   };
@@ -77,7 +82,7 @@ const MovieDesc = ({
             {/* Trailer Link */}
             {trailer && (
               <div>
-                <button className="btn btn-secondary trailer-btn" onClick={() => handleWatchTrailer(trailer)}>Watch Trailer</button>
+                <button className="btn btn-secondary trailer-btn" onClick={() => handleWatchTrailer(trailer)}>Watch Movie</button>
               </div>
             )}
           </div>
