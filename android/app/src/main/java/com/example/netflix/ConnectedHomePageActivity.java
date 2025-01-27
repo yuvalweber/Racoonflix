@@ -1,11 +1,11 @@
 package com.example.netflix;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -26,12 +25,9 @@ import com.example.netflix.api.UserApiService;
 import com.example.netflix.models.Movie;
 import com.example.netflix.network.RetrofitInstance;
 import com.example.netflix.repository.UserRepository;
-import com.example.netflix.models.Category;
-import com.example.netflix.api.UserApiService;
-import com.example.netflix.network.RetrofitInstance;
-import com.example.netflix.repository.UserRepository;
 import com.example.netflix.viewmodels.MovieViewModel;
 import com.google.android.material.navigation.NavigationView;
+import androidx.appcompat.app.AppCompatDelegate;
 import android.net.Uri;
 import android.media.MediaPlayer;
 
@@ -42,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ConnectedHomePageActivity extends AppCompatActivity {
 
@@ -57,10 +54,20 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
     private UserRepository userRepository;
     private MovieViewModel movieViewModel;
 
+    private static final String PREFS_NAME = "theme_prefs";
+    private static final String PREF_DARK_MODE = "is_dark_mode";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connected_home_page);
+
+        // Apply the saved theme preference
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean isDarkMode = prefs.getBoolean(PREF_DARK_MODE, false);
+        AppCompatDelegate.setDefaultNightMode(
+                isDarkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+        );
 
         // Setup DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -148,6 +155,8 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
         movieFrameLayout = findViewById(R.id.random_movie_player_container);
         movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
 
+        AtomicBoolean isCategoryEnabled = new AtomicBoolean(false);
+
         // Setup Navigation Item Selection
         navigationView.setNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.nav_logout) {
@@ -158,6 +167,7 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
                 finish();
             } else if(item.getItemId() == R.id.nav_categories) {
                 Log.d(TAG, "Fetching all movies and categories.");
+                isCategoryEnabled.set(true);
                 getAllMoviesAndCategories();
             } else if(item.getItemId() == R.id.nav_home) {
                 Log.d(TAG, "Fetching default movies by category.");
@@ -166,6 +176,27 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
             } else if(item.getItemId() == R.id.nav_management) {
                 Intent intent = new Intent(this, ManagementActivity.class);
                 startActivity(intent);
+            } else if (item.getItemId() == R.id.action_toggle_theme) {
+                // Toggle the theme
+                SharedPreferences prefs2 = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                boolean isDarkMode2 = prefs2.getBoolean(PREF_DARK_MODE, false);
+
+                // Save the new theme preference
+                SharedPreferences.Editor editor = prefs2.edit();
+                editor.putBoolean(PREF_DARK_MODE, !isDarkMode2);
+                editor.apply();
+
+                // Apply the new theme
+                AppCompatDelegate.setDefaultNightMode(
+                        !isDarkMode2 ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+                );
+
+                if (isCategoryEnabled.get()) {
+                    Intent intent = new Intent(this, ConnectedHomePageActivity.class);
+                    intent.putExtra("CATEGORY_NAVIGATION", true);
+                    finish();
+                    startActivity(intent);
+                }
             }
             return true;
         });

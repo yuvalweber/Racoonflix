@@ -17,7 +17,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
+            android:background="@color/black"
             android:padding="8dp">
 
             <!-- Hamburger Icon -->
@@ -28,7 +28,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_menu"
-                app:tint="@android:color/black"
+                app:tint="@color/white"
                 android:contentDescription="Menu Icon" />
 
             <!-- Search Bar -->
@@ -39,8 +39,10 @@
                 android:layout_toEndOf="@id/hamburger_icon"
                 android:layout_alignParentEnd="true"
                 android:hint="Search for movies"
+                android:textColorHint="@color/gray"
+                android:textColor="@color/white"
                 android:padding="12dp"
-                android:background="@android:color/white"
+                android:background="@color/black"
                 android:drawableStart="@android:drawable/ic_menu_search"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
@@ -64,7 +66,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@android:color/black">
+                    android:background="@color/black">
 
                     <!-- VideoView for Playing Movie -->
                     <VideoView
@@ -92,6 +94,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        android:background="@android:color/white"
+        android:background="@color/black"
+        app:itemTextColor="@color/white"
         app:menu="@menu/drawer_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

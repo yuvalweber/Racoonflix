@@ -84,7 +84,7 @@ android:orientation="vertical">
     android:text="Recommended Movies"
     android:textSize="20sp"
     android:textStyle="bold"
-    android:textColor="@android:color/white"
+    android:textColor="@color/white"
     android:paddingBottom="8dp" />
 
 <!-- Recommended Movies RecyclerView -->

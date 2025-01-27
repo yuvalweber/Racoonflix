@@ -1,6 +1,7 @@
 package com.example.netflix;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -8,6 +9,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -26,10 +28,21 @@ public class ManagementActivity extends AppCompatActivity {
     private String selectedSection = null;
     private String selectedAction = null;
 
+    private static final String PREFS_NAME = "theme_prefs";
+    private static final String PREF_DARK_MODE = "is_dark_mode";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_management);
+
+        // Apply the saved theme preference
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean isDarkMode = prefs.getBoolean(PREF_DARK_MODE, false);
+        AppCompatDelegate.setDefaultNightMode(
+                isDarkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+        );
 
         // Setup DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -67,6 +80,20 @@ public class ManagementActivity extends AppCompatActivity {
                 startActivity(intent);
             } else if (item.getItemId() == R.id.nav_management) {
                 Log.d(TAG, "Already in Management.");
+            } else if (item.getItemId() == R.id.action_toggle_theme) {
+                // Toggle the theme
+                SharedPreferences prefs2 = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                boolean isDarkMode2 = prefs2.getBoolean(PREF_DARK_MODE, false);
+
+                // Save the new theme preference
+                SharedPreferences.Editor editor = prefs2.edit();
+                editor.putBoolean(PREF_DARK_MODE, !isDarkMode2);
+                editor.apply();
+
+                // Apply the new theme
+                AppCompatDelegate.setDefaultNightMode(
+                        !isDarkMode2 ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+                );
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;

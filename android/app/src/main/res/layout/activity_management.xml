@@ -17,7 +17,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
+            android:background="@color/black"
             android:padding="8dp">
 
             <!-- Hamburger Icon -->
@@ -28,7 +28,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_menu"
-                app:tint="@android:color/black"
+                app:tint="@color/white"
                 android:contentDescription="Menu Icon" />
 
             <!-- Page Title -->
@@ -40,7 +40,7 @@
                 android:text="Management"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/white" />
         </RelativeLayout>
 
         <!-- Scrollable Content -->
@@ -67,7 +67,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Categories"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/white"
                         android:layout_marginEnd="16dp" />
 
                     <RadioButton
@@ -75,7 +75,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Movies"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@color/white" />
                 </RadioGroup>
 
                 <!-- Action Selector -->
@@ -91,7 +91,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Create"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/white"
                         android:layout_marginEnd="16dp" />
 
                     <RadioButton
@@ -99,7 +99,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Update"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/white"
                         android:layout_marginEnd="16dp" />
 
                     <RadioButton
@@ -107,7 +107,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Delete"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@color/white" />
                 </RadioGroup>
 
                 <!-- Dynamic Form Container -->
@@ -127,6 +127,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        android:background="@android:color/white"
+        android:background="@color/black"
+        app:itemTextColor="@color/white"
         app:menu="@menu/drawer_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>
