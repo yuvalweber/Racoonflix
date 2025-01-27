@@ -3,6 +3,8 @@ import Navbar from "../components/navbar";
 import ActionSelector from "../components/actionSelector";
 import MovieManagement from "../components/movieManagement";
 import CategoryManagement from "../components/categoryManagement";
+import { ThemeContext } from "../components/themeContext"; // Import ThemeContext
+import { useContext } from "react"; // Import useContext hook
 import SectionSelector from "../components/sectionSelector";
 import "./managmentPage.css"; // Import custom styles
 import '../components/button.css'; // Import custom styles
@@ -10,6 +12,7 @@ import '../components/button.css'; // Import custom styles
 const ManagementPage = () => {
   const [selectedSection, setSelectedSection] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
+  const { isDarkMode } = useContext(ThemeContext); // Access dark/light mode
 
   const handleSectionSelect = (section) => {
     setSelectedSection(section);
@@ -17,7 +20,7 @@ const ManagementPage = () => {
   };
 
   return (
-    <div>
+    <div className={isDarkMode ? 'managment-page-dark-mode' : 'managment-page-light-mode'}>
       {/* Navbar Component */}
       <Navbar />
 

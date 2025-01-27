@@ -85,3 +85,22 @@
     text-shadow: black 0 0 10px;
   }
   
+
+  .search-page-dark-mode #mainContainer {
+    background-image: url(/public/images/genericHomePageBackground.webp); /* Remove the background image */
+    background-color: black !important; /* Ensure the background is black */
+    color: white; /* Ensure text is readable */
+    height: 100vh; /* Full viewport height */
+    width: 100%; /* Full width */
+    overflow-y: auto; /* Allow vertical scrolling */
+  }
+  
+
+  .search-page-light-mode #mainContainer {
+    background-image: url(/public/images/lightBackground.jpg); /* Remove the background image */
+    background-color: wheat !important; /* Ensure the background is black */
+    color: black; /* Ensure text is readable */
+    height: 100vh; /* Full viewport height */
+    width: 100%; /* Full width */
+    overflow-y: auto; /* Allow vertical scrolling */
+  }

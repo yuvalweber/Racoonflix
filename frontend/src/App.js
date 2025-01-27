@@ -12,11 +12,13 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './Authentication/AuthContext';
 import { ProtectedRoute }  from './Authentication/ProtectedRoute';
+import { ThemeProvider } from './components/themeContext';
 
 
 
 const App = () => {
   return (
+	<ThemeProvider>
 	<AuthProvider>
 	<BrowserRouter>
 		<Routes>
@@ -32,6 +34,7 @@ const App = () => {
 		</Routes>
 	</BrowserRouter>
 	</AuthProvider>
+	</ThemeProvider>
   );
 };
 

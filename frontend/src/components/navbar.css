@@ -11,19 +11,80 @@ body {
   padding-top: 56px; /* Adjust this padding to match the navbar's height, to prevent content from being hidden behind it */
 }
 
+/* Custom styling for the 'Home' link */
+.home-link {
+  position: relative; /* Required for pseudo-element positioning */
+  font-size: 1.25rem; /* Adjust the size as you see fit */
+  font-weight: bold; /* Optional: Make it bold */
+  display: flex; /* Align with the navbar items */
+  align-items: center; /* Vertically center the text */
+  margin-top: 0px; /* Move it slightly higher */
+  z-index: 1; /* Ensure the link content is above the background */
+}
 
-  /* Custom styling for the 'Home' link */
- .home-link {
-	font-size: 1.25rem; /* Adjust the size as you see fit */
-	font-weight: bold;  /* Optional: Make it bold */
-	display: flex; /* Align with the navbar items */
-	align-items: center; /* Vertically center the text */
-	margin-top: 0px; /* Move it slightly higher */
-  z-index: 1000;
-  }
-  
-  .nav-link {
-    margin-left: 5px; /* Adds space between the links */
-    color: white; /* Sets the text color to white */
-    margin-top: 0 20px; /* Adds space between the links */
-  }
+/* Light Mode - Black Background with Extended Left Coverage */
+.navbar-light .home-link {
+  position: relative;
+  display: inline-block;
+}
+
+.navbar-light .home-link::before {
+  content: ''; /* Creates the pseudo-element for the black background */
+  position: absolute;
+  top: 0;
+  left: -20px; /* Extend the black box 10px to the left */
+  width: calc(120%); /* Extend the black box horizontally */
+  height: 100%;
+  background-color: black;
+  border-radius: 8px; /* Add rounded corners */
+  z-index: -1; /* Ensure the background appears behind the link */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Optional shadow for a polished look */
+}
+
+/* Adjust the logo visibility in light mode */
+.navbar-light .home-link img {
+  filter: brightness(1); /* Keep the logo clear and visible */
+}
+
+/* Navbar Light and Dark Modes */
+.navbar-dark {
+  background-color: #343a40;
+  color: #f8f9fa;
+}
+
+.navbar-light {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+/* Button styles for light and dark modes */
+.navbar-dark .btn {
+  background-color: #212529; /* Dark button background */
+  color: #f8f9fa; /* Light text */
+  border: 1px solid #f8f9fa; /* Light border */
+}
+
+.navbar-light .btn {
+  background-color: #ffffff; /* Light button background */
+  color: #212529; /* Dark text */
+  border: 1px solid #212529; /* Dark border */
+}
+
+.navbar-light .btn:hover {
+  background-color: #eaeaea; /* Lighter background on hover */
+  color: #000000; /* Darker text on hover */
+}
+
+.navbar-dark .btn:hover {
+  background-color: #444444; /* Slightly lighter dark background on hover */
+  color: #ffffff; /* Ensure text remains visible */
+}
+
+/* Smooth Transition */
+.navbar {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
