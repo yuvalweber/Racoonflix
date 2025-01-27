@@ -237,16 +237,38 @@ const deleteMovieFromRecommendations = async (movieId, userId) => {
 
 
 
-const addMovieToRecommendations = async (movieId, userId) => {
+const addMovieToRecommendations = async (movieIdRec, userId) => {
+	try {
+		// check if the movie is in the user seen movies
+		var user;
+		if (typeof userId === 'string') {
+			user = await User.findById(userId);
+			userId = user.UserId;
+		}
+		else {
+			user = await User.findOne({UserId: userId});
+		}
+		const seenMovies = user.seenMovies;
+		const seenMoviesIds = seenMovies.map((movie) => movie.movieId.toString());
+		// find the movie by movieId
+		const currentMovie = await getMovieByMovieId(movieIdRec);
+		if (!seenMoviesIds.includes(currentMovie._id.toString())) {
+			user.seenMovies.push({ movieId: currentMovie._id, watchedAt: new Date() });
+			await user.save(); // Save the changes
+		}
+	} catch(error) {
+		console.error('Error adding movie to watched list:', error);
+	}
     try {
-        let message = await sendRequestAndWait(`post ${userId} ${movieId}\n`);
+        let message = await sendRequestAndWait(`post ${userId} ${movieIdRec}\n`);
         // if user already exists in the recommendations system
         if (message.includes('404')) {
-            message = await sendRequestAndWait(`patch ${userId} ${movieId}\n`);
+            message = await sendRequestAndWait(`patch ${userId} ${movieIdRec}\n`);
         }
         return message;
     }
-    catch {
+    catch(error) {
+		console.error('Error adding movie to recommendations system:', error);
         return null;
     }
 }
