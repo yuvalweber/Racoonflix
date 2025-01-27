@@ -113,7 +113,7 @@ public class MovieRepository {
 
                                             categories.stream()
                                                     .filter(category -> {
-                                                        boolean isMatch = categoryId != null && category.getId() != null && category.getId().equals(categoryId);
+                                                        boolean isMatch = categoryId != null && category.getId() != null && category.getId().equals(categoryId) && category.isPromoted();
                                                         if (!isMatch) {
                                                             Log.d(TAG, "No match for Category ID: " + categoryId + " in Category: " + category.getId());
                                                         }
