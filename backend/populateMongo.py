@@ -83,7 +83,7 @@ def create_users():
     for i in range(len(users)):
         seen_movies = get_expected_movies_from_list(i)
         json_data = {'firstName': users[i], 'lastName': 'last', 'userName': f"nick-{i}", 'email': f"email-{i}",
-                     'password': 'password', 'profilePicture': '../frontend/public/images/icon.png', 'seenMovies': seen_movies, 'isAdmin': True}
+                     'password': 'password', 'profilePicture': '/images/icon.png', 'seenMovies': seen_movies, 'isAdmin': True}
         requests.post(url, json=json_data, headers=user11IHeader)
 
 def get_recommendations():
