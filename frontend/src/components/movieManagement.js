@@ -8,8 +8,8 @@ const MovieManagement = ({ action }) => {
     id: "",
     title: "",
     category: [], // Array for multiple categories
-    image: "",
-    trailer: "",
+    image: null,
+    trailer: null,
     year: "",
     duration: "",
     director: "",
@@ -17,8 +17,12 @@ const MovieManagement = ({ action }) => {
 
   // Handle input change
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setMovieData({ ...movieData, [name]: value });
+    const { name, type, value, files } = e.target;
+    if (type === "file") {
+      setMovieData({ ...movieData, [name]: files[0] });
+    } else {
+      setMovieData({ ...movieData, [name]: value });
+    }
   };
 
   // Handle category change
@@ -44,8 +48,8 @@ const MovieManagement = ({ action }) => {
     id: "",
     title: "",
     category: [],
-    image: "",
-    trailer: "",
+    image: null,
+    trailer: null,
     year: "",
     duration: "",
     director: "",
@@ -73,7 +77,23 @@ const MovieManagement = ({ action }) => {
           return;
         }
         // Post request to create movie
-        const response = await axios.post("/api/movies", movieDataCopy);
+        const movieDataToSubmit = new FormData();
+
+        // Append all form data to FormData
+        Object.entries(movieDataCopy).forEach(([key, value]) => {
+          if (key === "category") {
+            value.forEach((cat) => movieDataToSubmit.append("category[]", cat));
+          } else {
+            movieDataToSubmit.append(key, value);
+          }
+        });
+
+        const response = await axios.post("/api/movies", movieDataToSubmit, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
         if (response.status === 201) {
           alert("Movie created successfully!");
           setMovieData({ ...initialMovieData });
@@ -81,8 +101,8 @@ const MovieManagement = ({ action }) => {
           alert("Failed to create movie.");
         }
       } catch (error) {
-        console.error("Error processing request:", error.response || error.message);
-        alert(error.response.data?.errors || "An error occurred.");
+        console.error(error);
+        alert("An error occurred.");
       }
     }
 
@@ -104,7 +124,7 @@ const MovieManagement = ({ action }) => {
         }
       } catch (error) {
         console.error("Error processing request:", error.response || error.message);
-        alert(error.response.data?.errors || "An error occurred.");
+        alert("An error occurred.");
       }
     }
 
@@ -118,8 +138,11 @@ const MovieManagement = ({ action }) => {
         }
         const movieDataCopy = { ...movieData };
         delete movieDataCopy.id;
-        // put request to update movie
-        const response = await axios.put(`/api/movies/${movieData.id}`, movieDataCopy);
+        const response = await axios.put(`/api/movies/${movieData.id}`, movieDataCopy, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
         if (response.status === 204) {
           alert("Movie updated successfully!");
           setMovieData({ ...initialMovieData });
@@ -128,7 +151,7 @@ const MovieManagement = ({ action }) => {
         }
       } catch (error) {
         console.error("Error processing request:", error.response || error.message);
-        alert(error.response.data?.errors || "An error occurred.");
+        alert("An error occurred.");
       }
     }
   };
@@ -149,20 +172,22 @@ const MovieManagement = ({ action }) => {
               value={movieData.title}
               onChange={handleInputChange}
             />
+            <label for="movie_image">Image (required)</label>
             <input
-              type="text"
-              placeholder="Image URL (required)"
+              type="file"
+              id="movie_image"
+              placeholder="Image (required)"
               className="form-control cardField"
               name="image"
-              value={movieData.image}
               onChange={handleInputChange}
             />
+            <label for="movie_file">Movie (required)</label>
             <input
-              type="text"
-              placeholder="Trailer URL (required)"
+              type="file"
+              id="movie_file"
+              placeholder="Trailer (required)"
               className="form-control cardField"
               name="trailer"
-              value={movieData.trailer}
               onChange={handleInputChange}
             />
             <input
@@ -262,20 +287,22 @@ const MovieManagement = ({ action }) => {
               value={movieData.title}
               onChange={handleInputChange}
             />
+            <label for="movie_image_update">Image</label>
             <input
-              type="text"
-              placeholder="Image URL"
+              id="movie_image_update"
+              type="file"
+              placeholder="Image"
               className="form-control cardField"
               name="image"
-              value={movieData.image}
               onChange={handleInputChange}
             />
+            <label for="movie_file_update">movie</label>
             <input
-              type="text"
-              placeholder="Trailer URL"
+              id="movie_file_update"
+              type="file"
+              placeholder="Trailer"
               className="form-control cardField"
               name="trailer"
-              value={movieData.trailer}
               onChange={handleInputChange}
             />
             <input
