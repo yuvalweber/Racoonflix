@@ -1,16 +1,16 @@
 /* General page styles */
 .all-movies-page {
-    min-height: 100vh;
-    width: 100%;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh; /* Full viewport height */
+    width: 100%; /* Full width */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
   }
   
   /* Category title styling */
   .categories .category-title {
     color: red !important; /* Always red */
     font-size: 1.5rem; /* Adjust size if needed */
-    font-weight: bold;
-    margin-bottom: 1rem;
+    font-weight: bold; /* Bold text */
+    margin-bottom: 1rem; /* Space between categories */
   }
   
 

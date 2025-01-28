@@ -1,5 +1,6 @@
 import React from 'react';
 
+// FormField component
 const FormField = ({ id, label, type, value, onChange, required }) => (
   <div className="mb-3">
     <label htmlFor={id} className="form-label">{label}</label>

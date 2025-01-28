@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import './errObj.css';
 
+// Error object component
 const ErrObj = ({ error }) => {
     const { status, response } = error || {status: "400" , response: { data: { errors: 'Unknown error' } } };
     return (

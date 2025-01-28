@@ -4,10 +4,12 @@ import { ThemeContext } from './themeContext';
 import Logout from './logout';
 import './navbar.css';
 
+// Navbar component
 const Navbar = ({ isAdmin }) => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext); // Use ThemeContext
 
   return (
+    // Navbar with links to home, all movies, search, theme toggle, logout, and management
     <nav className={`navbar navbar-expand-lg ${isDarkMode ? 'navbar-dark bg-dark' : 'navbar-light bg-light'} position-fixed top-0 start-0 w-100`}>
       <div className="container-fluid">
         <div className="collapse navbar-collapse" id="navbarNav">
@@ -28,10 +30,12 @@ const Navbar = ({ isAdmin }) => {
           </ul>
           <ul className="navbar-nav">
             <li className="nav-item">
+                {/* Button to toggle between light and dark mode */}
               <button
                 className={`btn ${isDarkMode ? 'btn-outline-light' : 'btn-outline-dark'} me-2`}
                 onClick={toggleTheme}
               >
+                {/* Icon for theme toggle */}
                 {isDarkMode ? 'Light Mode' : 'Dark Mode'}
               </button>
             </li>

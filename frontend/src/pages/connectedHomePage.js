@@ -20,14 +20,17 @@ const ConnectedHomePage = () => {
   const [userId, setUserId] = useState('');
   const [selectedMovie, setSelectedMovie] = useState(null);  // State to store the selected movie
 
+  // Function to handle when a movie is clicked
   const handleClickMovie = (movieId) => {
     setSelectedMovie(movieId);
   };
 
+  // Function to handle when the popup is closed
   const handleClosePopup = () => {
     setSelectedMovie(null);
   };
 
+  // UseEffect to check if the user is an admin and set the Authorization header
   useEffect(() => {
 		if (token) {
 		  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -38,16 +41,18 @@ const ConnectedHomePage = () => {
 		}
 	  }, [token, userData]); // Set the Authorization header once on mount
 
+  // UseEffect to fetch movies and categories from the API
   useEffect(() => {
     const fetchMovies = async () => {
       try {
         const response = await axios.get('/api/movies');  // Fetch movies from the API
         if (userId) {
+          // Fetch the user's seen movies
           const userResponse = await axios.get(`/api/users/${userId}`);
           const seenMovies = userResponse.data?.seenMovies || [];
           const seenMovieIds = new Set(seenMovies.map((userMovie) => userMovie.movieId));
           const tempLatestMovies = response.data
-            .slice(-20) // Get the last 20 movies from the data
+            .slice(-20) // Get the last 20 movies from the data, these are the seen movies (possibly)
             .filter((movieObject) => seenMovieIds.has(movieObject._id)); // Only include seen movies and if not in array yet
          // remove duplicates using loop 
           var latestMovies = [];
@@ -63,6 +68,7 @@ const ConnectedHomePage = () => {
             }
           }
         }
+        // Function to translate the category IDs to category names
         const translateCategories = async (categories) => {
           try {
             const categoryRes = await axios.get(`/api/categories`);

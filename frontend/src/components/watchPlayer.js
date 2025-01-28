@@ -1,5 +1,6 @@
 import React from 'react';
 
+// WatchPlayer component
 const WatchPlayer = ({ videoUrl }) => {
   return (
     <div className="video-container">

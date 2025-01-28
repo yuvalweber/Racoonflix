@@ -1,24 +1,26 @@
+/* Styles for the card component */
 .card {
-	background-color: rgba(0, 0, 0, 0.75); 
-	color: white; 
+    background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent black background */
+    color: white; /* White text color */
 }
 
+/* Styles for fields within the card */
 .cardField {
-	background-Color: rgba(0, 0, 0, 0.5);
-	color: white;
-	border: 1px solid #ccc;
-	margin-bottom: 3px;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    color: white; /* White text color */
+    border: 1px solid #ccc; /* Light gray border */
+    margin-bottom: 3px; /* Small margin at the bottom */
 }
 
+/* Styles for focused fields within the card */
 .cardField:focus {
-	background-color: rgba(0, 0, 0, 0.5);
-	color: white; 
-	border-color: white; 
-	outline: none; 
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    color: white; /* White text color */
+    border-color: white; /* White border color when focused */
+    outline: none; /* Remove default outline */
 }
 
-/* Change placeholder text color to white */
+/* Change placeholder text color to gray */
 .cardField::placeholder {
-	color: gray;  /* White placeholder text */
+    color: gray; /* Gray placeholder text */
 }
-  

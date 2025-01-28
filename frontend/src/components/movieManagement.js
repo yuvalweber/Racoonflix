@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios"; // Import axios
 import "./card.css";
 
+// MovieManagement component
 const MovieManagement = ({ action }) => {
   const [movieData, setMovieData] = useState({
     id: "",
@@ -14,26 +15,31 @@ const MovieManagement = ({ action }) => {
     director: "",
   });
 
+  // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setMovieData({ ...movieData, [name]: value });
   };
 
+  // Handle category change
   const handleCategoryChange = (index, value) => {
     const updatedCategories = [...movieData.category];
     updatedCategories[index] = value;
     setMovieData({ ...movieData, category: updatedCategories });
   };
 
+  // Add category field
   const addCategoryField = () => {
     setMovieData({ ...movieData, category: [...movieData.category, ""] });
   };
 
+  // Remove category field
   const removeCategoryField = (index) => {
     const updatedCategories = movieData.category.filter((_, i) => i !== index);
     setMovieData({ ...movieData, category: updatedCategories });
   };
 
+  // Initial movie data after form submission
   const initialMovieData = {
     id: "",
     title: "",
@@ -45,14 +51,17 @@ const MovieManagement = ({ action }) => {
     director: "",
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Check if create, delete, or update action
+    // Create movie
     if (action === "Create") {
       try {
         const movieDataCopy = { ...movieData };
         delete movieDataCopy.id;
-
+        // Check if required fields are filled
         if (
           !movieDataCopy.title ||
           !movieDataCopy.image ||
@@ -63,7 +72,7 @@ const MovieManagement = ({ action }) => {
           alert("Please fill in all required fields.");
           return;
         }
-
+        // Post request to create movie
         const response = await axios.post("/api/movies", movieDataCopy);
         if (response.status === 201) {
           alert("Movie created successfully!");
@@ -77,13 +86,15 @@ const MovieManagement = ({ action }) => {
       }
     }
 
+    // Delete movie
     if (action === "Delete") {
       try {
+        // Check if ID is provided
         if (!movieData.id) {
           alert("Please provide the ID of the movie to delete.");
           return;
         }
-
+        // Delete request to delete movie
         const response = await axios.delete(`/api/movies/${movieData.id}`);
         if (response.status === 204) {
           alert("Movie deleted successfully!");
@@ -97,14 +108,17 @@ const MovieManagement = ({ action }) => {
       }
     }
 
+    // Update movie
     if (action === "Update") {
       try {
+        // Check if ID is provided
         if (!movieData.id) {
           alert("Please provide the ID of the movie to update.");
           return;
         }
         const movieDataCopy = { ...movieData };
         delete movieDataCopy.id;
+        // put request to update movie
         const response = await axios.put(`/api/movies/${movieData.id}`, movieDataCopy);
         if (response.status === 204) {
           alert("Movie updated successfully!");
@@ -119,10 +133,12 @@ const MovieManagement = ({ action }) => {
     }
   };
 
+  // Render form based on action
   const renderForm = () => {
     switch (action) {
       case "Create":
         return (
+          // Create movie form
           <form onSubmit={handleSubmit} style={{ width: "50%", margin: "auto" }}>
             <h3>Create a New Movie</h3>
             <input
@@ -208,6 +224,7 @@ const MovieManagement = ({ action }) => {
 
       case "Delete":
         return (
+          // Delete movie form
           <form onSubmit={handleSubmit} style={{ width: "50%", margin: "auto" }}>
             <h3>Delete a Movie</h3>
             <input
@@ -226,6 +243,7 @@ const MovieManagement = ({ action }) => {
 
       case "Update":
         return (
+          // Update movie form
           <form onSubmit={handleSubmit} style={{ width: "50%", margin: "auto" }}>
             <h3>Update a Movie</h3>
             <input

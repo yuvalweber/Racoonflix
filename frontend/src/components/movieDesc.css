@@ -1,3 +1,4 @@
+/* Container for the movie description */
 .movie-desc-container {
   display: flex;
   justify-content: center; /* Center the card horizontally */
@@ -5,10 +6,11 @@
   box-sizing: border-box;
 }
 
+/* Styling for the movie description card */
 .movie-desc-card {
-  background-color: rgba(0, 0, 0, 0.85);
-  border-radius: 15px;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.85); /* Semi-transparent black background */
+  border-radius: 15px; /* Rounded corners */
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5); /* Shadow effect */
   display: flex;
   flex-direction: column; /* Stack content vertically */
   max-width: 800px; /* Constrain width */
@@ -16,19 +18,21 @@
   padding: 20px;
   position: relative;
   z-index: 1;
-  margin-top: 100px;
+  margin-top: 100px; /* Space from the top */
   height: auto; /* Allow the card to grow with content */
 }
 
+/* Container for movie details */
 .movie-details {
   display: flex;
   flex-wrap: wrap; /* Allow items to wrap on small screens */
-  gap: 20px;
+  gap: 20px; /* Space between items */
   justify-content: center; /* Center align content */
 }
 
+/* Container for the movie poster */
 .movie-poster-container {
-  flex-shrink: 0;
+  flex-shrink: 0; /* Prevent shrinking */
   width: 200px;
   height: 200px;
   display: flex;
@@ -36,37 +40,43 @@
   align-items: center;
 }
 
+/* Styling for the movie poster image */
 .movie-poster {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 10px;
+  object-fit: cover; /* Cover the container */
+  border-radius: 10px; /* Rounded corners */
 }
 
+/* Container for movie information */
 .movie-info {
   flex: 1; /* Allow the info section to take remaining space */
   max-width: calc(100% - 220px); /* Account for the poster width */
   overflow: hidden; /* Prevent text overflow */
 }
 
+/* Styling for the movie title */
 .movie-title {
   font-size: 1.8rem;
   font-family: 'Roboto', sans-serif;
   font-weight: bold;
   margin-bottom: 10px;
-  color: #f39c12;
+  color: #f39c12; /* Orange color */
 }
 
+/* Styling for paragraphs in movie info */
 .movie-info p {
   font-size: 1rem;
-  color: #f0f0f0;
+  color: #f0f0f0; /* Light grey color */
   margin: 8px 0;
 }
 
+/* Styling for the trailer button */
 .trailer-btn {
   font-family: 'Roboto', sans-serif;
 }
 
+/* Container for recommended movies section */
 .recommended-section {
   margin-top: 20px;
   overflow-y: auto; /* Allow scrolling for recommendations */
@@ -75,15 +85,18 @@
   scrollbar-color: rgba(255,255,255,0.5) transparent; /* Scrollbar color */
 }
 
+/* Styling for the scrollbar in recommended section */
 .recommended-section::-webkit-scrollbar {
   width: 8px;
 }
 
+/* Styling for the scrollbar thumb in recommended section */
 .recommended-section::-webkit-scrollbar-thumb {
-  background-color: rgba(247, 7, 7, 0.5);
-  border-radius: 4px;
+  background-color: rgba(247, 7, 7, 0.5); /* Red color */
+  border-radius: 4px; /* Rounded corners */
 }
 
+/* Remove top margin for category container inside recommended section */
 .movie-desc-card .recommended-section .category-container {
   margin-top: 0;
 }

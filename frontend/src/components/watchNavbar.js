@@ -1,13 +1,13 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // לשימוש בניווט
-import '../components/watchNavbar.css'; // סגנונות מותאמים אישית
+import { useNavigate } from 'react-router-dom'; // Importing useNavigate hook for navigation
+import '../components/watchNavbar.css'; // Importing custom styles
 
 const WatchNavbar = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initializing navigate function
 
   return (
     <div className="watch-navbar">
-      {/* חץ אחורה */}
+      {/* Back arrow button */}
       <button className="back-button" onClick={() => navigate(-1)}>
         ← 
       </button>
@@ -15,4 +15,4 @@ const WatchNavbar = () => {
   );
 };
 
-export default WatchNavbar;
+export default WatchNavbar; // Exporting WatchNavbar component

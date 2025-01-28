@@ -10,13 +10,13 @@ import "./managmentPage.css"; // Import custom styles
 import '../components/button.css'; // Import custom styles
 
 const ManagementPage = () => {
-  const [selectedSection, setSelectedSection] = useState(null);
-  const [selectedAction, setSelectedAction] = useState(null);
-  const { isDarkMode } = useContext(ThemeContext); // Access dark/light mode
+  const [selectedSection, setSelectedSection] = useState(null); // State for selected section
+  const [selectedAction, setSelectedAction] = useState(null); // State for selected action
+  const { isDarkMode } = useContext(ThemeContext); // Access dark/light mode from context
 
   const handleSectionSelect = (section) => {
-    setSelectedSection(section);
-    setSelectedAction(null);
+    setSelectedSection(section); // Update selected section
+    setSelectedAction(null); // Reset selected action
   };
 
   return (
@@ -29,11 +29,9 @@ const ManagementPage = () => {
         {/* Transparent Box */}
         <div className="transparent-box"></div>
         <div className="container pt-5">
-        <h1
-          className="page-title"
-        >
-          Management Page
-        </h1>
+          <h1 className="page-title">
+            Management Page
+          </h1>
           {/* Section Selection */}
           <SectionSelector
             selectedSection={selectedSection}

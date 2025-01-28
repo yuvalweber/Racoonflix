@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+// Component for managing categories
 const CategoryManagement = ({ action }) => {
   const [categoryData, setCategoryData] = useState({
     id: "",
@@ -9,6 +10,7 @@ const CategoryManagement = ({ action }) => {
     movies: [],
   });
 
+  // Initial category data for resetting the form
   const initialCategoryData = {
     id: "",
     name: "",
@@ -16,30 +18,36 @@ const CategoryManagement = ({ action }) => {
     movies: [],
   };
 
+  // Function to handle input change in the form
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     
+    // Update the category data state
     setCategoryData({
       ...categoryData,
       [name]: name === "promoted" ? value : value,
     });
   };
 
+  // Function to handle movie change in the form
   const handleMovieChange = (index, value) => {
     const updatedMovies = [...categoryData.movies];
     updatedMovies[index] = value;
     setCategoryData({ ...categoryData, movies: updatedMovies });
   };
 
+  // Function to add a new movie field in the form
   const addMovieField = () => {
     setCategoryData({ ...categoryData, movies: [...categoryData.movies, ""] });
   };
 
+  // Function to remove a movie field from the form
   const removeMovieField = (index) => {
     const updatedMovies = categoryData.movies.filter((_, i) => i !== index);
     setCategoryData({ ...categoryData, movies: updatedMovies });
   };
 
+  // Function to handle checkbox change in the form
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
     console.log(name, checked);
@@ -47,9 +55,10 @@ const CategoryManagement = ({ action }) => {
     };
   
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    // Check the action and perform the corresponding operation
     if (action === "Create") {
       try {
         if (!categoryData.name) {
@@ -57,7 +66,9 @@ const CategoryManagement = ({ action }) => {
           return;
         }
 
+        // Remove the ID field before sending the data, as it is auto-generated
         delete categoryData.id;
+        // Send a POST request to create the category
         const response = await axios.post("/api/categories", categoryData);
         if (response.status === 201) {
           alert("Category created successfully!");
@@ -69,6 +80,7 @@ const CategoryManagement = ({ action }) => {
         console.error("Error creating category:", error.response || error.message);
         alert(error.response?.data?.errors || "An error occurred while creating the category.");
       }
+    // If the action is Delete, send a DELETE request to delete the category
     } else if (action === "Delete") {
       try {
         if (!categoryData.id) {
@@ -76,6 +88,7 @@ const CategoryManagement = ({ action }) => {
           return;
         }
 
+        // Send a DELETE request to delete the category
         const response = await axios.delete(`/api/categories/${categoryData.id}`);
         if (response.status === 204) {
           alert("Category deleted successfully!");
@@ -87,6 +100,7 @@ const CategoryManagement = ({ action }) => {
         console.error("Error deleting category:", error.response || error.message);
         alert(error.response?.data?.errors || "An error occurred while deleting the category.");
       }
+    // If the action is Update, send a PATCH request to update the category
     } else if (action === "Update") {
       try {
         if (!categoryData.id || !categoryData.name) {
@@ -96,6 +110,7 @@ const CategoryManagement = ({ action }) => {
         const categoryDataCopy = { ...categoryData };
         delete categoryDataCopy.id;
         console.log(categoryDataCopy);
+        // Send a PATCH request to update the category
         const response = await axios.patch(`/api/categories/${categoryData.id}`, categoryDataCopy);
 
         if (response.status === 204) {
@@ -111,6 +126,7 @@ const CategoryManagement = ({ action }) => {
     }
   };
 
+  // Function to render the form based on the action
   const renderForm = () => {
     switch (action) {
       case "Create":

@@ -16,26 +16,27 @@ const MovieDesc = ({
   trailer
 }) => {
   const navigate = useNavigate();
-  const [recommendedMovies, setRecommendedMovies] = useState([]);
+  const [recommendedMovies, setRecommendedMovies] = useState([]); // State to store recommended movies
   const [selectedMovie, setSelectedMovie] = useState(null);  // State to store the selected movie  
 
+  // Handle click on a movie to show its details
   const handleClickMovie = (movieId) => {
     setSelectedMovie(movieId);
   };
 
+  // Handle closing the movie details popup
   const handleClosePopup = () => {
     setSelectedMovie(null);
   };
 
+  // Handle watching the trailer and add the movie to the watched list
   const handleWatchTrailer = async (trailer) => {
-    // add the movie to the watched list of the user in the recommend system
     try {
-      await axios.post(`/api/movies/${id}/recommend`);
+      await axios.post(`/api/movies/${id}/recommend`); // Add movie to watched list
     } catch (error) {
       console.error('Error adding movie to watched list in recommend system:', error);
     }
-    // Navigate to the watch page with the trailer link
-    navigate('/play', { state: { trailer } });
+    navigate('/play', { state: { trailer } }); // Navigate to the watch page with the trailer link
   };
 
   useEffect(() => {
@@ -44,7 +45,7 @@ const MovieDesc = ({
       try {
         const response = await axios.get(`/api/movies/${id}/recommend`);
         if (Array.isArray(response.data)) {
-          setRecommendedMovies(response.data);
+          setRecommendedMovies(response.data); // Set recommended movies if response is an array
         } else {
           setRecommendedMovies([]);
           console.error('Unexpected response format:', response.data);
@@ -106,6 +107,8 @@ const MovieDesc = ({
             />
           )}
         </div>
+        
+        {/* Movie Info Popup */}
         {selectedMovie && (
         <div
           className={`popup-overlay ${selectedMovie ? 'show' : ''}`}
@@ -117,8 +120,6 @@ const MovieDesc = ({
       </div>
     </div>
   );
-  
-  
 };
 
 export default MovieDesc;
