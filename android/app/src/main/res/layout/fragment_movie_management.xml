@@ -92,28 +92,36 @@
             android:textColor="@color/white"
             android:layout_marginBottom="12dp" />
 
-        <!-- Movie Image URL -->
-        <EditText
-            android:id="@+id/edit_movie_image"
+        <!-- Movie Image Selector -->
+        <Button
+            android:id="@+id/button_select_movie_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Image URL"
-            android:textColorHint="@color/gray"
-            android:inputType="textUri"
-            android:padding="12dp"
-            android:textColor="@color/white"
+            android:text="Select Movie Image"
             android:layout_marginBottom="12dp" />
 
-        <!-- Movie Trailer URL -->
-        <EditText
-            android:id="@+id/edit_movie_trailer"
+        <TextView
+            android:id="@+id/text_selected_movie_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Trailer URL"
-            android:textColorHint="@color/gray"
-            android:inputType="textUri"
-            android:padding="12dp"
-            android:textColor="@color/white"
+            android:text="No image selected"
+            android:textColor="@color/gray"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Movie Trailer Selector -->
+        <Button
+            android:id="@+id/button_select_movie_trailer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Movie Trailer"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/text_selected_movie_trailer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No trailer selected"
+            android:textColor="@color/gray"
             android:layout_marginBottom="12dp" />
 
         <!-- Submit Button -->

@@ -14,7 +14,7 @@ import com.example.netflix.entities.CategoryEntity;
 import com.example.netflix.entities.MovieEntity;
 import com.example.netflix.entities.TokenEntity;
 
-@Database(entities = {TokenEntity.class, CategoryEntity.class, MovieEntity.class}, version = 4)
+@Database(entities = {TokenEntity.class, CategoryEntity.class, MovieEntity.class}, version = 4, exportSchema = false)
 @TypeConverters(Converters.class)
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase instance;
