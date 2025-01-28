@@ -4,6 +4,8 @@ const User = require('../models/user');
 const Category = require('../models/category');
 const MovieModel = require('../models/movie');
 const net = require('net');
+const fs = require('fs');
+const path = require('path');
 
 // Load environment variables
 require('custom-env').env(process.env.NODE_ENV, './config');
@@ -29,6 +31,7 @@ const createMovie = async (reqBody) => {
 		if (category) {
 			const categories = await Category.find({_id: {$in: category}});
 			if (categories.length != category.length) {
+				console.log('Category not found');
 				return null;
 			}
 		}
@@ -39,7 +42,8 @@ const createMovie = async (reqBody) => {
 		}
 		return savedMovie;
 	}
-    catch {
+    catch(error) {
+		console.error('Error creating movie:', error);
         return null;
     }
 };
@@ -181,6 +185,22 @@ const deleteMovie = async (id) => {
     try {
 		// delete movie from the database
         const movie = await Movie.findById(id);
+		// delete image from the server
+		const imagePath = path.join(__dirname, '..', movie.image);
+		fs.unlink(imagePath, (err) => {
+			if (err) {
+				console.error(err);
+			}
+		});
+
+		// delete trailer from the server
+		const trailerPath = path.join(__dirname, '..', movie.trailer);
+		fs.unlink(trailerPath, (err) => {
+			if (err) {
+				console.error(err);
+			}
+		});
+		
         await movie.deleteOne();
 		// delete movie from all users seen movies
 		// seenMovies is array of objects 

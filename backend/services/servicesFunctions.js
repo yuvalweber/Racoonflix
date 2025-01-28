@@ -1,4 +1,3 @@
-const userService = require('./user');
 const jwt = require('jsonwebtoken');
 require('custom-env').env(process.env.NODE_ENV, './config');
 
@@ -20,6 +19,7 @@ const checkUserHeader = async (userHeader) => {
     }
 
     // Fetch the user using the extracted userId
+	const userService = require('./user'); 
     const user = await userService.getUserById(userId);
     if (!user) {
         return { status: 404, message: 'User not found' };

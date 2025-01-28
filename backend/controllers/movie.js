@@ -6,11 +6,25 @@ const movieService = require('../services/movie');
 const createMovie = async (req, res) => {
     // check if provided all the required keys in the request body
 	const requiredKeys = Object.keys(MovieModel.schema.obj).filter(key => MovieModel.schema.obj[key].required);
+
+	// Add profile picture path if uploaded and add trailer path if uploaded
+    let defaultImage = '';
+    let defaultTrailer = '';
+    if (typeof req.body.image === 'string' ) {
+        defaultImage = req.body.image;
+    }
+
+    if (typeof req.body.trailer === 'string' ) {
+        defaultTrailer = req.body.trailer;
+    }
+
+    req.body.image = req.files?.image ? `http://localhost:8080/${req.files.image[0].path}` : defaultImage;
+    req.body.trailer = req.files?.trailer ? `http://localhost:8080/${req.files.trailer[0].path}` : defaultTrailer;
     // check if the request body contains all the required keys
-	const missingKeys = requiredKeys.filter(key => !req.body.hasOwnProperty(key));
+	const missingKeys = requiredKeys.filter((key) => !(key in req.body));
     // return an informative error if the request body does not contain all the required keys
 	if (missingKeys.length > 0) {
-		return res.status(400).json({ errors: 'Missing required keys in the request body' });
+		return res.status(400).json({ errors: 'Missing required keys in the request body' });
 	}
     // validate keys in the request body
     const invalidKeys = Object.keys(req.body).filter(key => !MovieModel.schema.obj.hasOwnProperty(key));
@@ -23,7 +37,8 @@ const createMovie = async (req, res) => {
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }
-    // create a new movie
+
+    // create a new 
     const movie = await movieService.createMovie(req.body);
     // check if the movie was created
     if (!movie) {
@@ -96,6 +111,9 @@ const replaceMovie = async (req, res) => {
     if (headerValidation.status !== 200) {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }
+
+    req.body.image = req.files.image ? `http://localhost:8080/${req.files.image[0].path}` : '';
+    req.body.trailer = req.files.trailer ? `http://localhost:8080/${req.files.trailer[0].path}` : '';
     // validate keys in the request body
     const invalidKeys = Object.keys(req.body).filter(key => !MovieModel.schema.obj.hasOwnProperty(key));
     if (invalidKeys.length > 0) {
@@ -107,7 +125,7 @@ const replaceMovie = async (req, res) => {
 	const missingKeys = requiredKeys.filter(key => !req.body.hasOwnProperty(key));
 	// return an informative error if the request body does not contain all the required keys
 	if (missingKeys.length > 0) {
-		return res.status(400).json({ errors: 'Missing required keys in the request body' });
+		return res.status(400).json({ errors: 'Missing required keys in the request body' });
 	}
     // replace the movie
     const movie = await movieService.replaceMovie(req.params.id, req.body);
