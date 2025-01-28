@@ -39,6 +39,7 @@ public interface MovieServiceApi {
             @Part("year") RequestBody year,
             @Part("director") RequestBody director,
             @Part("duration") RequestBody duration,
+            @Part List<MultipartBody.Part> categories, // Accept categories as an array
             @Part MultipartBody.Part image,
             @Part MultipartBody.Part trailer
     );

@@ -638,7 +638,14 @@ public class MovieRepository {
         RequestBody director = RequestBody.create(MediaType.parse("text/plain"), movie.getDirector());
         RequestBody duration = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(movie.getDuration()));
 
-        movieApi.createMovieWithFiles(getToken(), title, year, director, duration, imagePart, trailerPart).enqueue(callback);
+        // Convert category list to MultipartBody.Part array
+        List<MultipartBody.Part> categoryParts = new ArrayList<>();
+        for (String category : movie.getCategory()) {
+            categoryParts.add(MultipartBody.Part.createFormData("category[]", category));
+        }
+
+        movieApi.createMovieWithFiles(getToken(), title, year, director, duration, categoryParts, imagePart, trailerPart)
+                .enqueue(callback);
     }
 
     @FunctionalInterface
