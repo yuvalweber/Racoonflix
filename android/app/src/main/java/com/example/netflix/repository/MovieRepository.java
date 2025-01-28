@@ -8,6 +8,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.netflix.api.UserApiService;
 import com.example.netflix.database.AppDatabase;
+import com.example.netflix.entities.CategoryEntity;
+import com.example.netflix.entities.MovieEntity;
 import com.example.netflix.entities.TokenEntity;
 import com.example.netflix.models.Category;
 import com.example.netflix.models.Movie;
@@ -23,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -54,124 +57,245 @@ public class MovieRepository {
             TokenEntity tokenEntity = appDatabase.tokenDao().getTokenData();
             if (tokenEntity == null) {
                 Log.e(TAG, "Token entity is null. Cannot proceed with API calls.");
-                liveData.postValue(new HashMap<>()); // Post empty data if no token is found
+                liveData.postValue(new HashMap<>());
                 return;
             }
 
             String token = "Bearer " + tokenEntity.getToken();
-            String userId = tokenEntity.getUserId();
+            long currentTime = System.currentTimeMillis();
+            long validTime = currentTime - 3600000; // 1 hour in milliseconds
 
-            movieApi.getMovies(token).enqueue(new Callback<List<Movie>>() {
+            // Query valid categories from the database
+            List<CategoryEntity> localCategories = appDatabase.categoryDao().getValidCategories(validTime);
+
+            if (!localCategories.isEmpty()) {
+                // Convert CategoryEntity to Category
+                List<Category> categories = localCategories.stream()
+                        .map(entity -> {
+                            Category category = new Category();
+                            category.setId(entity.getCategoryId());
+                            category.setName(entity.getName());
+                            category.setPromoted(entity.isPromoted());
+                            return category;
+                        })
+                        .collect(Collectors.toList());
+
+                fetchAndCategorizeMoviesByUser(liveData, token, categories, tokenEntity.getUserId());
+            } else {
+                // Fetch categories from API
+                categoryApi.getCategories(token).enqueue(new Callback<List<Category>>() {
+                    @Override
+                    public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+                        if (!response.isSuccessful() || response.body() == null) {
+                            Log.e(TAG, "Failed to fetch categories: " + response.message());
+                            liveData.postValue(new HashMap<>());
+                            return;
+                        }
+
+                        List<Category> categories = response.body();
+
+                        // Update the database
+                        Thread thread = new Thread( () -> {appDatabase.categoryDao().clearCategories();});
+                        thread.start();
+                        try {
+                            thread.join();
+                        } catch (InterruptedException e) {
+                            Log.e(TAG, "Error clearing categories", e);
+                        }
+                        List<CategoryEntity> categoryEntities = categories.stream()
+                                .map(category -> new CategoryEntity(
+                                        category.getId(),
+                                        category.getName(),
+                                        category.isPromoted(),
+                                        System.currentTimeMillis()))
+                                .collect(Collectors.toList());
+                        Thread thread2 = new Thread(() -> {appDatabase.categoryDao().insertCategories(categoryEntities);});
+                        thread2.start();
+                        try {
+                            thread2.join();
+                        } catch (InterruptedException e) {
+                            Log.e(TAG, "Error inserting categories", e);
+                        }
+
+                        fetchAndCategorizeMoviesByUser(liveData, token, categories, tokenEntity.getUserId());
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Category>> call, Throwable t) {
+                        Log.e(TAG, "Error fetching categories from API: " + t.getMessage(), t);
+                        liveData.postValue(new HashMap<>());
+                    }
+                });
+            }
+        }).start();
+
+        return liveData;
+    }
+
+    private void fetchAndCategorizeMoviesByUser(MutableLiveData<Map<String, List<Movie>>> liveData, String token, List<Category> categories, String userId) {
+        // check if movies cached in the database
+        long currentTime = System.currentTimeMillis();
+        long validTime = currentTime - 3600000; // 1 hour in milliseconds
+        AtomicReference<List<MovieEntity>> localMovies = new AtomicReference<>(new ArrayList<>());
+        Thread thread = new Thread(() -> {
+            localMovies.set(appDatabase.movieDao().getValidMovies(validTime));});
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Error getting movies", e);
+        }
+        if (!localMovies.get().isEmpty()) {
+            // Convert MovieEntity to Movie
+            List<Movie> movies = localMovies.get().stream()
+                    .map(entity -> {
+                        Movie movie = new Movie();
+                        movie.setId(entity.getMovieId());
+                        movie.setCategory(entity.getCategory());
+                        movie.setTitle(entity.getTitle());
+                        movie.setYear(entity.getYear());
+                        movie.setDirector(entity.getDirector());
+                        movie.setDuration(entity.getDuration());
+                        movie.setImage(entity.getImage());
+                        movie.setTrailer(entity.getTrailer());
+                        return movie;
+                    })
+                    .collect(Collectors.toList());
+
+            Log.d(TAG, "Movies fetched from local database: " + movies);
+
+            userApi.getUser(token, userId).enqueue(new Callback<User>() {
                 @Override
-                public void onResponse(Call<List<Movie>> call, Response<List<Movie>> movieResponse) {
-                    if (!movieResponse.isSuccessful() || movieResponse.body() == null) {
-                        Log.e(TAG, "Failed to fetch movies: " + movieResponse.message());
+                public void onResponse(Call<User> call, Response<User> userResponse) {
+                    if (!userResponse.isSuccessful() || userResponse.body() == null) {
+                        Log.e(TAG, "Failed to fetch user: " + userResponse.message());
                         liveData.postValue(new HashMap<>());
                         return;
                     }
 
-                    List<Movie> movies = movieResponse.body();
-                    Log.d(TAG, "Movies fetched: " + movies);
+                    User user = userResponse.body();
+                    Set<String> seenMovieIds = user.getSeenMovies().stream()
+                            .map(movie -> movie.getMovieId())
+                            .collect(Collectors.toSet());
 
-                    categoryApi.getCategories(token).enqueue(new Callback<List<Category>>() {
-                        @Override
-                        public void onResponse(Call<List<Category>> call, Response<List<Category>> categoryResponse) {
-                            if (!categoryResponse.isSuccessful() || categoryResponse.body() == null) {
-                                Log.e(TAG, "Failed to fetch categories: " + categoryResponse.message());
-                                liveData.postValue(new HashMap<>());
-                                return;
-                            }
-
-                            List<Category> categories = categoryResponse.body();
-                            Log.d(TAG, "Categories fetched: " + categories);
-
-                            userApi.getUser(token, userId).enqueue(new Callback<User>() {
-                                @Override
-                                public void onResponse(Call<User> call, Response<User> userResponse) {
-                                    if (!userResponse.isSuccessful() || userResponse.body() == null) {
-                                        Log.e(TAG, "Failed to fetch user: " + userResponse.message());
-                                        liveData.postValue(new HashMap<>());
-                                        return;
-                                    }
-
-                                    User user = userResponse.body();
-                                    Log.d(TAG, "User's seen movies: " + user.getSeenMovies());
-
-                                    Set<String> seenMovieIds = user.getSeenMovies().stream()
-                                            .map(movie -> movie.getMovieId())
-                                            .collect(Collectors.toSet());
-
-                                    Map<String, List<Movie>> categorizedMovies = new LinkedHashMap<>();
-
-                                    // Map movies to categories
-                                    for (Movie movie : movies) {
-                                        boolean isSeen = seenMovieIds.contains(movie.getId());
-                                        Log.d(TAG, "Processing Movie: " + movie.getId() + ", Title: " + movie.getTitle());
-
-                                        for (String categoryId : movie.getCategory()) {
-                                            Log.d(TAG, "Checking Category ID: " + categoryId + " for Movie: " + movie.getTitle());
-
-                                            categories.stream()
-                                                    .filter(category -> {
-                                                        boolean isMatch = categoryId != null && category.getId() != null && category.getId().equals(categoryId) && category.isPromoted();
-                                                        if (!isMatch) {
-                                                            Log.d(TAG, "No match for Category ID: " + categoryId + " in Category: " + category.getId());
-                                                        }
-                                                        return isMatch;
-                                                    })
-                                                    .findFirst()
-                                                    .ifPresent(category -> {
-                                                        String categoryName = category.getName();
-                                                        categorizedMovies.putIfAbsent(categoryName, new ArrayList<>());
-                                                        categorizedMovies.get(categoryName).add(movie);
-                                                        Log.d(TAG, "Added Movie: " + movie.getTitle() + " to Category: " + categoryName);
-
-                                                        // Add to "Seen Movies" if applicable as last category in the list
-                                                        if (isSeen) {
-                                                            categorizedMovies.putIfAbsent("Seen Movies", new ArrayList<>());
-                                                            categorizedMovies.get("Seen Movies").add(movie);
-                                                            Log.d(TAG, "Added Movie: " + movie.getTitle() + " to Category: Seen Movies");
-                                                        }
-                                                    });
-                                        }
-                                    }
-
-                                    Log.d(TAG, "Categorized movies: " + categorizedMovies);
-                                    // enter the seen movies to be as the last category
-                                    if (categorizedMovies.containsKey("Seen Movies")) {
-                                        List<Movie> seenMovies = categorizedMovies.remove("Seen Movies");
-                                        categorizedMovies.put("Seen Movies", seenMovies);
-                                    }
-                                    liveData.postValue(categorizedMovies);
-                                }
-
-                                @Override
-                                public void onFailure(Call<User> call, Throwable t) {
-                                    Log.e(TAG, "Failed to fetch user: " + t.getMessage(), t);
-                                    liveData.postValue(new HashMap<>());
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<Category>> call, Throwable t) {
-                            Log.e(TAG, "Failed to fetch categories: " + t.getMessage(), t);
-                            liveData.postValue(new HashMap<>());
-                        }
-                    });
+                    Map<String, List<Movie>> categorizedMovies = categorizeMoviesByCategories(movies, categories, seenMovieIds);
+                    liveData.postValue(categorizedMovies);
                 }
 
                 @Override
-                public void onFailure(Call<List<Movie>> call, Throwable t) {
-                    Log.e(TAG, "Failed to fetch movies: " + t.getMessage(), t);
+                public void onFailure(Call<User> call, Throwable t) {
+                    Log.e(TAG, "Failed to fetch user: " + t.getMessage(), t);
                     liveData.postValue(new HashMap<>());
                 }
             });
-        }).start();
+        } else {
+        movieApi.getMovies(token).enqueue(new Callback<List<Movie>>() {
+            @Override
+            public void onResponse(Call<List<Movie>> call, Response<List<Movie>> movieResponse) {
+                if (!movieResponse.isSuccessful() || movieResponse.body() == null) {
+                    Log.e(TAG, "Failed to fetch movies: " + movieResponse.message());
+                    liveData.postValue(new HashMap<>());
+                    return;
+                }
 
+                List<Movie> movies = movieResponse.body();
 
-        return liveData;
+                // Update the database
+                Thread thread2 = new Thread(() -> {appDatabase.movieDao().clearMovies();});
+                thread2.start();
+                try {
+                    thread2.join();
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Error clearing movies", e);
+                }
+
+                List<MovieEntity> movieEntities = movies.stream()
+                        .map(movie -> new MovieEntity(
+                                movie.getId(),
+                                movie.getTitle(),
+                                movie.getYear(),
+                                movie.getDirector(),
+                                movie.getCategory(),
+                                movie.getDuration(),
+                                movie.getImage(),
+                                movie.getTrailer(),
+                                System.currentTimeMillis()))
+                        .collect(Collectors.toList());
+
+                Thread thread3 = new Thread(() -> {appDatabase.movieDao().insertMovies(movieEntities);});
+                thread3.start();
+                try {
+                    thread3.join();
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Error inserting movies", e);
+                }
+
+                userApi.getUser(token, userId).enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> userResponse) {
+                        if (!userResponse.isSuccessful() || userResponse.body() == null) {
+                            Log.e(TAG, "Failed to fetch user: " + userResponse.message());
+                            liveData.postValue(new HashMap<>());
+                            return;
+                        }
+
+                        User user = userResponse.body();
+                        Set<String> seenMovieIds = user.getSeenMovies().stream()
+                                .map(movie -> movie.getMovieId())
+                                .collect(Collectors.toSet());
+
+                        Map<String, List<Movie>> categorizedMovies = categorizeMoviesByCategories(movies, categories, seenMovieIds);
+                        liveData.postValue(categorizedMovies);
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Log.e(TAG, "Failed to fetch user: " + t.getMessage(), t);
+                        liveData.postValue(new HashMap<>());
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<List<Movie>> call, Throwable t) {
+                Log.e(TAG, "Failed to fetch movies: " + t.getMessage(), t);
+                liveData.postValue(new HashMap<>());
+            }
+        });
+        }
     }
+
+    private Map<String, List<Movie>> categorizeMoviesByCategories(List<Movie> movies, List<Category> categories, Set<String> seenMovieIds) {
+        Map<String, List<Movie>> categorizedMovies = new LinkedHashMap<>();
+
+        for (Movie movie : movies) {
+            boolean isSeen = seenMovieIds.contains(movie.getId());
+            for (String categoryId : movie.getCategory()) {
+                categories.stream()
+                        .filter(category -> category.getId() != null && category.getId().equals(categoryId) && category.isPromoted())
+                        .findFirst()
+                        .ifPresent(category -> {
+                            String categoryName = category.getName();
+                            categorizedMovies.putIfAbsent(categoryName, new ArrayList<>());
+                            categorizedMovies.get(categoryName).add(movie);
+
+                            if (isSeen) {
+                                categorizedMovies.putIfAbsent("Seen Movies", new ArrayList<>());
+                                categorizedMovies.get("Seen Movies").add(movie);
+                            }
+                        });
+            }
+        }
+
+        // Ensure "Seen Movies" is the last category
+        if (categorizedMovies.containsKey("Seen Movies")) {
+            List<Movie> seenMovies = categorizedMovies.remove("Seen Movies");
+            categorizedMovies.put("Seen Movies", seenMovies);
+        }
+
+        return categorizedMovies;
+    }
+
 
     // Fetch all movies
     public LiveData<Map<String, List<Movie>>> fetchAllMovies() {
@@ -186,52 +310,85 @@ public class MovieRepository {
             }
 
             String token = "Bearer " + tokenEntity.getToken();
+            long currentTime = System.currentTimeMillis();
+            long validTime = currentTime - 3600000; // 1 hour in milliseconds
 
-            movieApi.getAllMovies(token).enqueue(new Callback<List<Movie>>() {
-                @Override
-                public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
-                    if (!response.isSuccessful() || response.body() == null) {
-                        Log.e(TAG, "Failed to fetch all movies: " + response.message());
-                        liveData.postValue(new HashMap<>());
-                        return;
+            // Query valid categories from the database
+            List<CategoryEntity> localCategories = appDatabase.categoryDao().getValidCategories(validTime);
+
+            if (!localCategories.isEmpty()) {
+                // Convert CategoryEntity to Category and use local data
+                List<Category> categories = new ArrayList<>();
+                for (CategoryEntity categoryEntity : localCategories) {
+                    Category category = new Category();
+                    category.setId(categoryEntity.getCategoryId());
+                    category.setName(categoryEntity.getName());
+                    category.setPromoted(categoryEntity.isPromoted());
+                    categories.add(category);
+                }
+                fetchMoviesAndCategorize(liveData, token, categories);
+            } else {
+                // Fetch categories from API
+                categoryApi.getCategories(token).enqueue(new Callback<List<Category>>() {
+                    @Override
+                    public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+                        if (!response.isSuccessful() || response.body() == null) {
+                            Log.e(TAG, "Failed to fetch categories: " + response.message());
+                            liveData.postValue(new HashMap<>());
+                            return;
+                        }
+
+                        List<Category> categories = response.body();
+
+                        // Update the database
+                        appDatabase.categoryDao().clearCategories();
+                        List<CategoryEntity> categoryEntities = categories.stream()
+                                .map(category -> new CategoryEntity(
+                                        category.getId(),
+                                        category.getName(),
+                                        category.isPromoted(),
+                                        System.currentTimeMillis()))
+                                .collect(Collectors.toList());
+                        appDatabase.categoryDao().insertCategories(categoryEntities);
+
+                        fetchMoviesAndCategorize(liveData, token, categories);
                     }
 
-                    List<Movie> movies = response.body();
-
-                    categoryApi.getCategories(token).enqueue(new Callback<List<Category>>() {
-                        @Override
-                        public void onResponse(Call<List<Category>> call, Response<List<Category>> categoryResponse) {
-                            if (!categoryResponse.isSuccessful() || categoryResponse.body() == null) {
-                                Log.e(TAG, "Failed to fetch categories: " + categoryResponse.message());
-                                liveData.postValue(new HashMap<>());
-                                return;
-                            }
-
-                            List<Category> categories = categoryResponse.body();
-                            Map<String, List<Movie>> categorizedMovies = categorizeMoviesByCategories(movies, categories);
-                            liveData.postValue(categorizedMovies);
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<Category>> call, Throwable t) {
-                            Log.e(TAG, "Failed to fetch categories: " + t.getMessage(), t);
-                            liveData.postValue(new HashMap<>());
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(Call<List<Movie>> call, Throwable t) {
-                    Log.e(TAG, "Failed to fetch all movies: " + t.getMessage(), t);
-                    liveData.postValue(new HashMap<>());
-                }
-            });
+                    @Override
+                    public void onFailure(Call<List<Category>> call, Throwable t) {
+                        Log.e(TAG, "Error fetching categories from API: " + t.getMessage(), t);
+                        liveData.postValue(new HashMap<>());
+                    }
+                });
+            }
         }).start();
 
         return liveData;
     }
 
-    // Search for movies
+    private void fetchMoviesAndCategorize(MutableLiveData<Map<String, List<Movie>>> liveData, String token, List<Category> categories) {
+        movieApi.getAllMovies(token).enqueue(new Callback<List<Movie>>() {
+            @Override
+            public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
+                if (!response.isSuccessful() || response.body() == null) {
+                    Log.e(TAG, "Failed to fetch all movies: " + response.message());
+                    liveData.postValue(new HashMap<>());
+                    return;
+                }
+
+                List<Movie> movies = response.body();
+                Map<String, List<Movie>> categorizedMovies = categorizeMoviesByCategories(movies, categories);
+                liveData.postValue(categorizedMovies);
+            }
+
+            @Override
+            public void onFailure(Call<List<Movie>> call, Throwable t) {
+                Log.e(TAG, "Failed to fetch all movies: " + t.getMessage(), t);
+                liveData.postValue(new HashMap<>());
+            }
+        });
+    }
+
     // Search for movies
     public LiveData<Map<String, List<Movie>>> searchMovies(String query) {
         MutableLiveData<Map<String, List<Movie>>> liveData = new MutableLiveData<>();
