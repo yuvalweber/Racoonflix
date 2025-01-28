@@ -7,9 +7,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -20,12 +22,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.netflix.adapters.CategoryAdapter;
 import com.example.netflix.api.UserApiService;
+import com.example.netflix.entities.TokenEntity;
 import com.example.netflix.models.Movie;
+import com.example.netflix.models.User;
 import com.example.netflix.network.RetrofitInstance;
 import com.example.netflix.repository.UserRepository;
 import com.example.netflix.viewmodels.MovieViewModel;
+import com.example.netflix.viewmodels.UserViewModel;
 import com.google.android.material.navigation.NavigationView;
 import androidx.appcompat.app.AppCompatDelegate;
 import android.net.Uri;
@@ -35,10 +41,13 @@ import com.example.netflix.dao.TokenDao;
 import com.example.netflix.database.AppDatabase;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ConnectedHomePageActivity extends AppCompatActivity {
 
@@ -53,6 +62,8 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
 
     private UserRepository userRepository;
     private MovieViewModel movieViewModel;
+
+    private UserViewModel userViewModel;
 
     private static final String PREFS_NAME = "theme_prefs";
     private static final String PREF_DARK_MODE = "is_dark_mode";
@@ -71,6 +82,7 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
 
         // Setup DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout);
+        userViewModel = new UserViewModel(new UserRepository(RetrofitInstance.getInstance().create(UserApiService.class), AppDatabase.getInstance(this).tokenDao()));
 
         // get app database instance
         AppDatabase database = AppDatabase.getInstance(this);
@@ -82,6 +94,7 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
         ImageView hamburgerIcon = findViewById(R.id.hamburger_icon);
         hamburgerIcon.setOnClickListener(v -> {
             if (drawerLayout != null) {
+                changeUserNameAndPhoto();
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
@@ -214,7 +227,20 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
     private void observeMoviesByCategory() {
         movieViewModel.getMoviesByCategory().observe(this, categorizedMovies -> {
             if (categorizedMovies != null && !categorizedMovies.isEmpty()) {
-                Log.d(TAG, "Movies fetched successfully: " + categorizedMovies);
+                // Remove duplicates within each category
+                for (Map.Entry<String, List<Movie>> entry : categorizedMovies.entrySet()) {
+                    List<Movie> uniqueMovies = new ArrayList<>();
+                    Set<String> movieIds = new HashSet<>();
+
+                    for (Movie movie : entry.getValue()) {
+                        if (movieIds.add(movie.getId())) { // Add only if the ID is unique
+                            uniqueMovies.add(movie);
+                        }
+                    }
+
+                    // Update the category with the filtered unique movies
+                    entry.setValue(uniqueMovies);
+                }
                 CategoryAdapter categoryAdapter = new CategoryAdapter(this, categorizedMovies);
                 recyclerView.setAdapter(categoryAdapter);
             } else {
@@ -301,6 +327,61 @@ public class ConnectedHomePageActivity extends AppCompatActivity {
             videoView.start();
         });
     }
+
+    private void changeUserNameAndPhoto() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+
+        // Get the header view of the navigation drawer
+        View headerView = navigationView.getHeaderView(0);
+        TextView usernameTextView = headerView.findViewById(R.id.user_name);
+        ImageView profileImageView = headerView.findViewById(R.id.user_image);
+
+        // Fetch the token to get user information
+        AtomicReference<TokenEntity> token = new AtomicReference<>();
+        Thread thread = new Thread(() -> {
+            token.set(userViewModel.getTokenData());
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Thread interrupted while fetching token data", e);
+        }
+        if (token.get() != null) {
+            String userId = token.get().getUserId();
+            String authToken = token.get().getToken();
+
+            userViewModel.getUserById(userId, authToken, new UserRepository.UserCallback() {
+                @Override
+                public void onSuccess(Object data) {
+                    User user = (User) data;
+
+                    // Update the UI with the fetched user data
+                    runOnUiThread(() -> {
+                        usernameTextView.setText(user.getUserName());
+                        Glide.with(ConnectedHomePageActivity.this)
+                                .load(user.getProfilePicture())
+                                .placeholder(R.drawable.ic_profile_placeholder) // Fallback icon
+                                .circleCrop()
+                                .into(profileImageView);
+                    });
+                }
+
+                @Override
+                public void onError(int statusCode, String errorMessage) {
+                    Log.e(TAG, "Failed to fetch user info: " + errorMessage);
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.e(TAG, "Error fetching user info", t);
+                }
+            });
+        } else {
+            Log.e(TAG, "No token available to fetch user info.");
+        }
+    }
+
 
 
 

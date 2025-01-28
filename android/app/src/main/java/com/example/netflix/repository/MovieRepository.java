@@ -161,8 +161,7 @@ public class MovieRepository {
                         return movie;
                     })
                     .collect(Collectors.toList());
-
-            Log.d(TAG, "Movies fetched from local database: " + movies);
+            Log.d(TAG, "Movies fetched from local database: " + movies.stream().map(Movie::getTitle).collect(Collectors.toList()));
 
             userApi.getUser(token, userId).enqueue(new Callback<User>() {
                 @Override
@@ -617,6 +616,10 @@ public class MovieRepository {
         }).start();
 
         return liveData;
+    }
+
+    public void addMovieToRecommendations(String movieId, Callback<Void> callback) {
+        executeMovieApiCall(api -> api.addMovieToRecommendations(getToken(), movieId), callback);
     }
 
 

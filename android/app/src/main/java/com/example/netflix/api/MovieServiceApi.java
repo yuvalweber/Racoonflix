@@ -39,4 +39,7 @@ public interface MovieServiceApi {
     @GET("/api/movies/{id}/recommend")
     Call<List<Movie>> getRecommendedMovies(@Header("Authorization") String token, @Path("id") String movieId);
 
+    @POST("/api/movies/{id}/recommend")
+    Call<Void> addMovieToRecommendations(@Header("Authorization") String token, @Path("id") String movieId);
+
 }

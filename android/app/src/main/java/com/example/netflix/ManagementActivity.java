@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -15,11 +17,20 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.Glide;
+import com.example.netflix.api.UserApiService;
+import com.example.netflix.entities.TokenEntity;
 import com.example.netflix.fragments.CategoryManagementFragment;
 import com.example.netflix.fragments.MovieManagementFragment;
 import com.example.netflix.dao.TokenDao;
 import com.example.netflix.database.AppDatabase;
+import com.example.netflix.models.User;
+import com.example.netflix.network.RetrofitInstance;
+import com.example.netflix.repository.UserRepository;
+import com.example.netflix.viewmodels.UserViewModel;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ManagementActivity extends AppCompatActivity {
 
@@ -27,6 +38,8 @@ public class ManagementActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private String selectedSection = null;
     private String selectedAction = null;
+
+    private UserViewModel userViewModel;
 
     private static final String PREFS_NAME = "theme_prefs";
     private static final String PREF_DARK_MODE = "is_dark_mode";
@@ -46,6 +59,7 @@ public class ManagementActivity extends AppCompatActivity {
 
         // Setup DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout);
+        userViewModel = new UserViewModel(new UserRepository(RetrofitInstance.getInstance().create(UserApiService.class), AppDatabase.getInstance(this).tokenDao()));
 
         // Get AppDatabase instance
         AppDatabase database = AppDatabase.getInstance(this);
@@ -55,6 +69,7 @@ public class ManagementActivity extends AppCompatActivity {
         ImageView hamburgerIcon = findViewById(R.id.hamburger_icon);
         hamburgerIcon.setOnClickListener(v -> {
             if (drawerLayout != null) {
+                changeUserNameAndPhoto();
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
@@ -139,5 +154,59 @@ public class ManagementActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.form_container, fragment);
         transaction.commit();
+    }
+
+    private void changeUserNameAndPhoto() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+
+        // Get the header view of the navigation drawer
+        View headerView = navigationView.getHeaderView(0);
+        TextView usernameTextView = headerView.findViewById(R.id.user_name);
+        ImageView profileImageView = headerView.findViewById(R.id.user_image);
+
+        // Fetch the token to get user information
+        AtomicReference<TokenEntity> token = new AtomicReference<>();
+        Thread thread = new Thread(() -> {
+            token.set(userViewModel.getTokenData());
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Thread interrupted while fetching token data", e);
+        }
+        if (token.get() != null) {
+            String userId = token.get().getUserId();
+            String authToken = token.get().getToken();
+
+            userViewModel.getUserById(userId, authToken, new UserRepository.UserCallback() {
+                @Override
+                public void onSuccess(Object data) {
+                    User user = (User) data;
+
+                    // Update the UI with the fetched user data
+                    runOnUiThread(() -> {
+                        usernameTextView.setText(user.getUserName());
+                        Glide.with(ManagementActivity.this)
+                                .load(user.getProfilePicture())
+                                .placeholder(R.drawable.ic_profile_placeholder) // Fallback icon
+                                .circleCrop()
+                                .into(profileImageView);
+                    });
+                }
+
+                @Override
+                public void onError(int statusCode, String errorMessage) {
+                    Log.e(TAG, "Failed to fetch user info: " + errorMessage);
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.e(TAG, "Error fetching user info", t);
+                }
+            });
+        } else {
+            Log.e(TAG, "No token available to fetch user info.");
+        }
     }
 }
