@@ -7,16 +7,16 @@
 }
    
 #mainContainer {
-	background-image: url('../../public/images/genericHomePageBackground.webp');
-	background-size: cover;
-	background-position: center;
-	background-repeat: no-repeat;
+	background-image: url('../../public/images/genericHomePageBackground.webp'); /* Path to the image */
+	background-size: cover; /* Ensure the image covers the entire container */
+	background-position: center; /* Center the image */
+	background-repeat: no-repeat; /* Prevent the image from repeating */
 	background-attachment: fixed; /* This will lock the background in place */
 	height: 100vh; /* Full viewport height */
 	width: 100vw; /* Full viewport width */
 	position: fixed; /* Ensure it stays in place */
-	top: 0;
-	left: 0;
+	top: 0; /* Align to the top */
+	left: 0; /* Align to the left */
 	z-index: -1; /* Ensure it is behind other content */
 	overflow-x: hidden; /* Prevent horizontal scrolling */
   	overflow-y: auto; /* Allow vertical scrolling */
@@ -24,14 +24,14 @@
   }
 
 .top-right-icon {
-	position: fixed;
-	top: 10px;
-	right: 10px;
-	z-index: 1000;
-	cursor: pointer;
+	position: fixed; /* Ensure it stays in place */
+	top: 10px; /* Align to the top */
+	right: 10px; /* Align to the right */
+	z-index: 1000; /* Ensure it is above other content */
+	cursor: pointer; /* Change the cursor to a pointer */
 }
 
 .icon-image-racoon {
-	width: 100px;
-	height: 100px;
+	width: 100px; /* Adjust the size as you see fit */
+	height: 100px; /* Adjust the size as you see fit */
 }

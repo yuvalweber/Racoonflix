@@ -4,44 +4,44 @@
 
 .error-desc-card {
     background-color: rgba(0, 0, 0, 0.75);
-    padding: 40px;
-    border-radius: 15px;
+    padding: 40px; /* Adds space inside the card */
+    border-radius: 15px; /* Rounds the corners of the card */
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
-    display: flex;
+    display: flex; /* Allows children to be flex items */
     flex-direction: column; /* Stacks children vertically */
     align-items: center; /* Centers children horizontally */
-    max-width: 1200px;
-    width: 100%;
+    max-width: 1200px; /* Sets the maximum width of the card */
+    width: 100%; /* Sets the width of the card */
 }
 
 .error-poster-container {
-    font-family: 'Arvo', serif;
-    max-width: 350px;
-    width: 100%;
-    text-align: center;
+    font-family: 'Arvo', serif; /* Sets the font of the text */
+    max-width: 350px; /* Sets the maximum width of the poster */
+    width: 100%; /* Sets the width of the poster */
+    text-align: center; /* Centers the text */
 }
 
 .error-text {
-    display: flex;
+    display: flex; /* Allows children to be flex items */
     flex-direction: column; /* Ensures vertical stacking of text items */
     align-items: center; /* Aligns items to the right */
-    text-align: center;
-    width: 100%;
+    text-align: center; /* Centers the text */
+    width: 100%; /* Sets the width of the text */
 }
 
 .error-title {
-    font-size: 3.5rem;
-    font-weight: 700;
-    color: #ff5b5b;
-    margin-bottom: 20px;
+    font-size: 3.5rem; /* Sets the font size of the title */
+    font-weight: 700; /* Sets the font weight of the title */
+    color: #ff5b5b; /* Sets the color of the title */
+    margin-bottom: 20px; /* Adds space below the title */
 }
 
 .error-info {
-    font-size: 1.5rem;
-    font-family: 'Arvo', serif;
-    font-weight: 400;
-    color: #fba83c;
-    margin-bottom: 20px;
+    font-size: 1.5rem; /* Sets the font size of the info */
+    font-family: 'Arvo', serif; /* Sets the font of the info */
+    font-weight: 400;   /* Sets the font weight of the info */
+    color: #fba83c; /* Sets the color of the info */
+    margin-bottom: 20px; /* Adds space below the info */
 }
 
 .trailer-btn {

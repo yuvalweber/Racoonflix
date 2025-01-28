@@ -15,7 +15,7 @@ import { ProtectedRoute }  from './Authentication/ProtectedRoute';
 import { ThemeProvider } from './components/themeContext';
 
 
-
+// Main component of the application
 const App = () => {
   return (
 	<ThemeProvider>

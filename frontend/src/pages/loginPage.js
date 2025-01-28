@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Import axios for making HTTP requests
 import { useAuth } from '../Authentication/AuthContext';
 
+// Login page component
 const LoginPage = () => {
   const { setUserData, setToken } = useAuth();
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ const LoginPage = () => {
     password: ''
   });
 
+  // Use the navigate hook to redirect to the home page
   const navigate = useNavigate();
 
   // Fields configuration for the form
@@ -22,6 +24,7 @@ const LoginPage = () => {
     { id: 'password', label: 'Password', type: 'password', required: true }
   ];
 
+  // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -30,6 +33,7 @@ const LoginPage = () => {
     });
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -41,12 +45,12 @@ const LoginPage = () => {
 
       if (response.status === 200) {
         // Assuming the response contains a token
-		localStorage.setItem('token', response.data.token); // Save the token in local storage
-		setToken(response.data.token); // Set the user data in the context
-		axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`; // Set the Authorization header
-		const userInfo = await axios.get('/api/tokens'); // get user information
-		setUserData(userInfo.data);
-		navigate('/connected'); // Redirect to the home page
+		    localStorage.setItem('token', response.data.token); // Save the token in local storage
+		    setToken(response.data.token); // Set the user data in the context
+		    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`; // Set the Authorization header
+		    const userInfo = await axios.get('/api/tokens'); // get user information
+		    setUserData(userInfo.data);
+		    navigate('/connected'); // Redirect to the home page  
       }
     } catch (err) {
       console.error('Error logging in:', err);
@@ -55,6 +59,7 @@ const LoginPage = () => {
   };
 
   return (
+    // Login form
     <div id="mainContainer" className="d-flex flex-column justify-content-center align-items-center vh-100">
       <Icon />
       <div className="card p-4 rounded" style={{ maxWidth: '600px', width: '100%' }}>

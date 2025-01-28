@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './homePageBackground.css'
 
+// Icon component
 const Icon = () => { return(
     <div className="top-right-icon">
         <Link to="/">

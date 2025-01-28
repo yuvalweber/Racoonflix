@@ -2,10 +2,10 @@
   h1 {
     font-size: 2.5rem;
     color: #e50914; /* Netflix red */
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 30px;
+    text-align: center; /* Center the text */
+    text-transform: uppercase; /* Uppercase for professional appearance */
+    letter-spacing: 2px; /* Slight spacing for elegance */
+    margin-bottom: 30px; /* Space from bottom */
   }
   
   /* Buttons */
@@ -31,19 +31,19 @@
   
   /* Section Selector Styling */
   .section-selector button {
-    margin: 5px;
+    margin: 5px; /* Space between buttons */
   }
   
   /* Action Selector Styling */
   .action-selector button {
-    margin: 5px;
+    margin: 5px; /* Space between buttons */
   }
 
   /* Title Styling */
   .page-title {
-    font-size: 2.5rem;
+    font-size: 2.5rem;  /* Large font size */
     color: red; /* White for professional look */
-    text-align: center;
+    text-align: center; /* Center the text */
     text-transform: uppercase; /* Clean, uppercase styling */
     letter-spacing: 2px; /* Slight spacing for elegance */
     margin-top: 20px; /* Space from top */

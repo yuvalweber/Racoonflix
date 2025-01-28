@@ -1,88 +1,88 @@
   .header {
-    margin-top: 100px;
-    text-align: center;
-    margin-bottom: 20px;
+    margin-top: 100px; /* Add margin to the top */
+    text-align: center; /* Center the text */
+    margin-bottom: 20px; /* Add margin to the bottom */
   }
   
   .title {
-    color: red;
-    text-shadow: white 0 0 10px;
-    font-size: 2.5rem;
-    font-weight: bold;
+    color: red; /* Change the color to red */
+    text-shadow: white 0 0 10px; /* Add a white shadow */
+    font-size: 2.5rem; /* Increase the font size */
+    font-weight: bold; /* Make the text bold */
   }
   
   .searchBarContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 30px;
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center the content */
+    align-items: center; /* Center the content */
+    margin-bottom: 30px; /* Add margin to the bottom */
   }
   
   .searchInput {
-    width: 60%;
-    padding: 12px 16px;
-    font-size: 1rem;
-    border-radius: 4px;
-    border: 1px solid #555;
-    outline: none;
-    background-color: #222;
-    color: #fff;
+    width: 60%; /* Set the width to 60% */
+    padding: 12px 16px; /* Add padding */
+    font-size: 1rem; /* Set the font size */
+    border-radius: 4px; /* Add border radius */
+    border: 1px solid #555; /* Add a border */
+    outline: none; /* Remove the outline */
+    background-color: #222; /* Set the background color */
+    color: #fff; /* Set the text color */ 
   }
   
   .resultsContainer {
-    margin-top: 20px;
+    margin-top: 20px; /* Add margin to the top */
   }
   
   .loading {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.5rem; /* Set the font size */
+    font-weight: bold; /* Make the text bold */
   }
   
   .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-gap: px;
-    justify-items: center;
+    display: grid; /* Use grid layout */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Set the columns */
+    grid-gap: px; /* Set the gap */
+    justify-items: center; /* Center the items */
   }
   
   .card {
-    width: 200px;
-    background-color: #222;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: center;
+    width: 200px; /* Set the width */
+    background-color: #222; /* Set the background color */
+    border-radius: 8px; /* Add border radius */
+    overflow: hidden; /* Hide overflow */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow */
+    text-align: center; /* Center the text */
   }
   
   .cardImage {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
+    width: 100%; /* Set the width */ 
+    height: 300px; /* Set the height */
+    object-fit: cover; /* Cover the image */
   }
   
   .cardTitle {
-    margin: 10px 0;
-    font-size: 1.1rem;
-    font-weight: bold;
+    margin: 10px 0; /* Add margin */
+    font-size: 1.1rem; /* Set the font size */
+    font-weight: bold; /* Make the text bold */
   }
   
   .cardDescription {
-    font-size: 0.9rem;
-    color: #bbb;
-    padding: 0 10px 10px;
+    font-size: 0.9rem; /* Set the font size */
+    color: #bbb; /* Set the text color */
+    padding: 0 10px 10px; /* Add padding */
   }
   
   .noResults {
-    text-align: center;
-    color: #bbb;
-    font-size: 1.2rem;
-    margin-top: 20px;
+    text-align: center; /* Center the text */
+    color: #bbb; /* Set the text color */
+    font-size: 1.2rem; /* Set the font size */
+    margin-top: 20px; /* Add margin to the top */
   }
 
   .subtitle {
-    color: gray;
-    margin-bottom: 10px;
-    text-shadow: black 0 0 10px;
+    color: gray; /* Change the color to gray */
+    margin-bottom: 10px; /* Add margin to the bottom */
+    text-shadow: black 0 0 10px; /* Add a black shadow */
   }
   
 

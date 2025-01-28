@@ -7,19 +7,22 @@ import '../components/homePageBackground.css';
 import '../components/card.css'; 
 
 const SignUpPage = () => {
+  // State to hold form data
   const [formData, setFormData] = useState({
     firstName: '',
-	lastName: '',
-	userName: '',
-	email: '',
-	password: '',
-	confirmPassword: '',
-	profilePicture: ''
+    lastName: '',
+    userName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    profilePicture: ''
   });
 
+  // Hook to navigate programmatically
   const navigate = useNavigate();
 
-  const scrollContainerRef = useRef(null); // Ref for the scroll container
+  // Ref for the scroll container
+  const scrollContainerRef = useRef(null);
 
   useEffect(() => {
     // Scroll to the top when the component loads
@@ -28,6 +31,7 @@ const SignUpPage = () => {
     }
   }, []);
 
+  // Form fields configuration
   const fields = [
     { id: 'firstName', label: 'First Name', type: 'text', required: true },
     { id: 'lastName', label: 'Last Name', type: 'text', required: true },
@@ -38,6 +42,7 @@ const SignUpPage = () => {
     { id: 'profilePicture', label: 'Profile Picture', type: 'text', required: false }
   ];
 
+  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -46,36 +51,38 @@ const SignUpPage = () => {
     });
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
-	e.preventDefault();
-  
-	if (formData.password !== formData.confirmPassword) {
-	  alert('Passwords do not match!');
-	  return;
-	}
-  
-	try {
-	  // remove the confirmPassword key before sending the data
-	  const { confirmPassword, ...data } = formData;
-	  const response = await axios.post('http://localhost:8080/api/users', data);
-  
-	  if (response.status === 201) {
-		alert('Sign-up successful!');
-		navigate('/login');
-		console.log('Server response:', response.data);
-	  } else {
-		alert(`Error: ${response.data || 'Something went wrong'}`);
-	  }
-	} catch (err) {
-	  console.error('Error:', err);
-	  if (err.response) {
-		// Response error from server
-		alert(`Error: ${err.response.data.errors || 'Server error occurred'}`);
-	  } else {
-		// Network or other error
-		alert('An error occurred while signing up.');
-	  }
-	}
+    e.preventDefault();
+
+    // Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
+
+    try {
+      // Remove the confirmPassword key before sending the data
+      const { confirmPassword, ...data } = formData;
+      const response = await axios.post('http://localhost:8080/api/users', data);
+
+      if (response.status === 201) {
+        alert('Sign-up successful!');
+        navigate('/login');
+        console.log('Server response:', response.data);
+      } else {
+        alert(`Error: ${response.data || 'Something went wrong'}`);
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      if (err.response) {
+        // Response error from server
+        alert(`Error: ${err.response.data.errors || 'Server error occurred'}`);
+      } else {
+        // Network or other error
+        alert('An error occurred while signing up.');
+      }
+    }
   };
 
   return (

@@ -3,25 +3,27 @@ import axios from 'axios';
 import ReactPlayer from 'react-player';
 import './videoPlayer.css'; // Import CSS for styling
 
+// Set the base URL for Axios requests
 axios.defaults.baseURL = 'http://localhost:8080';
 
 const VideoPlayer = () => {
-  const [videos, setVideos] = useState([]);
-  const [randomVideo, setRandomVideo] = useState('');
+  const [videos, setVideos] = useState([]); // State to store the list of videos
+  const [randomVideo, setRandomVideo] = useState(''); // State to store the selected random video URL
 
+  // Set the Authorization header once on mount
   useEffect(() => {
-		const token = localStorage.getItem('token');
-		if (token) {
-		  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-		}
-	  }, []); // Set the Authorization header once on mount
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+  }, []);
 
   // Fetch videos from the database/API using Axios
   useEffect(() => {
     const fetchVideos = async () => {
       try {
         const response = await axios.get('api/movies');
-        setVideos(response.data);
+        setVideos(response.data); // Update state with the fetched videos
       } catch (error) {
         console.error('Error fetching videos:', error);
       }

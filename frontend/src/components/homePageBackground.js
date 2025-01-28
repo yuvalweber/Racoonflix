@@ -2,6 +2,7 @@ import React from 'react';
 import "./homePageBackground.css";
 import { Link } from 'react-router-dom';
 
+// Home page background component
 const HomeBackground = () => {
   return (
     <div 
