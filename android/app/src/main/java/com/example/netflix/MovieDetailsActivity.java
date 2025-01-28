@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -14,13 +15,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.netflix.adapters.MovieCardAdapter;
+import com.example.netflix.database.AppDatabase;
 import com.example.netflix.models.Movie;
 import com.example.netflix.repository.CategoryRepository;
 import com.example.netflix.models.Category;
+import com.example.netflix.repository.MovieRepository;
 import com.example.netflix.viewmodels.MovieViewModel;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
@@ -71,6 +78,28 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
             Glide.with(this).load(movie.getImage()).into(movieImageView);
             playMovieButton.setOnClickListener(v -> {
+                // add movie to recommendation
+                MovieRepository movieRepository = new MovieRepository(this);
+                movieRepository.addMovieToRecommendations(movie.getMovieId(), new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        Log.d(TAG, "Movie added to recommendations.");
+                        // clear the room of the movie
+                        AppDatabase appDatabase = AppDatabase.getInstance(MovieDetailsActivity.this);
+                        Thread thread = new Thread(() -> {appDatabase.movieDao().clearMovies();});
+                        thread.start();
+                        try {
+                            thread.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Log.d(TAG, "Failed to add movie to recommendations: " + t.getMessage());
+                    }
+                });
                 Intent playIntent = new Intent(MovieDetailsActivity.this, MoviePlayerActivity.class);
                 playIntent.putExtra("TRAILER_URL", movie.getTrailer());
                 startActivity(playIntent);
