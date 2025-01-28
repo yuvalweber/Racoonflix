@@ -6,6 +6,8 @@ import com.example.netflix.models.User;
 import com.example.netflix.entities.TokenEntity;
 import com.example.netflix.repository.UserRepository;
 
+import java.io.File;
+
 public class UserViewModel extends ViewModel {
     private final UserRepository userRepository;
 
@@ -14,9 +16,10 @@ public class UserViewModel extends ViewModel {
     }
 
     // Create a new user
-    public void createUser(User user, UserRepository.UserCallback callback) {
-        userRepository.createUser(user, callback);
+    public void createUser(User user, File profilePicture, UserRepository.UserCallback callback) {
+        userRepository.createUser(user, profilePicture, callback);
     }
+
 
     // Fetch a user by ID
     public void getUserById(String userId, String token, UserRepository.UserCallback callback) {

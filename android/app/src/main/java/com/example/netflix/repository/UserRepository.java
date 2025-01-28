@@ -14,10 +14,14 @@ import com.example.netflix.dao.TokenDao;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,8 +37,20 @@ public class UserRepository {
     }
 
     // Create a new user
-    public void createUser(User user, UserCallback callback) {
-        userApiService.createUser(user).enqueue(new Callback<Void>() {
+    public void createUser(User user, File profilePicture, UserCallback callback) {
+        RequestBody firstName = RequestBody.create(MediaType.parse("text/plain"), user.getFirstName());
+        RequestBody lastName = RequestBody.create(MediaType.parse("text/plain"), user.getLastName());
+        RequestBody userName = RequestBody.create(MediaType.parse("text/plain"), user.getUserName());
+        RequestBody email = RequestBody.create(MediaType.parse("text/plain"), user.getEmail());
+        RequestBody password = RequestBody.create(MediaType.parse("text/plain"), user.getPassword());
+
+        MultipartBody.Part picturePart = null;
+        if (profilePicture != null) {
+            RequestBody pictureBody = RequestBody.create(MediaType.parse("image/*"), profilePicture);
+            picturePart = MultipartBody.Part.createFormData("profilePicture", profilePicture.getName(), pictureBody);
+        }
+
+        userApiService.createUser(firstName, lastName, userName, email, password, picturePart).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -51,6 +67,7 @@ public class UserRepository {
             }
         });
     }
+
 
     // Login and store token in Room, then fetch userId and isAdmin
     public void login(String userName, String password, UserCallback callback) {
