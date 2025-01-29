@@ -1,12 +1,17 @@
 package com.example.netflix.fragments;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +26,7 @@ import com.example.netflix.models.Movie;
 import com.example.netflix.viewmodels.CategoryViewModel;
 import com.example.netflix.viewmodels.MovieViewModel;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +37,18 @@ import retrofit2.Response;
 public class MovieManagementFragment extends Fragment {
 
     private static final String ARG_ACTION = "action";
+    private static final int PICK_IMAGE = 1;
+    private static final int PICK_TRAILER = 2;
     private static final String TAG = "MovieManagementFragment";
 
     private String action;
     private MovieViewModel movieViewModel;
-
     private CategoryViewModel categoryViewModel;
+
+    private Uri selectedImageUri;
+    private Uri selectedTrailerUri;
+    private File selectedImageFile;
+    private File selectedTrailerFile;
 
     public static MovieManagementFragment newInstance(String action) {
         MovieManagementFragment fragment = new MovieManagementFragment();
@@ -69,9 +81,23 @@ public class MovieManagementFragment extends Fragment {
         EditText movieYear = view.findViewById(R.id.edit_movie_year);
         EditText movieDirector = view.findViewById(R.id.edit_movie_director);
         EditText movieDuration = view.findViewById(R.id.edit_movie_duration);
-        EditText movieImage = view.findViewById(R.id.edit_movie_image);
-        EditText movieTrailer = view.findViewById(R.id.edit_movie_trailer);
+        Button selectImageButton = view.findViewById(R.id.button_select_movie_image);
+        TextView selectedImageText = view.findViewById(R.id.text_selected_movie_image);
+        Button selectTrailerButton = view.findViewById(R.id.button_select_movie_trailer);
+        TextView selectedTrailerText = view.findViewById(R.id.text_selected_movie_trailer);
         Button submitButton = view.findViewById(R.id.button_submit);
+
+        // File selection for image
+        selectImageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, PICK_IMAGE);
+        });
+
+        // File selection for trailer
+        selectTrailerButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, PICK_TRAILER);
+        });
 
         // Configure Submit Button Action
         submitButton.setOnClickListener(v -> {
@@ -87,11 +113,9 @@ public class MovieManagementFragment extends Fragment {
             movie.setYear(movieYear.getText().toString().isEmpty() ? 0 : Integer.parseInt(movieYear.getText().toString().trim()));
             movie.setDirector(movieDirector.getText().toString().trim());
             movie.setDuration(movieDuration.getText().toString().isEmpty() ? 0 : Integer.parseInt(movieDuration.getText().toString().trim()));
-            movie.setImage(movieImage.getText().toString().trim());
-            movie.setTrailer(movieTrailer.getText().toString().trim());
             if (!movieCategory.getText().toString().isEmpty()) {
                 String[] categories = movieCategory.getText().toString().split(",");
-                // remove space from each category
+                // Remove space from each category
                 for (int i = 0; i < categories.length; i++) {
                     categories[i] = categories[i].trim();
                 }
@@ -116,13 +140,18 @@ public class MovieManagementFragment extends Fragment {
                 movie.setCategory(List.of());
             }
 
+            if (selectedImageFile == null || selectedTrailerFile == null) {
+                Toast.makeText(getContext(), "Please select both image and trailer files.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             switch (action) {
                 case "Create":
-                    movieViewModel.createMovie(movie, new Callback<Void>() {
+                    movieViewModel.createMovieWithFiles(movie, selectedImageFile, selectedTrailerFile, new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             if (response.isSuccessful()) {
-                                Log.d(TAG, "Movie created successfully.");
+                                Log.d(TAG, "Movie created successfully: " + movie);
                                 Toast.makeText(getContext(), "Movie created successfully.", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -134,81 +163,6 @@ public class MovieManagementFragment extends Fragment {
                         }
                     });
                     break;
-                case "Update":
-                    if (movieNameInput.isEmpty()) {
-                        Toast.makeText(getContext(), "Movie name is required for update.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    movieViewModel.fetchMovieIdByName(movieNameInput, new Callback<List<Movie>>() {
-                        @Override
-                        public void onResponse(Call<List<Movie>> call, Response<List<Movie>>response) {
-                            if (response.isSuccessful()) {
-                                Log.d(TAG, "Movie updated successfully.");
-                                String movieId = response.body().get(0).getId();
-                                movieViewModel.updateMovie(movieId, movie, new Callback<Void>() {
-                                    @Override
-                                    public void onResponse(Call<Void> call, Response<Void> response) {
-                                        if (response.isSuccessful()) {
-                                            Log.d(TAG, "Movie updated successfully.");
-                                            Toast.makeText(getContext(), "Movie updated successfully.", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<Void> call, Throwable t) {
-                                        Log.e(TAG, "Failed to update movie: " + t.getMessage());
-                                        Toast.makeText(getContext(), "Failed to update movie: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                Toast.makeText(getContext(), "Movie updated successfully.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<Movie>> call, Throwable t) {
-                            Log.e(TAG, "Failed to update movie: " + t.getMessage());
-                            Toast.makeText(getContext(), "Failed to update movie: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    break;
-
-                case "Delete":
-                    if (movieNameInput.isEmpty()) {
-                        Toast.makeText(getContext(), "Movie name is required for delete.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    movieViewModel.fetchMovieIdByName(movieNameInput, new Callback<List<Movie>>() {
-                        @Override
-                        public void onResponse(Call<List<Movie>> call, Response<List<Movie>>response) {
-                            if (response.isSuccessful()) {
-                                String movieId = response.body().get(0).getId();
-                                movieViewModel.deleteMovie(movieId, new Callback<Void>() {
-                                    @Override
-                                    public void onResponse(Call<Void> call, Response<Void> response) {
-                                        if (response.isSuccessful()) {
-                                            Log.d(TAG, "Movie Deleted successfully.");
-                                            Toast.makeText(getContext(), "Movie Deleted successfully.", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<Void> call, Throwable t) {
-                                        Log.e(TAG, "Failed to Delete movie: " + t.getMessage());
-                                        Toast.makeText(getContext(), "Failed to Delete movie: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                Toast.makeText(getContext(), "Movie Deleted successfully.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<Movie>> call, Throwable t) {
-                            Log.e(TAG, "Failed to Delete movie: " + t.getMessage());
-                            Toast.makeText(getContext(), "Failed to Delete movie: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    break;
 
                 default:
                     Log.e(TAG, "Invalid action: " + action);
@@ -217,19 +171,24 @@ public class MovieManagementFragment extends Fragment {
 
         // Show/hide fields based on action
         if (action.equals("Delete")) {
+            newMovieTitle.setVisibility(View.GONE);
             movieCategory.setVisibility(View.GONE);
             movieYear.setVisibility(View.GONE);
             movieDirector.setVisibility(View.GONE);
             movieDuration.setVisibility(View.GONE);
-            movieImage.setVisibility(View.GONE);
-            movieTrailer.setVisibility(View.GONE);
+            selectImageButton.setVisibility(View.GONE);
+            selectTrailerButton.setVisibility(View.GONE);
+            selectedImageText.setVisibility(View.GONE);
+            selectedTrailerText.setVisibility(View.GONE);
         } else if (action.equals("Create")) {
             newMovieTitle.setVisibility(View.GONE);
         }
 
-        // because we changed info about movies lets invalidate the cache
+        // Invalidate the cache for movies
         AppDatabase appDatabase = AppDatabase.getInstance(getContext());
-        Thread thread = new Thread(() -> {appDatabase.movieDao().clearMovies();});
+        Thread thread = new Thread(() -> {
+            appDatabase.movieDao().clearMovies();
+        });
         thread.start();
         try {
             thread.join();
@@ -238,5 +197,40 @@ public class MovieManagementFragment extends Fragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (data != null && resultCode == getActivity().RESULT_OK) {
+            if (requestCode == PICK_IMAGE) {
+                selectedImageUri = data.getData();
+                selectedImageFile = new File(getPathFromUri(selectedImageUri));
+                TextView selectedImageText = getView().findViewById(R.id.text_selected_movie_image);
+                selectedImageText.setText(selectedImageFile.getName());
+            } else if (requestCode == PICK_TRAILER) {
+                selectedTrailerUri = data.getData();
+                selectedTrailerFile = new File(getPathFromUri(selectedTrailerUri));
+                TextView selectedTrailerText = getView().findViewById(R.id.text_selected_movie_trailer);
+                selectedTrailerText.setText(selectedTrailerFile.getName());
+            }
+        }
+    }
+
+    private String getPathFromUri(Uri uri) {
+        String filePath = null;
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = {MediaStore.Images.Media.DATA};
+            try (Cursor cursor = getContext().getContentResolver().query(uri, projection, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    filePath = cursor.getString(columnIndex);
+                }
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            filePath = uri.getPath();
+        }
+        return filePath;
     }
 }

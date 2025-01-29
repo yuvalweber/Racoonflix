@@ -135,19 +135,23 @@
                 android:layout_marginBottom="16dp"
                 android:inputType="textPassword" />
 
-            <!-- Profile Picture Field -->
-            <EditText
-                android:id="@+id/editTextProfilePicture"
+            <!-- Profile Picture File Selector -->
+            <Button
+                android:id="@+id/buttonSelectProfilePicture"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="Profile Picture URL (optional)"
-                android:background="@drawable/card_field_background"
-                android:padding="16dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#CCCCCC"
-                android:textSize="18sp"
-                android:layout_marginBottom="24dp"
-                android:inputType="textUri" />
+                android:text="Select Profile Picture"
+                android:backgroundTint="@color/blue"
+                android:textColor="@color/white"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/textSelectedProfilePicture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No file selected"
+                android:textColor="@color/white"
+                android:layout_marginBottom="24dp" />
 
             <!-- Register Button -->
             <Button

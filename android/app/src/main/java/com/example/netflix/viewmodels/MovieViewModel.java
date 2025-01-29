@@ -10,6 +10,7 @@ import com.example.netflix.models.Category;
 import com.example.netflix.models.Movie;
 import com.example.netflix.repository.MovieRepository;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -39,9 +40,9 @@ public class MovieViewModel extends AndroidViewModel {
         return repository.fetchAllMovies();
     }
 
-    public void createMovie(Movie movie, Callback<Void> callback) {
-        repository.createMovie(movie, callback);
-    }
+//    public void createMovie(Movie movie, Callback<Void> callback) {
+//        repository.createMovie(movie, callback);
+//    }
 
     public void updateMovie(String id, Movie movie, Callback<Void> callback) {
         repository.updateMovie(id, movie, callback);
@@ -61,6 +62,10 @@ public class MovieViewModel extends AndroidViewModel {
     public LiveData<List<Movie>> getRecommendedMovies(String movieId) {
         Log.d(TAG, "getRecommendedMovies: " + movieId);
         return repository.fetchRecommendedMovies(movieId);
+    }
+
+    public void createMovieWithFiles(Movie movie, File imageFile, File trailerFile, Callback<Void> callback) {
+        repository.createMovieWithFiles(movie, imageFile, trailerFile, callback);
     }
 
 }

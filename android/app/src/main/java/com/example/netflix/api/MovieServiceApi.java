@@ -4,8 +4,12 @@ import com.example.netflix.models.Movie;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Header;
@@ -27,8 +31,18 @@ public interface MovieServiceApi {
     @GET("/api/movies/search/{query}")
     Call<List<Movie>> searchMovies(@Header("Authorization") String token, @Path("query") String query);
 
+    @Multipart
     @POST("/api/movies")
-    Call<Void> createMovie(@Header("Authorization") String token, @Body Movie movie);
+    Call<Void> createMovieWithFiles(
+            @Header("Authorization") String token,
+            @Part("title") RequestBody title,
+            @Part("year") RequestBody year,
+            @Part("director") RequestBody director,
+            @Part("duration") RequestBody duration,
+            @Part List<MultipartBody.Part> categories, // Accept categories as an array
+            @Part MultipartBody.Part image,
+            @Part MultipartBody.Part trailer
+    );
 
     @PUT("/api/movies/{id}")
     Call<Void> updateMovie(@Header("Authorization") String token, @Path("id") String id, @Body Movie movie);

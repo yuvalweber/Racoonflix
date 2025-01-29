@@ -18,6 +18,7 @@ import com.example.netflix.api.MovieServiceApi;
 import com.example.netflix.network.RetrofitInstance;
 import com.example.netflix.models.User;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,9 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -453,9 +457,9 @@ public class MovieRepository {
         return categorizedMovies;
     }
 
-    public void createMovie(Movie movie, Callback<Void> callback) {
-        executeMovieApiCall(api -> api.createMovie(getToken(), movie), callback);
-    }
+//    public void createMovie(Movie movie, Callback<Void> callback) {
+//        executeMovieApiCall(api -> api.createMovie(getToken(), movie), callback);
+//    }
 
     public void updateMovie(String id, Movie movie, Callback<Void> callback) {
         executeMovieApiCall(api -> api.updateMovie(getToken(), id, movie), callback);
@@ -623,6 +627,26 @@ public class MovieRepository {
     }
 
 
+    public void createMovieWithFiles(Movie movie, File imageFile, File trailerFile, Callback<Void> callback) {
+        MultipartBody.Part imagePart = MultipartBody.Part.createFormData(
+                "image", imageFile.getName(), RequestBody.create(MediaType.parse("image/*"), imageFile));
+        MultipartBody.Part trailerPart = MultipartBody.Part.createFormData(
+                "trailer", trailerFile.getName(), RequestBody.create(MediaType.parse("video/*"), trailerFile));
+
+        RequestBody title = RequestBody.create(MediaType.parse("text/plain"), movie.getTitle());
+        RequestBody year = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(movie.getYear()));
+        RequestBody director = RequestBody.create(MediaType.parse("text/plain"), movie.getDirector());
+        RequestBody duration = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(movie.getDuration()));
+
+        // Convert category list to MultipartBody.Part array
+        List<MultipartBody.Part> categoryParts = new ArrayList<>();
+        for (String category : movie.getCategory()) {
+            categoryParts.add(MultipartBody.Part.createFormData("category[]", category));
+        }
+
+        movieApi.createMovieWithFiles(getToken(), title, year, director, duration, categoryParts, imagePart, trailerPart)
+                .enqueue(callback);
+    }
 
     @FunctionalInterface
     private interface CallExecutor {
