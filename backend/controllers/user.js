@@ -14,7 +14,7 @@ const createUser = async (req, res) => {
 
         // Add profile picture path if uploaded
         if (req.file) {
-            req.body.profilePicture = `http://localhost:8080/uploads/images/${req.file.filename}`;
+            req.body.profilePicture = `http://${process.env.API_SERVER}:${process.env.API_PORT}/uploads/images/${req.file.filename}`;
         }
 
         // Validate keys in the request body

@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import axios from "axios";
 
 // Set the base URL for the axios requests
-axios.defaults.baseURL = "http://localhost:8080";
+axios.defaults.baseURL = `http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}`;
 
 // Function to create a protected route
 export const ProtectedRoute = ({ Component }) => {

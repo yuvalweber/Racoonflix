@@ -38,7 +38,7 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       // Sending login data to the API via POST request
-      const response = await axios.post('http://localhost:8080/api/tokens', {
+      const response = await axios.post(`http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}/api/tokens`, {
         userName: formData.userName,
         password: formData.password
       });
@@ -48,7 +48,7 @@ const LoginPage = () => {
 		    localStorage.setItem('token', response.data.token); // Save the token in local storage
 		    setToken(response.data.token); // Set the user data in the context
 		    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`; // Set the Authorization header
-		    const userInfo = await axios.get('/api/tokens'); // get user information
+		    const userInfo = await axios.get(`http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}/api/tokens`); // get user information
 		    setUserData(userInfo.data);
 		    navigate('/connected'); // Redirect to the home page  
       }

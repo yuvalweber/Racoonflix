@@ -64,7 +64,7 @@ const SignUpPage = () => {
         formDataToSubmit.append(key, data[key]);
       });
 
-      const response = await axios.post('http://localhost:8080/api/users', formDataToSubmit, {
+      const response = await axios.post(`http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}/api/users`, formDataToSubmit, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 

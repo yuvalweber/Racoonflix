@@ -8,7 +8,7 @@ import { useAuth } from '../Authentication/AuthContext';
 
 
 // Set the base URL for the API
-axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.baseURL = `http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}`;
 
 // Navbar component
 const Navbar = ({ isAdmin }) => {

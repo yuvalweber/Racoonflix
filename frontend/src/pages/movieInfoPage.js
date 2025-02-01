@@ -4,7 +4,7 @@ import axios from 'axios';
 import MovieDesc from '../components/movieDesc';
 import ErrObj from '../components/errorObj';
 
-axios.defaults.baseURL = 'http://localhost:8080'; // Set the base URL for axios requests
+axios.defaults.baseURL = `http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}`; // Set the base URL for axios requests
 
 // Function to translate category IDs to category names
 const translateCategories = async (categories) => {
