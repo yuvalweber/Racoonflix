@@ -10,7 +10,7 @@ import MovieInfoPage from './movieInfoPage';
 import './connectedHomePage.css';  // Styles for the home page
 import '../components/category.css';  // Styles for the category component
 
-axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.baseURL = `http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}`;
 
 const ConnectedHomePage = () => {
   const { token , userData } = useAuth();

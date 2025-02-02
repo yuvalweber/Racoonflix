@@ -9,7 +9,7 @@ import MovieInfoPage from './movieInfoPage';
 import '../components/category.css'; // CSS for the category component
 
 // Set the base URL for the API
-axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.baseURL = `http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}`;
 
 // AllMoviesPage component to display all movies grouped by categories
 const AllMoviesPage = () => {

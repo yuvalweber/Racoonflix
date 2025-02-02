@@ -8,7 +8,7 @@ import MovieCard from "../components/movieCard"; // Import the MovieCard compone
 import MovieInfoPage from "./movieInfoPage"; // Import the MovieInfoPage component
 import { useAuth } from '../Authentication/AuthContext'; // Import useAuth hook for authentication
 
-axios.defaults.baseURL = 'http://localhost:8080'; // Set default base URL for axios
+axios.defaults.baseURL = `http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}`; // Set default base URL for axios
 
 const SearchPage = () => {
   const [query, setQuery] = useState(""); // State to store the search query

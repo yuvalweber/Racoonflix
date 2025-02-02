@@ -18,8 +18,8 @@ const createMovie = async (req, res) => {
         defaultTrailer = req.body.trailer;
     }
 
-    req.body.image = req.files?.image ? `http://localhost:8080/${req.files.image[0].path}` : defaultImage;
-    req.body.trailer = req.files?.trailer ? `http://localhost:8080/${req.files.trailer[0].path}` : defaultTrailer;
+    req.body.image = req.files?.image ? `http://${process.env.API_SERVER}:${process.env.API_PORT}/${req.files.image[0].path}` : defaultImage;
+    req.body.trailer = req.files?.trailer ? `http://${process.env.API_SERVER}:${process.env.API_PORT}/${req.files.trailer[0].path}` : defaultTrailer;
     // check if the request body contains all the required keys
 	const missingKeys = requiredKeys.filter((key) => !(key in req.body));
     // return an informative error if the request body does not contain all the required keys
@@ -112,8 +112,8 @@ const replaceMovie = async (req, res) => {
         return res.status(headerValidation.status).json({ errors: headerValidation.message });
     }
 
-    req.body.image = req.files.image ? `http://localhost:8080/${req.files.image[0].path}` : '';
-    req.body.trailer = req.files.trailer ? `http://localhost:8080/${req.files.trailer[0].path}` : '';
+    req.body.image = req.files.image ? `http://${process.env.API_SERVER}:${process.env.API_PORT}/${req.files.image[0].path}` : '';
+    req.body.trailer = req.files.trailer ? `http://${process.env.API_SERVER}:${process.env.API_PORT}/${req.files.trailer[0].path}` : '';
     // validate keys in the request body
     const invalidKeys = Object.keys(req.body).filter(key => !MovieModel.schema.obj.hasOwnProperty(key));
     if (invalidKeys.length > 0) {

@@ -1,0 +1,87 @@
+version: '3'
+services: 
+  server:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 250M
+    image: "netflix:1.0.1"
+    build:
+      context: ./backend/RecommendSystem
+      dockerfile: Dockerfile
+    container_name: "server"     
+    restart: always
+    networks:
+      - netflix
+    volumes:
+      - "./backend/RecommendSystem/data/:/usr/src/app/data/"
+    
+  mongo:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 250M
+    image: mongo:latest
+    container_name: Mongo
+    restart: always
+    networks:
+      - netflix
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+  web-service:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 250M
+    image: "netflix-web-service:1.0.1"
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      - server
+      - mongo
+    networks:
+      - netflix
+    restart: always
+    ports:
+      - "8080:12345"
+    environment:
+      - NODE_ENV=local
+      - API_SERVER=web-service
+      - API_PORT=12345
+    container_name: "web-service"
+    volumes:
+      - ./backend/uploads:/usr/src/app/uploads
+
+  react-app:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 250M
+    image: "netflix-react-app:1.0.1"
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - web-service
+    networks:
+      - netflix
+    restart: always
+    ports:
+      - "3000:3000"
+    container_name: "react-app"
+    environment:
+      - REACT_APP_API_SERVER=localhost
+      - REACT_APP_API_PORT=8080
+
+networks:
+  netflix:
+volumes:
+  mongo_data:

@@ -4,7 +4,7 @@ import ReactPlayer from 'react-player';
 import './videoPlayer.css'; // Import CSS for styling
 
 // Set the base URL for Axios requests
-axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.baseURL = `http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}`;
 
 const VideoPlayer = () => {
   const [videos, setVideos] = useState([]); // State to store the list of videos
