@@ -15,6 +15,7 @@ import com.example.netflix.api.UserApiService;
 import com.example.netflix.repository.UserRepository;
 
 public class LoginActivity extends AppCompatActivity {
+	// UserRepository instance
     private UserRepository userRepository;
 
     @Override
@@ -22,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+		// Initialize UI components
         EditText editTextUserName = findViewById(R.id.editTextUserName);
         EditText editTextPassword = findViewById(R.id.editTextPassword);
         Button buttonLogin = findViewById(R.id.buttonLogin);

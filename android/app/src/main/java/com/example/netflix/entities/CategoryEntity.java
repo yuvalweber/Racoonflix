@@ -12,12 +12,15 @@ public class CategoryEntity {
     private boolean promoted;
     private long timestamp;
 
+	// Constructor
     public CategoryEntity(String categoryId, String name, boolean promoted, long timestamp) {
         this.categoryId = categoryId;
         this.name = name;
         this.promoted = promoted;
         this.timestamp = timestamp;
     }
+
+	// Getters and Setters
 
     public int getId() {
         return id;

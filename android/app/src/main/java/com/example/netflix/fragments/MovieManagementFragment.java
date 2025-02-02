@@ -35,10 +35,11 @@ public class MovieManagementFragment extends Fragment {
 
     private String action;
     private MovieViewModel movieViewModel;
-
     private CategoryViewModel categoryViewModel;
 
+	// Create a new instance of the fragment
     public static MovieManagementFragment newInstance(String action) {
+		// Create a new instance of the fragment with the action passed as an argument
         MovieManagementFragment fragment = new MovieManagementFragment();
         Bundle args = new Bundle();
         args.putString(ARG_ACTION, action);
@@ -48,6 +49,7 @@ public class MovieManagementFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+		// Get the action from the arguments
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             action = getArguments().getString(ARG_ACTION);
@@ -77,7 +79,7 @@ public class MovieManagementFragment extends Fragment {
         submitButton.setOnClickListener(v -> {
             String movieNameInput = movieTitle.getText().toString().trim();
             String newMovieNameInput = newMovieTitle.getText().toString().trim();
-
+			// Create a new movie object with the input values
             Movie movie = new Movie();
             if (newMovieNameInput.isEmpty()) {
                 movie.setTitle(movieNameInput);
@@ -115,8 +117,9 @@ public class MovieManagementFragment extends Fragment {
             } else {
                 movie.setCategory(List.of());
             }
-
+			// Perform the action based on the action type passed as an argument when creating the fragment
             switch (action) {
+				// Create a new movie with the input values
                 case "Create":
                     movieViewModel.createMovie(movie, new Callback<Void>() {
                         @Override
@@ -134,6 +137,7 @@ public class MovieManagementFragment extends Fragment {
                         }
                     });
                     break;
+				// Update the movie with the input values
                 case "Update":
                     if (movieNameInput.isEmpty()) {
                         Toast.makeText(getContext(), "Movie name is required for update.", Toast.LENGTH_SHORT).show();
@@ -144,6 +148,7 @@ public class MovieManagementFragment extends Fragment {
                         public void onResponse(Call<List<Movie>> call, Response<List<Movie>>response) {
                             if (response.isSuccessful()) {
                                 Log.d(TAG, "Movie updated successfully.");
+								// Get the movie id from the response and update the movie with the input values
                                 String movieId = response.body().get(0).getId();
                                 movieViewModel.updateMovie(movieId, movie, new Callback<Void>() {
                                     @Override
@@ -171,12 +176,13 @@ public class MovieManagementFragment extends Fragment {
                         }
                     });
                     break;
-
+				// Delete the movie with the input values
                 case "Delete":
                     if (movieNameInput.isEmpty()) {
                         Toast.makeText(getContext(), "Movie name is required for delete.", Toast.LENGTH_SHORT).show();
                         return;
                     }
+					// Get the movie id from the response and delete the movie
                     movieViewModel.fetchMovieIdByName(movieNameInput, new Callback<List<Movie>>() {
                         @Override
                         public void onResponse(Call<List<Movie>> call, Response<List<Movie>>response) {
@@ -211,6 +217,7 @@ public class MovieManagementFragment extends Fragment {
                     break;
 
                 default:
+					// Log an error if the action is invalid
                     Log.e(TAG, "Invalid action: " + action);
             }
         });

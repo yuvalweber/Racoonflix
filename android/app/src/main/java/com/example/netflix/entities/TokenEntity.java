@@ -11,12 +11,13 @@ public class TokenEntity {
     private String userId;
     private boolean isAdmin;
 
+	// Constructor
     public TokenEntity(String token, String userId, boolean isAdmin) {
         this.token = token;
         this.userId = userId;
         this.isAdmin = isAdmin;
     }
-
+	// Getters and Setters
     public int getId() {
         return id;
     }

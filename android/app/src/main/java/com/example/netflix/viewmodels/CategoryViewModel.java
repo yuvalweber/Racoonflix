@@ -13,9 +13,10 @@ import retrofit2.Callback;
 import java.util.List;
 
 public class CategoryViewModel extends AndroidViewModel {
-
+	// CategoryViewModel class is used to interact with the CategoryRepository class and provide data to the UI.
     private final CategoryRepository categoryRepository;
 
+	// Constructor
     public CategoryViewModel(Application application) {
         super(application);
         categoryRepository = new CategoryRepository(application);
