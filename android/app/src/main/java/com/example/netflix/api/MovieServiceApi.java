@@ -25,9 +25,11 @@ public interface MovieServiceApi {
     @GET("/api/movies")
     Call<List<Movie>> getMovies(@Header("Authorization") String token);
 
+	//add a new endpoint to get all movies
     @GET("/api/movies/all")
     Call<List<Movie>> getAllMovies(@Header("Authorization") String token);
 
+	//add a new endpoint to search movies
     @GET("/api/movies/search/{query}")
     Call<List<Movie>> searchMovies(@Header("Authorization") String token, @Path("query") String query);
 
@@ -47,12 +49,15 @@ public interface MovieServiceApi {
     @PUT("/api/movies/{id}")
     Call<Void> updateMovie(@Header("Authorization") String token, @Path("id") String id, @Body Movie movie);
 
+	//add a new endpoint to delete a movie
     @DELETE("/api/movies/{id}")
     Call<Void> deleteMovie(@Header("Authorization") String token, @Path("id") String id);
 
+	//add a new endpoint to get recommended movies
     @GET("/api/movies/{id}/recommend")
     Call<List<Movie>> getRecommendedMovies(@Header("Authorization") String token, @Path("id") String movieId);
 
+	//add a new endpoint to add a movie to recommendations
     @POST("/api/movies/{id}/recommend")
     Call<Void> addMovieToRecommendations(@Header("Authorization") String token, @Path("id") String movieId);
 

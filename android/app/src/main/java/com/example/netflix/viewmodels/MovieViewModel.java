@@ -20,9 +20,9 @@ public class MovieViewModel extends AndroidViewModel {
 
     //creare a tag for logging
     private static final String TAG = "MovieViewModel";
-
     private final MovieRepository repository;
 
+	//constructor
     public MovieViewModel(Application application) {
         super(application);
         repository = new MovieRepository(application);

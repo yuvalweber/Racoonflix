@@ -15,15 +15,19 @@ import retrofit2.http.Path;
 
 public interface CategoryServiceApi {
 
+	// Get all categories
     @GET("/api/categories")
     Call<List<Category>> getCategories(@Header("Authorization") String token);
 
+	// Get a category by id
     @POST("/api/categories")
     Call<Void> createCategory(@Header("Authorization") String token, @Body Category category);
 
+	// update a category by id
     @PATCH("/api/categories/{id}")
     Call<Void> updateCategory(@Header("Authorization") String token, @Path("id") String id, @Body Category category);
 
+	// delete a category by id
     @DELETE("/api/categories/{id}")
     Call<Void> deleteCategory(@Header("Authorization") String token, @Path("id") String id);
 }

@@ -132,14 +132,16 @@ public class ManagementActivity extends AppCompatActivity {
             loadForm();
         });
     }
-
+	
     private void clearForm() {
+		// Clear the form container
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.form_container, new Fragment());
         transaction.commit();
     }
 
     private void loadForm() {
+		// Load the form based on the selected section and action
         if (selectedSection == null || selectedAction == null) {
             return;
         }

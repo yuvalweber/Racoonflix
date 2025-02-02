@@ -17,6 +17,7 @@ import com.example.netflix.models.Movie;
 import java.util.List;
 import java.util.Map;
 
+// Adapter class for displaying categories and their movies in a RecyclerView
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
     private final Map<String, List<Movie>> categorizedMovies;
@@ -47,16 +48,17 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.recyclerMovies.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         holder.recyclerMovies.setAdapter(movieCardAdapter);
     }
-
+	// Return the number of categories
     @Override
     public int getItemCount() {
         return categorizedMovies.size();
     }
+	//
 
     static class CategoryViewHolder extends RecyclerView.ViewHolder {
         TextView categoryTitle;
         RecyclerView recyclerMovies;
-
+		// Initialize the views
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
             categoryTitle = itemView.findViewById(R.id.category_title);

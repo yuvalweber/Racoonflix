@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -32,16 +31,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CategoryManagementFragment extends Fragment {
-
+	// Define the constants
     private static final String ARG_ACTION = "action";
     private static final String TAG = "CategoryManagementFragment";
-
     private String action;
     private CategoryViewModel categoryViewModel;
-
     private MovieViewModel movieViewModel;
 
+	// Define the newInstance method
     public static CategoryManagementFragment newInstance(String action) {
+		// Create a new instance of the fragment
         CategoryManagementFragment fragment = new CategoryManagementFragment();
         Bundle args = new Bundle();
         args.putString(ARG_ACTION, action);
@@ -61,7 +60,7 @@ public class CategoryManagementFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_category_management, container, false);
-
+		// Initialize the view models
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
 
@@ -101,7 +100,7 @@ public class CategoryManagementFragment extends Fragment {
                 }
 
                 Log.d(TAG, "Movies: " + movieIds);
-
+				// Set the movies
                 category.setMovies(movieIds);
 
             } else {
@@ -111,6 +110,7 @@ public class CategoryManagementFragment extends Fragment {
 
             // Execute the appropriate action
             switch (action) {
+				// Create a new category
                 case "Create":
                     Log.d(TAG, "Creating category: " + category);
                     categoryViewModel.createCategory(category, new Callback<Void>() {
@@ -127,7 +127,7 @@ public class CategoryManagementFragment extends Fragment {
                         }
                     });
                     break;
-
+				// Update an existing category
                 case "Update":
                     String categoryNameInput = categoryName.getText().toString().trim();
                     categoryViewModel.fetchCategoryIdByName(categoryNameInput, new Callback<List<Category>>() {
@@ -160,7 +160,7 @@ public class CategoryManagementFragment extends Fragment {
                     });
 
                     break;
-
+				// Delete an existing category
                 case "Delete":
                     String categoryNameInputDelete = categoryName.getText().toString().trim();
                     categoryViewModel.fetchCategoryIdByName(categoryNameInputDelete, new Callback<List<Category>>() {
@@ -215,6 +215,7 @@ public class CategoryManagementFragment extends Fragment {
         AppDatabase appDatabase = AppDatabase.getInstance(getContext());
         Thread thread = new Thread(() -> {appDatabase.categoryDao().clearCategories();});
         thread.start();
+		// Wait for the thread to finish
         try {
             thread.join();
          } catch (InterruptedException e) {

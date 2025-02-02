@@ -51,6 +51,7 @@ public class MovieManagementFragment extends Fragment {
     private File selectedTrailerFile;
 
     public static MovieManagementFragment newInstance(String action) {
+		// Create a new instance of the fragment with the action passed as an argument
         MovieManagementFragment fragment = new MovieManagementFragment();
         Bundle args = new Bundle();
         args.putString(ARG_ACTION, action);
@@ -60,6 +61,7 @@ public class MovieManagementFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+		// Get the action from the arguments
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             action = getArguments().getString(ARG_ACTION);
@@ -103,7 +105,7 @@ public class MovieManagementFragment extends Fragment {
         submitButton.setOnClickListener(v -> {
             String movieNameInput = movieTitle.getText().toString().trim();
             String newMovieNameInput = newMovieTitle.getText().toString().trim();
-
+			// Create a new movie object with the input values
             Movie movie = new Movie();
             if (newMovieNameInput.isEmpty()) {
                 movie.setTitle(movieNameInput);
@@ -146,6 +148,7 @@ public class MovieManagementFragment extends Fragment {
             }
 
             switch (action) {
+				// Create a new movie with the input values
                 case "Create":
                     movieViewModel.createMovieWithFiles(movie, selectedImageFile, selectedTrailerFile, new Callback<Void>() {
                         @Override
@@ -165,6 +168,7 @@ public class MovieManagementFragment extends Fragment {
                     break;
 
                 default:
+					// Log an error if the action is invalid
                     Log.e(TAG, "Invalid action: " + action);
             }
         });

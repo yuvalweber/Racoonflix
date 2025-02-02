@@ -23,7 +23,7 @@ public class MovieEntity {
     private String trailer;
     private long timestamp;
 
-
+	// Constructor
     public MovieEntity(String movieId, String title, int year, String director, List<String> category, int duration, String image, String trailer, long timestamp) {
         this.movieId = movieId;
         this.title = title;
