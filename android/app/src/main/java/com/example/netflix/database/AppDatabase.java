@@ -24,7 +24,9 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract MovieDao movieDao();
 
+	// Singleton pattern
     public static synchronized AppDatabase getInstance(Context context) {
+		// Create a new instance of the database if it doesn't exist
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(),
                             AppDatabase.class, "netflix_database")

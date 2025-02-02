@@ -18,19 +18,22 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.netflix.viewmodels.MoviePlayerViewModel;
 
 public class MoviePlayerActivity extends AppCompatActivity {
+	// Declare the variables
     private VideoView videoView;
     private MoviePlayerViewModel viewModel;
     private boolean isPlaying = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+		// Set the layout of the activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_player);
 
-        videoView = findViewById(R.id.videoView);
-        ImageButton returnButton = findViewById(R.id.returnButton);
-        viewModel = new ViewModelProvider(this).get(MoviePlayerViewModel.class);
+        videoView = findViewById(R.id.videoView); // Get the video view
+        ImageButton returnButton = findViewById(R.id.returnButton); // Get the return button
+        viewModel = new ViewModelProvider(this).get(MoviePlayerViewModel.class); // Get the view model
 
+		// Get the trailer URL from the intent
         String trailerUrl = getIntent().getStringExtra("TRAILER_URL");
 
         viewModel.fetchVideoUrl(trailerUrl);
@@ -39,6 +42,7 @@ public class MoviePlayerActivity extends AppCompatActivity {
         videoView.setMediaController(mediaController);
         mediaController.setAnchorView(videoView);
 
+		// Set the video view to be clickable
         viewModel.getVideoUrl().observe(this, videoUrl -> {
             if (videoUrl != null) {
                 playVideo(videoUrl);
@@ -52,13 +56,15 @@ public class MoviePlayerActivity extends AppCompatActivity {
     private void playVideo(String url) {
         videoView.setVideoURI(Uri.parse(url));
         videoView.setOnPreparedListener(mp -> {
-            mp.setLooping(true); // Optional: Loop video
+			// Start the video
+            mp.setLooping(true);
             videoView.start();
         });
         videoView.setOnCompletionListener(mp -> finish());
     }
 
     private void togglePlayback() {
+		// Pause or play the video
         if (isPlaying) {
             videoView.pause();
         } else {
@@ -68,14 +74,16 @@ public class MoviePlayerActivity extends AppCompatActivity {
     }
 
     private void enterFullscreen() {
+		// Set the fullscreen flag
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     private void exitFullscreen() {
+		// Clear the fullscreen flag
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
-    @Override
+    @Override	
     protected void onPause() {
         super.onPause();
         viewModel.savePosition(videoView.getCurrentPosition());
@@ -84,6 +92,7 @@ public class MoviePlayerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+		// Get the current position of the video
         viewModel.getCurrentPosition().observe(this, position -> {
             if (position != null) {
                 videoView.seekTo(position);
@@ -94,8 +103,9 @@ public class MoviePlayerActivity extends AppCompatActivity {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+		// Check the orientation of the screen
         super.onConfigurationChanged(newConfig);
-
+		// If the screen is in landscape mode, enter fullscreen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             enterFullscreen();
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
