@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Netflix</string>
+    <string name="app_name">Racoonflix</string>
     <string name="sample_user_name">John Doe</string>
     <string name="sample_movie_title">Movie Title</string>
     <string name="user_image_desc">User Profile Picture</string>
