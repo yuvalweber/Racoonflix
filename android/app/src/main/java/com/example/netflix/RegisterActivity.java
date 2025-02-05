@@ -157,6 +157,11 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         }
 
+        if (password.length() < 8) {
+            Toast.makeText(this, "Password must be at least 8 characters long", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         if (!password.equals(confirmPassword)) {
             Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             return false;
