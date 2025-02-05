@@ -49,8 +49,17 @@ public interface MovieServiceApi {
 	);
 
 	// Endpoint to update a movie by ID
+	@Multipart
 	@PUT("/api/movies/{id}")
-	Call<Void> updateMovie(@Header("Authorization") String token, @Path("id") String id, @Body Movie movie);
+	Call<Void> updateMovieWithFiles(@Header("Authorization") String token,
+									@Path("id") String id,
+						   @Part("title") RequestBody title,
+						   @Part("year") RequestBody year,
+						   @Part("director") RequestBody director,
+						   @Part("duration") RequestBody duration,
+						   @Part List<MultipartBody.Part> categories, // Accept categories as an array
+						   @Part MultipartBody.Part image,
+						   @Part MultipartBody.Part trailer);
 
 	// Endpoint to delete a movie by ID
 	@DELETE("/api/movies/{id}")

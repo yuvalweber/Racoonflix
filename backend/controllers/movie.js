@@ -1,6 +1,7 @@
 const servicesFunctions = require('../services/servicesFunctions');
 const MovieModel = require('../models/movie');
 const movieService = require('../services/movie');
+require('custom-env').env(process.env.NODE_ENV, './config');
 
 // create a new movie
 const createMovie = async (req, res) => {
