@@ -1,5 +1,6 @@
 const userService = require('../services/user');
 const UserModel = require('../models/user');
+require('custom-env').env(process.env.NODE_ENV, './config');
 
 // Create a new user with profile picture upload
 const createUser = async (req, res) => {

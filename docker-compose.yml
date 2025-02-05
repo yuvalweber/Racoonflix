@@ -53,8 +53,6 @@ services:
       - "8080:12345"
     environment:
       - NODE_ENV=local
-      - API_SERVER=web-service
-      - API_PORT=12345
     container_name: "web-service"
     volumes:
       - ./backend/uploads:/usr/src/app/uploads
