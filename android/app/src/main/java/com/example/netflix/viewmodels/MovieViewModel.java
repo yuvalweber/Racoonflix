@@ -44,8 +44,8 @@ public class MovieViewModel extends AndroidViewModel {
 //        repository.createMovie(movie, callback);
 //    }
 
-    public void updateMovie(String id, Movie movie, Callback<Void> callback) {
-        repository.updateMovie(id, movie, callback);
+    public void updateMovieWithFiles(String id, Movie movie, File imageFile, File trailerFile, Callback<Void> callback) {
+        repository.updateMovieWithFiles(movie,id, imageFile, trailerFile, callback);
     }
 
     public void deleteMovie(String id, Callback<Void> callback) {

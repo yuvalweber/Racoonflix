@@ -457,12 +457,26 @@ public class MovieRepository {
         return categorizedMovies;
     }
 
-//    public void createMovie(Movie movie, Callback<Void> callback) {
-//        executeMovieApiCall(api -> api.createMovie(getToken(), movie), callback);
-//    }
 
-    public void updateMovie(String id, Movie movie, Callback<Void> callback) {
-        executeMovieApiCall(api -> api.updateMovie(getToken(), id, movie), callback);
+    public void updateMovieWithFiles(Movie movie, String id ,File imageFile, File trailerFile, Callback<Void> callback) {
+        MultipartBody.Part imagePart = MultipartBody.Part.createFormData(
+                "image", imageFile.getName(), RequestBody.create(MediaType.parse("image/*"), imageFile));
+        MultipartBody.Part trailerPart = MultipartBody.Part.createFormData(
+                "trailer", trailerFile.getName(), RequestBody.create(MediaType.parse("video/*"), trailerFile));
+
+        RequestBody title = RequestBody.create(MediaType.parse("text/plain"), movie.getTitle());
+        RequestBody year = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(movie.getYear()));
+        RequestBody director = RequestBody.create(MediaType.parse("text/plain"), movie.getDirector());
+        RequestBody duration = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(movie.getDuration()));
+
+        // Convert category list to MultipartBody.Part array
+        List<MultipartBody.Part> categoryParts = new ArrayList<>();
+        for (String category : movie.getCategory()) {
+            categoryParts.add(MultipartBody.Part.createFormData("category[]", category));
+        }
+
+        movieApi.updateMovieWithFiles(getToken(), id, title, year, director, duration, categoryParts, imagePart, trailerPart)
+                .enqueue(callback);
     }
 
     public void deleteMovie(String id, Callback<Void> callback) {

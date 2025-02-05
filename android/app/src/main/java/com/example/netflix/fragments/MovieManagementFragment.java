@@ -181,7 +181,7 @@ public class MovieManagementFragment extends Fragment {
                             if (response.isSuccessful()) {
                                 Log.d(TAG, "Movie updated successfully.");
                                 String movieId = response.body().get(0).getId();
-                                movieViewModel.updateMovie(movieId, movie, new Callback<Void>() {
+                                movieViewModel.updateMovieWithFiles(movieId, movie,selectedImageFile,selectedTrailerFile,new Callback<Void>() {
                                     @Override
                                     public void onResponse(Call<Void> call, Response<Void> response) {
                                         if (response.isSuccessful()) {
