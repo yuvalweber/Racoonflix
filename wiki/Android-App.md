@@ -59,6 +59,51 @@ MainActivity                 # Entry point with bottom navigation
 
 ```
 ---
+## **Login and Registration**
+we will show how to register
+
+![](/images/registerAnd.png)
+
+now we will show it actually exist in mongo
+
+![](/images/registerAndMong.png)
+
+---
+
+## **Movie Create edit and delete**
+
+all this is only relevant to admins but let's see how it works.
+
+First create a new movie
+
+![](/images/movieCreateAnd.png)
+
+and now see it works
+
+![](/images/movieExistAnd.png)
+
+and we can see it's playing
+
+![](/images/moviePlayingAnd.png)
+
+now let's edit the movie and change it's title
+
+![](/images/changeMovieAnd.png)
+
+and see it actually works
+
+![](/images/editMovieAndWorks.png)
+
+
+and lastly let's delete the movie
+
+![](/images/delMovieAnd.png)
+
+and validate it worked :)
+
+![](/images/delMovieWorks.png)
+
+---
 
 ## **Examples & Screenshots**
 To visually showcase the platform, we added images for the app:
