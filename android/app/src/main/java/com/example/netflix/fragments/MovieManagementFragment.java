@@ -170,6 +170,82 @@ public class MovieManagementFragment extends Fragment {
 					});
 					break;
 
+                case "Update":
+                    if (movieNameInput.isEmpty()) {
+                        Toast.makeText(getContext(), "Movie name is required for update.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    movieViewModel.fetchMovieIdByName(movieNameInput, new Callback<List<Movie>>() {
+                        @Override
+                        public void onResponse(Call<List<Movie>> call, Response<List<Movie>>response) {
+                            if (response.isSuccessful()) {
+                                Log.d(TAG, "Movie updated successfully.");
+                                String movieId = response.body().get(0).getId();
+                                movieViewModel.updateMovie(movieId, movie, new Callback<Void>() {
+                                    @Override
+                                    public void onResponse(Call<Void> call, Response<Void> response) {
+                                        if (response.isSuccessful()) {
+                                            Log.d(TAG, "Movie updated successfully.");
+                                            Toast.makeText(getContext(), "Movie updated successfully.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Void> call, Throwable t) {
+                                        Log.e(TAG, "Failed to update movie: " + t.getMessage());
+                                        Toast.makeText(getContext(), "Failed to update movie: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                Toast.makeText(getContext(), "Movie updated successfully.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<Movie>> call, Throwable t) {
+                            Log.e(TAG, "Failed to update movie: " + t.getMessage());
+                            Toast.makeText(getContext(), "Failed to update movie: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    break;
+
+                case "Delete":
+                    if (movieNameInput.isEmpty()) {
+                        Toast.makeText(getContext(), "Movie name is required for delete.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    movieViewModel.fetchMovieIdByName(movieNameInput, new Callback<List<Movie>>() {
+                        @Override
+                        public void onResponse(Call<List<Movie>> call, Response<List<Movie>>response) {
+                            if (response.isSuccessful()) {
+                                String movieId = response.body().get(0).getId();
+                                movieViewModel.deleteMovie(movieId, new Callback<Void>() {
+                                    @Override
+                                    public void onResponse(Call<Void> call, Response<Void> response) {
+                                        if (response.isSuccessful()) {
+                                            Log.d(TAG, "Movie Deleted successfully.");
+                                            Toast.makeText(getContext(), "Movie Deleted successfully.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Void> call, Throwable t) {
+                                        Log.e(TAG, "Failed to Delete movie: " + t.getMessage());
+                                        Toast.makeText(getContext(), "Failed to Delete movie: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                Toast.makeText(getContext(), "Movie Deleted successfully.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<Movie>> call, Throwable t) {
+                            Log.e(TAG, "Failed to Delete movie: " + t.getMessage());
+                            Toast.makeText(getContext(), "Failed to Delete movie: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    break;
+
 				default:
 					// Log an error if the action is invalid
 					Log.e(TAG, "Invalid action: " + action);
